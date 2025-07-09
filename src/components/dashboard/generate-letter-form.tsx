@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { runFlow } from "@genkit-ai/next/client"
-import type { GenerateCreditDisputeLetterInput, GenerateCreditDisputeLetterOutput } from "@/ai/flows/generate-credit-dispute-letter"
+import { generateCreditDisputeLetter } from "@/ai/flows/generate-credit-dispute-letter"
+import type { GenerateCreditDisputeLetterOutput } from "@/ai/flows/generate-credit-dispute-letter"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -58,7 +58,7 @@ export function GenerateLetterForm() {
         const creditReportFile = values.creditReport[0];
         const creditReportData = await fileToDataUri(creditReportFile);
         
-        const result = await runFlow<GenerateCreditDisputeLetterInput, GenerateCreditDisputeLetterOutput>('generateCreditDisputeLetterFlow', {
+        const result: GenerateCreditDisputeLetterOutput = await generateCreditDisputeLetter({
             personalInformation: values.personalInformation,
             disputeReason: values.disputeReason,
             creditReportData: creditReportData,

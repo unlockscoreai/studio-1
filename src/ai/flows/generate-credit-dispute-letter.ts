@@ -1,4 +1,4 @@
-// use server'
+'use server';
 
 /**
  * @fileOverview Generates personalized credit dispute letters using AI.
