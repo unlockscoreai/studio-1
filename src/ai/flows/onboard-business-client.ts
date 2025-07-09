@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Handles new business client onboarding.
@@ -45,7 +46,8 @@ const OnboardBusinessClientInputSchema = z.object({
   monthlyRevenue: z.string().describe('The average monthly revenue of the business.'),
   businessEmail: z.string().email().describe('The email address of the business contact.'),
   businessPhone: z.string().describe('The phone number of the business.'),
-  businessCreditReportDataUri: z.string().describe("The client's business credit report as a data URI."),
+  businessCreditReportDataUri: z.string().optional().describe("The client's business credit report as a data URI."),
+  manualBusinessDetails: z.string().optional().describe("A manual description of the business's credit situation."),
 });
 export type OnboardBusinessClientInput = z.infer<typeof OnboardBusinessClientInputSchema>;
 
@@ -73,6 +75,7 @@ const onboardBusinessClientFlow = ai.defineFlow(
     
     const analysisResult = await analyzeBusinessCreditReport({
         businessCreditReportDataUri: input.businessCreditReportDataUri,
+        manualBusinessDetails: input.manualBusinessDetails,
     });
 
     if (!analysisResult) {

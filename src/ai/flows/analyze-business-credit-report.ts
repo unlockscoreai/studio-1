@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Analyzes a business credit report to generate a fundability summary.
@@ -13,9 +14,11 @@ import {z} from 'genkit';
 const AnalyzeBusinessCreditReportInputSchema = z.object({
   businessCreditReportDataUri: z
     .string()
+    .optional()
     .describe(
       "A business credit report file (D&B, Experian Biz, or Equifax Biz) as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  manualBusinessDetails: z.string().optional().describe("A textual description of the business's credit situation, provided by the user if no report is available."),
 });
 export type AnalyzeBusinessCreditReportInput = z.infer<typeof AnalyzeBusinessCreditReportInputSchema>;
 
@@ -50,7 +53,7 @@ const prompt = ai.definePrompt({
   name: 'analyzeBusinessCreditReportPrompt',
   input: {schema: AnalyzeBusinessCreditReportInputSchema},
   output: {schema: AnalyzeBusinessCreditReportOutputSchema},
-  prompt: `You are a business credit analyst for Unlock Score AI. The user will upload a business credit report from Dun & Bradstreet, Experian Business, or Equifax Business.
+  prompt: `You are a business credit analyst for Unlock Score AI. The user will upload a business credit report from Dun & Bradstreet, Experian Business, or Equifax Business, OR they will provide a manual description of their credit situation.
 
 Your job is to:
 1. Extract key data: business name, DUNS number, Paydex score, Experian score, account age, # of tradelines, credit utilization, any derogatory items (collections, UCCs, liens, etc.).
@@ -58,9 +61,15 @@ Your job is to:
 3. Provide a fundability rating (A–F) and assign it to the 'fundabilityGrade' field.
 4. Offer 3–5 specific action steps to improve their business credit profile and add them to the 'actionPlan' array.
 
-Do NOT assume anything. Base your analysis strictly on the data in the uploaded file.
+Do NOT assume anything. Base your analysis strictly on the data provided.
 
-Business Credit Report: {{media url=businessCreditReportDataUri}}
+{{#if businessCreditReportDataUri}}
+Source Information (from uploaded report):
+{{media url=businessCreditReportDataUri}}
+{{else}}
+Source Information (from manual description):
+{{{manualBusinessDetails}}}
+{{/if}}
 
 Generate the complete analysis and provide the output in the specified JSON format.
 `,

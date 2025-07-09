@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef } from "react"
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +22,8 @@ import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Loader2, CheckCircle } from "lucide-react"
 import { BusinessReportCard } from "./business-report-card"
+import { Separator } from "../ui/separator"
+import { Textarea } from "../ui/textarea"
 
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name is required."),
@@ -28,8 +32,12 @@ const formSchema = z.object({
   monthlyRevenue: z.string().min(2, "Monthly revenue is required."),
   businessEmail: z.string().email("Please enter a valid email address."),
   businessPhone: z.string().min(10, "Please enter a valid phone number."),
-  creditReport: z.any().refine((files) => files?.length === 1, "Credit report is required."),
-})
+  creditReport: z.any().optional(),
+  manualBusinessDetails: z.string().optional(),
+}).refine(data => data.creditReport?.length === 1 || !!data.manualBusinessDetails, {
+    message: "Please either upload a credit report or describe your business credit situation below.",
+    path: ["creditReport"],
+});
 
 async function fileToDataUri(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -57,6 +65,7 @@ export function BusinessIntakeForm() {
       businessEmail: "",
       businessPhone: "",
       creditReport: undefined,
+      manualBusinessDetails: "",
     },
   })
   
@@ -66,8 +75,8 @@ export function BusinessIntakeForm() {
     setAnalysis(null)
 
     try {
-        const creditReportFile = values.creditReport[0];
-        const creditReportDataUri = await fileToDataUri(creditReportFile);
+        const creditReportFile = values.creditReport?.[0];
+        const creditReportDataUri = creditReportFile ? await fileToDataUri(creditReportFile) : undefined;
         
         const result = await onboardBusinessClient({
             ...values,
@@ -183,6 +192,7 @@ export function BusinessIntakeForm() {
             )}
           />
         </div>
+        
         <FormField
           control={form.control}
           name="creditReport"
@@ -202,10 +212,38 @@ export function BusinessIntakeForm() {
                   <FormMessage />
               </FormItem>
           )}
-          />
+        />
+        
+        <div className="flex items-center gap-2">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">OR</span>
+            <Separator className="flex-1" />
+        </div>
+        
+        <FormField
+          control={form.control}
+          name="manualBusinessDetails"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>No Report? Describe Your Business Credit</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="e.g., I have 2 business credit cards with Chase and Amex, both about a year old with $5k limits. No late payments. I also have a net-30 account with Uline..."
+                  className="h-28"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Provide as much detail as you can about your existing business credit.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" disabled={isLoading} className="w-full text-lg py-6">
           {isLoading ? (
-            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing Report...</>
+            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing...</>
           ) : "Get My Fundability Report"}
         </Button>
       </form>
