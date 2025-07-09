@@ -2,15 +2,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Users,
   LayoutDashboard,
   LogOut,
   Rocket,
   Settings,
-  PlusCircle,
-  Trophy,
-  DollarSign,
-  UserCircle
+  User,
+  ShieldAlert,
+  Mail,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -35,7 +33,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-export default function AffiliateLayout({
+export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -43,11 +41,10 @@ export default function AffiliateLayout({
   const pathname = usePathname();
 
   const getPageTitle = () => {
-    if (pathname === '/affiliate/client-management') return 'Client Management';
-    if (pathname === '/affiliate/add-client') return 'Add New Client';
-    if (pathname === '/affiliate/700-club') return 'UnlockScore AI 700 Club';
-    if (pathname === '/affiliate/payouts') return 'Payouts';
-    return 'Affiliate Dashboard';
+    if (pathname.startsWith('/client/disputes')) return 'My Disputes';
+    if (pathname.startsWith('/client/letters')) return 'My Letters';
+    if (pathname.startsWith('/client/account')) return 'My Account';
+    return 'Client Dashboard';
   };
 
   return (
@@ -55,10 +52,7 @@ export default function AffiliateLayout({
       <div className="flex min-h-screen">
         <Sidebar>
           <SidebarHeader>
-            <Link
-              href="/affiliate/dashboard"
-              className="flex items-center gap-2"
-            >
+            <Link href="/client/dashboard" className="flex items-center gap-2">
               <Rocket className="size-6 text-primary" />
               <span className="text-lg font-semibold font-headline text-sidebar-foreground">
                 UnlockScore AI
@@ -69,64 +63,53 @@ export default function AffiliateLayout({
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  href="/affiliate/dashboard"
+                  href="/client/dashboard"
                   asChild
-                  isActive={pathname === '/affiliate/dashboard'}
+                  isActive={pathname === '/client/dashboard'}
                   tooltip={{ children: 'Dashboard' }}
                 >
-                  <Link href="/affiliate/dashboard">
+                  <Link href="/client/dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-               <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild
-                  href="/affiliate/add-client"
-                  isActive={pathname === '/affiliate/add-client'}
-                  tooltip={{ children: 'Add Client' }}>
-                  <Link href="/affiliate/add-client">
-                    <PlusCircle />
-                    <span>Add Client</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton 
+                <SidebarMenuButton
+                  href="/client/disputes"
                   asChild
-                  href="/affiliate/client-management"
-                  isActive={pathname.startsWith('/affiliate/client-management') || pathname === '/affiliate/my-clients'}
-                  tooltip={{ children: 'Client Management' }}>
-                  <Link href="/affiliate/client-management">
-                    <Users />
-                    <span>Clients</span>
+                  isActive={pathname.startsWith('/client/disputes')}
+                  tooltip={{ children: 'My Disputes' }}
+                >
+                  <Link href="/client/disputes">
+                    <ShieldAlert />
+                    <span>My Disputes</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  href="/client/letters"
                   asChild
-                  href="/affiliate/700-club"
-                  isActive={pathname === '/affiliate/700-club'}
-                  tooltip={{ children: '700 Club' }}
+                  isActive={pathname.startsWith('/client/letters')}
+                  tooltip={{ children: 'My Letters' }}
                 >
-                  <Link href="/affiliate/700-club">
-                    <Trophy />
-                    <span>700 Club</span>
+                  <Link href="/client/letters">
+                    <Mail />
+                    <span>My Letters</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  href="/client/account"
                   asChild
-                  href="/affiliate/payouts"
-                  isActive={pathname === '/affiliate/payouts'}
-                  tooltip={{ children: 'Payouts' }}
+                  isActive={pathname.startsWith('/client/account')}
+                  tooltip={{ children: 'My Account' }}
                 >
-                  <Link href="/affiliate/payouts">
-                    <DollarSign />
-                    <span>Payouts</span>
+                  <Link href="/client/account">
+                    <User />
+                    <span>My Account</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -140,12 +123,6 @@ export default function AffiliateLayout({
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton tooltip={{ children: 'CreditUp Solutions' }}>
-                        <UserCircle />
-                        <span>CreditUp Solutions</span>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={{ children: 'Log Out' }}>
                   <Link href="/">
@@ -161,12 +138,7 @@ export default function AffiliateLayout({
           <header className="flex h-14 items-center gap-4 border-b bg-background px-6 sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <SidebarTrigger />
             <h1 className="text-lg font-semibold font-headline">{getPageTitle()}</h1>
-            <div className="ml-auto flex items-center gap-2">
-              <Button asChild size="sm">
-                  <Link href="/affiliate/add-client">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Add New Client
-                  </Link>
-              </Button>
+            <div className="ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -175,8 +147,8 @@ export default function AffiliateLayout({
                     className="overflow-hidden rounded-full"
                   >
                     <Avatar>
-                      <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt="Affiliate" />
-                      <AvatarFallback>AD</AvatarFallback>
+                      <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Client" />
+                      <AvatarFallback>SL</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>

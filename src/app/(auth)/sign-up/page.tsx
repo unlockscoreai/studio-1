@@ -16,7 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export default function SignUpPage() {
   const [role, setRole] = useState("client");
-  const dashboardUrl = role === 'client' ? '/dashboard' : '/affiliate/dashboard';
+  const dashboardUrl = role === 'client' ? '/client/dashboard' : '/affiliate/dashboard';
 
   return (
     <Card className="mx-auto max-w-sm">

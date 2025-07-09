@@ -41,7 +41,7 @@ export default function SignInPage() {
           </div>
           <div className="grid gap-2">
             <Button type="submit" className="w-full" asChild>
-              <Link href="/dashboard">Sign In as Client</Link>
+              <Link href="/client/dashboard">Sign In as Client</Link>
             </Button>
             <Button type="submit" variant="outline" className="w-full" asChild>
               <Link href="/affiliate/dashboard">Sign In as Affiliate</Link>
