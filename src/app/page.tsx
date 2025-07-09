@@ -143,6 +143,7 @@ export default function Home() {
         'AI Bureau Response Analysis',
         'Credit Score Tracking',
         'Automated Mailing Service',
+        'CFPB Complaint Guidance',
         'Priority Email Support',
       ],
       cta: 'Choose Pro Plan',

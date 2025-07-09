@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   Mail,
   Send,
+  Gavel,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -45,6 +46,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/disputes')) return 'My Disputes';
     if (pathname.startsWith('/client/letters')) return 'My Letters';
     if (pathname.startsWith('/client/mailing-instructions')) return 'Mailing Instructions';
+    if (pathname.startsWith('/client/cfpb-guide')) return 'CFPB Complaint Guide';
     if (pathname.startsWith('/client/account')) return 'My Account';
     return 'Client Dashboard';
   };
@@ -112,6 +114,19 @@ export default function ClientLayout({
                   <Link href="/client/mailing-instructions">
                     <Send />
                     <span>Mailing Instructions</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/cfpb-guide"
+                  asChild
+                  isActive={pathname.startsWith('/client/cfpb-guide')}
+                  tooltip={{ children: 'CFPB Guide' }}
+                >
+                  <Link href="/client/cfpb-guide">
+                    <Gavel />
+                    <span>CFPB Guide</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
