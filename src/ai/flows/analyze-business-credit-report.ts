@@ -10,8 +10,11 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getBusinessDetailsFromState } from '@/ai/tools/get-business-details';
 
 const AnalyzeBusinessCreditReportInputSchema = z.object({
+  businessName: z.string().describe("The name of the business to analyze."),
+  state: z.string().length(2).describe("The 2-letter postal code for the state where the business is registered."),
   businessCreditReportDataUri: z
     .string()
     .optional()
@@ -53,15 +56,18 @@ const prompt = ai.definePrompt({
   name: 'analyzeBusinessCreditReportPrompt',
   input: {schema: AnalyzeBusinessCreditReportInputSchema},
   output: {schema: AnalyzeBusinessCreditReportOutputSchema},
+  tools: [getBusinessDetailsFromState],
   prompt: `You are a business credit analyst for Unlock Score AI. The user will upload a business credit report from Dun & Bradstreet, Experian Business, or Equifax Business, OR they will provide a manual description of their credit situation.
 
 Your job is to:
-1. Extract key data: business name, DUNS number, Paydex score, Experian score, account age, # of tradelines, credit utilization, any derogatory items (collections, UCCs, liens, etc.).
-2. Identify any red flags or missing components that may affect business fundability. For each identified risk, add it to the 'riskFactors' array.
-3. Provide a fundability rating (A–F) and assign it to the 'fundabilityGrade' field.
-4. Offer 3–5 specific action steps to improve their business credit profile and add them to the 'actionPlan' array.
+1.  First, use the getBusinessDetailsFromState tool to look up the official business information from the Secretary of State based on the provided 'businessName' and 'state'. This is the authoritative source for entity type and formation date.
+2.  Next, extract key data from the provided credit report or manual description: DUNS number, Paydex score, Experian score, account age, # of tradelines, credit utilization, and any derogatory items (collections, UCCs, liens, etc.).
+3.  Synthesize information from both the Secretary of State lookup and the user-provided details to form a complete picture.
+4.  Identify any red flags or missing components that may affect business fundability. For each identified risk, add it to the 'riskFactors' array.
+5.  Provide a fundability rating (A–F) and assign it to the 'fundabilityGrade' field.
+6.  Offer 3–5 specific action steps to improve their business credit profile and add them to the 'actionPlan' array.
 
-Do NOT assume anything. Base your analysis strictly on the data provided.
+Do NOT assume anything. Base your analysis strictly on the data provided and the data retrieved from the tool.
 
 {{#if businessCreditReportDataUri}}
 Source Information (from uploaded report):

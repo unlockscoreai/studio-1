@@ -9,3 +9,4 @@ import '@/ai/flows/generate-tradeline-strategy.ts';
 import '@/ai/flows/analyze-bureau-response.ts';
 import '@/ai/flows/analyze-business-credit-report.ts';
 import '@/ai/flows/onboard-business-client.ts';
+import '@/ai/tools/get-business-details.ts';

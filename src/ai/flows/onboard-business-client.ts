@@ -41,6 +41,7 @@ async function sendWelcomeEmailToBusiness(clientEmail: string, clientName: strin
 
 const OnboardBusinessClientInputSchema = z.object({
   businessName: z.string().describe('The name of the business.'),
+  state: z.string().length(2).describe("The 2-letter postal code for the state where the business is registered."),
   ein: z.string().describe('The Employer Identification Number.'),
   yearsInBusiness: z.string().describe('How many years the business has been in operation.'),
   monthlyRevenue: z.string().describe('The average monthly revenue of the business.'),
@@ -74,6 +75,8 @@ const onboardBusinessClientFlow = ai.defineFlow(
     // In a real app, you would save the client data to a database here.
     
     const analysisResult = await analyzeBusinessCreditReport({
+        businessName: input.businessName,
+        state: input.state,
         businessCreditReportDataUri: input.businessCreditReportDataUri,
         manualBusinessDetails: input.manualBusinessDetails,
     });

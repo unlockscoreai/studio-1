@@ -24,9 +24,21 @@ import { Loader2, CheckCircle } from "lucide-react"
 import { BusinessReportCard } from "./business-report-card"
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+
+const states = [
+  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+  'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+  'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+  'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+  'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+];
+
 
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name is required."),
+  state: z.string({ required_error: "Please select a state."}),
   ein: z.string().min(9, "Please enter a valid EIN."),
   yearsInBusiness: z.string().min(1, "Years in business is required."),
   monthlyRevenue: z.string().min(2, "Monthly revenue is required."),
@@ -138,6 +150,28 @@ export function BusinessIntakeForm() {
           />
           <FormField
             control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State of Registration</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a state" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {states.map((state) => (
+                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="ein"
             render={({ field }) => (
               <FormItem>
@@ -154,17 +188,6 @@ export function BusinessIntakeForm() {
               <FormItem>
                 <FormLabel>Years in Business</FormLabel>
                 <FormControl><Input type="number" placeholder="3" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="monthlyRevenue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monthly Revenue</FormLabel>
-                <FormControl><Input placeholder="$15,000" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )}
