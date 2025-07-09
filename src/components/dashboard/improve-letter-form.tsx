@@ -4,7 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { improveUploadedLetter } from "@/ai/flows/improve-uploaded-letter"
+import { runFlow } from "@genkit-ai/next/client"
+import type { ImproveUploadedLetterInput, ImproveUploadedLetterOutput } from "@/ai/flows/improve-uploaded-letter"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -40,7 +41,7 @@ export function ImproveLetterForm() {
     setIsLoading(true)
     setImprovedLetter("")
     try {
-      const result = await improveUploadedLetter({
+      const result = await runFlow<ImproveUploadedLetterInput, ImproveUploadedLetterOutput>('improveUploadedLetterFlow', {
         letterText: values.letterText,
       })
       if (result.improvedLetterText) {
