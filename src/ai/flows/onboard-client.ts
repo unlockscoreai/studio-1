@@ -58,7 +58,7 @@ async function sendNotificationEmailToAffiliate(affiliateEmail: string, clientNa
     Name: ${clientName}
     Email: ${clientEmail}
 
-    We will take it from here. The client has been notified to log in and complete their onboarding.
+    We will take it from here. The client has been notified to log in, review their letter in the "My Letters" section, and complete their onboarding.
 
     Best,
     The UnlockScore AI Team
@@ -126,7 +126,8 @@ const onboardClientFlow = ai.defineFlow(
     }
 
     // In a real app, you would save the generated letter to the database, associated with the client.
-    console.log(`Generated letter for ${input.clientName}:\n`, letterResult.letter);
+    // The letter now awaits client approval in the portal before being mailed.
+    console.log(`Generated letter for ${input.clientName}. It is now awaiting approval in the client portal.\n`, letterResult.letter);
     console.log(`Credit analysis for ${input.clientName}:\n`, analysisResult);
 
 

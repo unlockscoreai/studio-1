@@ -1,17 +1,203 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+'use client';
+import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Download,
+  Lock,
+  MailCheck,
+  Send,
+  ShieldCheck,
+  Loader2,
+  CheckCircle,
+} from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { sendLetterForMailing } from './actions';
 
-export default function LettersPage() {
+// Mock data for letters
+const mockLetters = [
+  {
+    id: 'letter-1',
+    title: 'Initial Dispute for Experian',
+    date: '2024-07-25',
+    status: 'Awaiting Approval',
+    content: 'This is the first dispute letter for Experian...',
+  },
+  {
+    id: 'letter-2',
+    title: 'Follow-up for Equifax',
+    date: '2024-07-22',
+    status: 'Mailed',
+    content: 'This is a follow-up letter for Equifax...',
+  },
+  {
+    id: 'letter-3',
+    title: 'MOV Request for TransUnion',
+    date: '2024-07-18',
+    status: 'Mailed',
+    content: 'This is a Method of Verification letter for TransUnion...',
+  },
+];
+
+type SubscriptionTier = 'starter' | 'pro' | 'vip';
+
+function SubscriptionSimulator({
+  subscription,
+  setSubscription,
+}: {
+  subscription: SubscriptionTier;
+  setSubscription: (tier: SubscriptionTier) => void;
+}) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline">My Letters</CardTitle>
+    <Card className="mb-6 bg-secondary border-dashed">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">Subscription Simulator</CardTitle>
         <CardDescription>
-          This is a placeholder for the client letters page. View and manage all your generated letters here.
+          Use this to see how this page changes for different subscription tiers.
+          This is for demo purposes only.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>A list or library of generated dispute letters will go here.</p>
+        <RadioGroup
+          value={subscription}
+          onValueChange={(value) => setSubscription(value as SubscriptionTier)}
+          className="flex items-center gap-6"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="starter" id="r1" />
+            <Label htmlFor="r1">Starter</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="pro" id="r2" />
+            <Label htmlFor="r2">Pro</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="vip" id="r3" />
+            <Label htmlFor="r3">VIP</Label>
+          </div>
+        </RadioGroup>
       </CardContent>
     </Card>
+  );
+}
+
+export default function LettersPage() {
+  const [subscription, setSubscription] = useState<SubscriptionTier>('pro');
+  const [mailingStatus, setMailingStatus] = useState<Record<string, 'idle' | 'loading' | 'sent'>>({});
+  const { toast } = useToast();
+
+  const handleMailLetter = async (letterId: string, title: string) => {
+    setMailingStatus(prev => ({...prev, [letterId]: 'loading'}));
+    try {
+        await sendLetterForMailing({letterId, title});
+        toast({
+            title: "Letter Sent!",
+            description: `"${title}" has been sent for certified mailing.`
+        });
+        setMailingStatus(prev => ({...prev, [letterId]: 'sent'}));
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Mailing Failed",
+            description: "Could not send letter for mailing. Please try again."
+        });
+        setMailingStatus(prev => ({...prev, [letterId]: 'idle'}));
+    }
+  }
+
+
+  const isSubscribed = subscription === 'pro' || subscription === 'vip';
+
+  return (
+    <div className="space-y-6">
+      <SubscriptionSimulator
+        subscription={subscription}
+        setSubscription={setSubscription}
+      />
+      {isSubscribed ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline">My Letters</CardTitle>
+            <CardDescription>
+              Review your generated letters here. Once approved, we will handle
+              mailing them for you.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {mockLetters.map((letter) => (
+              <Card key={letter.id} className="flex flex-col md:flex-row items-start md:items-center p-4 gap-4">
+                <div className="flex-1">
+                  <p className="font-semibold">{letter.title}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Generated on {letter.date}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Badge variant={letter.status === 'Mailed' || mailingStatus[letter.id] === 'sent' ? 'default' : 'secondary'}>
+                        {mailingStatus[letter.id] === 'sent' ? 'Mailed' : letter.status}
+                    </Badge>
+                    {(letter.status === 'Awaiting Approval' && mailingStatus[letter.id] !== 'sent') ? (
+                        <Button
+                          size="sm"
+                          onClick={() => handleMailLetter(letter.id, letter.title)}
+                          disabled={mailingStatus[letter.id] === 'loading'}
+                        >
+                            {mailingStatus[letter.id] === 'loading' ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Send className="mr-2 h-4 w-4" />
+                            )}
+                          Approve & Mail
+                        </Button>
+                    ) : (
+                        <Button size="sm" variant="outline" disabled>
+                            <MailCheck className="mr-2 h-4 w-4" /> Mailed
+                        </Button>
+                    )}
+                </div>
+              </Card>
+            ))}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="text-center p-10 flex flex-col items-center">
+          <div className="p-4 bg-primary/10 rounded-full mb-4">
+            <Lock className="w-10 h-10 text-primary" />
+          </div>
+          <CardTitle className="font-headline text-2xl">
+            Automate Your Mailings
+          </CardTitle>
+          <CardDescription className="mt-2 mb-6 max-w-md mx-auto">
+            Your current plan requires you to mail letters yourself. Upgrade to
+            Pro to unlock our automated certified mailing service.
+          </CardDescription>
+          <div className="p-6 border rounded-lg bg-background w-full max-w-sm">
+            <h4 className="font-semibold text-lg text-primary flex items-center gap-2 justify-center">
+              <ShieldCheck /> Pro Plan Features
+            </h4>
+            <ul className="text-left list-disc pl-5 mt-4 space-y-2 text-muted-foreground">
+              <li>Review and approve letters in your portal.</li>
+              <li>
+                <strong>We handle all printing and certified mailing.</strong>
+              </li>
+              <li>Track mailing status and delivery automatically.</li>
+              <li>Full dispute management and history.</li>
+            </ul>
+          </div>
+          <Button size="lg" className="mt-6">
+            Upgrade to Pro
+          </Button>
+        </Card>
+      )}
+    </div>
   );
 }
