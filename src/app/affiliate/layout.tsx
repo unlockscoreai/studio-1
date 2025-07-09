@@ -9,6 +9,7 @@ import {
   Settings,
   User,
   PlusCircle,
+  Trophy,
 } from 'lucide-react';
 
 import {
@@ -44,6 +45,7 @@ export default function AffiliateLayout({
   const getPageTitle = () => {
     if (pathname === '/affiliate/my-clients') return 'My Clients';
     if (pathname === '/affiliate/add-client') return 'Add New Client';
+    if (pathname === '/affiliate/700-club') return 'UnlockScore AI 700 Club';
     return 'Affiliate Dashboard';
   };
 
@@ -98,6 +100,19 @@ export default function AffiliateLayout({
                 <Link href="/affiliate/my-clients">
                   <Users />
                   <span>My Clients</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                href="/affiliate/700-club"
+                isActive={pathname === '/affiliate/700-club'}
+                tooltip={{ children: '700 Club' }}
+              >
+                <Link href="/affiliate/700-club">
+                  <Trophy />
+                  <span>700 Club</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
