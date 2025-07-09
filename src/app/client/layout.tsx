@@ -11,6 +11,7 @@ import {
   Mail,
   Send,
   Gavel,
+  ClipboardCheck,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -48,6 +49,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/mailing-instructions')) return 'Mailing Instructions';
     if (pathname.startsWith('/client/cfpb-guide')) return 'CFPB Complaint Guide';
     if (pathname.startsWith('/client/account')) return 'My Account';
+    if (pathname.startsWith('/client/onboarding')) return 'Complete Your Onboarding';
     return 'Client Dashboard';
   };
 
@@ -75,6 +77,19 @@ export default function ClientLayout({
                   <Link href="/client/dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/onboarding"
+                  asChild
+                  isActive={pathname.startsWith('/client/onboarding')}
+                  tooltip={{ children: 'Onboarding' }}
+                >
+                  <Link href="/client/onboarding">
+                    <ClipboardCheck />
+                    <span>Onboarding</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -16,12 +16,14 @@ import {
   ShieldCheck,
   Loader2,
   CheckCircle,
+  Zap,
 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { sendLetterForMailing } from './actions';
+import { Switch } from '@/components/ui/switch';
 
 // Mock data for letters
 const mockLetters = [
@@ -93,6 +95,7 @@ function SubscriptionSimulator({
 export default function LettersPage() {
   const [subscription, setSubscription] = useState<SubscriptionTier>('pro');
   const [mailingStatus, setMailingStatus] = useState<Record<string, 'idle' | 'loading' | 'sent'>>({});
+  const [autoDispute, setAutoDispute] = useState(false);
   const { toast } = useToast();
 
   const handleMailLetter = async (letterId: string, title: string) => {
@@ -124,16 +127,37 @@ export default function LettersPage() {
         setSubscription={setSubscription}
       />
       {isSubscribed ? (
+        <>
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline flex items-center gap-2"><Zap className="w-5 h-5 text-primary"/> Automation Settings</CardTitle>
+                <CardDescription>Enable auto-disputes to have new letters sent automatically as soon as they are generated.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center space-x-3">
+                    <Switch id="auto-dispute-toggle" checked={autoDispute} onCheckedChange={setAutoDispute} aria-label="Automated Disputes Toggle"/>
+                    <Label htmlFor="auto-dispute-toggle">Automated Disputes</Label>
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                    {autoDispute ? "Automatic mailing is active. You can turn this off to approve letters manually." : "Turn this on to have us mail your letters for you automatically."}
+                </p>
+            </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">My Letters</CardTitle>
             <CardDescription>
-              Review your generated letters here. Once approved, we will handle
-              mailing them for you.
+              Review your generated letters here. {autoDispute ? 'Automated mailing is active.' : 'Approve letters to send them for mailing.'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {mockLetters.map((letter) => (
+            {mockLetters.map((letter) => {
+              const isMailedManually = mailingStatus[letter.id] === 'sent';
+              const isMailedAutomatically = letter.status === 'Awaiting Approval' && autoDispute;
+              const isAlreadyMailed = letter.status === 'Mailed';
+              const showAsMailed = isMailedManually || isMailedAutomatically || isAlreadyMailed;
+
+              return (
               <Card key={letter.id} className="flex flex-col md:flex-row items-start md:items-center p-4 gap-4">
                 <div className="flex-1">
                   <p className="font-semibold">{letter.title}</p>
@@ -142,10 +166,11 @@ export default function LettersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Badge variant={letter.status === 'Mailed' || mailingStatus[letter.id] === 'sent' ? 'default' : 'secondary'}>
-                        {mailingStatus[letter.id] === 'sent' ? 'Mailed' : letter.status}
+                    <Badge variant={showAsMailed ? 'default' : 'secondary'}>
+                        {showAsMailed ? (isMailedAutomatically ? 'Mailed Automatically' : 'Mailed') : letter.status}
                     </Badge>
-                    {(letter.status === 'Awaiting Approval' && mailingStatus[letter.id] !== 'sent') ? (
+                    
+                    {!showAsMailed ? (
                         <Button
                           size="sm"
                           onClick={() => handleMailLetter(letter.id, letter.title)}
@@ -159,15 +184,16 @@ export default function LettersPage() {
                           Approve & Mail
                         </Button>
                     ) : (
-                        <Button size="sm" variant="outline" disabled>
+                         <Button size="sm" variant="outline" disabled>
                             <MailCheck className="mr-2 h-4 w-4" /> Mailed
                         </Button>
                     )}
                 </div>
               </Card>
-            ))}
+            )})}
           </CardContent>
         </Card>
+        </>
       ) : (
         <Card className="text-center p-10 flex flex-col items-center">
           <div className="p-4 bg-primary/10 rounded-full mb-4">
