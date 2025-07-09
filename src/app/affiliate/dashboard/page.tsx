@@ -11,7 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 export default function AffiliateDashboardPage() {
   const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
-  const referralLink = "https://unlockscore.ai/ref?id=creditup-solutions";
+  // In a real app, the affiliate ID would be dynamic based on the logged-in user.
+  const affiliateId = "creditup-solutions";
+  const referralLink = `https://unlockscore.ai/intake?affiliate_id=${affiliateId}`;
 
   const handleCopy = () => {
     if(typeof navigator.clipboard?.writeText !== 'function') {
