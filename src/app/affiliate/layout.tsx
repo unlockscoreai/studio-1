@@ -10,7 +10,8 @@ import {
   PlusCircle,
   Trophy,
   DollarSign,
-  UserCircle
+  UserCircle,
+  BarChart3,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -47,6 +48,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/add-client') return 'Add New Client';
     if (pathname === '/affiliate/700-club') return 'UnlockScore AI 700 Club';
     if (pathname === '/affiliate/payouts') return 'Payouts';
+    if (pathname === '/affiliate/reports') return 'Reports';
     return 'Affiliate Dashboard';
   };
 
@@ -101,6 +103,19 @@ export default function AffiliateLayout({
                   <Link href="/affiliate/client-management">
                     <Users />
                     <span>Clients</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  href="/affiliate/reports"
+                  isActive={pathname === '/affiliate/reports'}
+                  tooltip={{ children: 'Reports' }}
+                >
+                  <Link href="/affiliate/reports">
+                    <BarChart3 />
+                    <span>Reports</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
