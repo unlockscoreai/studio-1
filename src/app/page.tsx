@@ -142,6 +142,7 @@ export default function Home() {
         'Full Dispute Management',
         'AI Bureau Response Analysis',
         'Credit Score Tracking',
+        'Automated Mailing Service',
         'Priority Email Support',
       ],
       cta: 'Choose Pro Plan',
@@ -153,7 +154,6 @@ export default function Home() {
         period: '/month',
         features: [
             'Everything in Pro, plus:',
-            'We Handle All Mailing',
             'We Manage Follow-ups',
             'Advanced Dispute Tactics',
             'Dedicated Account Manager',
