@@ -22,6 +22,13 @@ async function sendWelcomeEmailToClient(clientEmail: string, clientName: string,
     Action Items:
     ${analysis.actionItems.map(item => `- ${item}`).join('\n')}
         `;
+
+        if (analysis.disputableItems && analysis.disputableItems.length > 0) {
+            analysisSection += `
+    \nWe've also identified the following items you may be able to dispute:
+    ${analysis.disputableItems.map(item => `- ${item.item} (Success Chance: ${item.successProbability}%)`).join('\n')}
+            `;
+        }
     }
 
     console.log(`---
@@ -84,6 +91,11 @@ const OnboardClientOutputSchema = z.object({
   analysis: z.object({
     summary: z.string(),
     actionItems: z.array(z.string()),
+    disputableItems: z.array(z.object({
+        item: z.string(),
+        reason: z.string(),
+        successProbability: z.number()
+    })).optional(),
   }).optional(),
 });
 export type OnboardClientOutput = z.infer<typeof OnboardClientOutputSchema>;

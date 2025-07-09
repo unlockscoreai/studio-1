@@ -15,19 +15,20 @@ import { UploadResponseDialog } from "@/components/client/upload-response-dialog
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 
 
 // Mock data matching the dashboard for consistency
 const allDisputes = [
   // Active items still in progress
-  { id: 5, bureau: 'Experian', item: 'Late Payment - Capital One', status: 'Submitted', statusVariant: 'secondary' as const, date: '2024-07-10' },
-  { id: 6, bureau: 'Equifax', item: 'Incorrect Balance - Chase', status: 'Bureau Responded', statusVariant: 'outline' as const, date: '2024-07-08' },
-  { id: 7, bureau: 'TransUnion', item: 'Unknown Inquiry', status: 'Submitted', statusVariant: 'secondary' as const, date: '2024-07-05' },
+  { id: 5, bureau: 'Experian', item: 'Late Payment - Capital One', status: 'Submitted', statusVariant: 'secondary' as const, date: '2024-07-10', successChance: 75 },
+  { id: 6, bureau: 'Equifax', item: 'Incorrect Balance - Chase', status: 'Bureau Responded', statusVariant: 'outline' as const, date: '2024-07-08', successChance: 60 },
+  { id: 7, bureau: 'TransUnion', item: 'Unknown Inquiry', status: 'Submitted', statusVariant: 'secondary' as const, date: '2024-07-05', successChance: 85 },
   // Successfully removed items
-  { id: 1, bureau: 'Experian', item: 'Collection Account - XYZ', status: 'Removed', statusVariant: 'default' as const, date: '2024-06-20' },
-  { id: 2, bureau: 'TransUnion', item: 'Old Medical Bill', status: 'Removed', statusVariant: 'default' as const, date: '2024-06-15' },
-  { id: 3, bureau: 'Equifax', item: 'Duplicate Inquiry', status: 'Removed', statusVariant: 'default' as const, date: '2024-05-30' },
-  { id: 4, bureau: 'Experian', item: 'Incorrect Address History', status: 'Removed', statusVariant: 'default' as const, date: '2024-05-25' },
+  { id: 1, bureau: 'Experian', item: 'Collection Account - XYZ', status: 'Removed', statusVariant: 'default' as const, date: '2024-06-20', successChance: 90 },
+  { id: 2, bureau: 'TransUnion', item: 'Old Medical Bill', status: 'Removed', statusVariant: 'default' as const, date: '2024-06-15', successChance: 70 },
+  { id: 3, bureau: 'Equifax', item: 'Duplicate Inquiry', status: 'Removed', statusVariant: 'default' as const, date: '2024-05-30', successChance: 95 },
+  { id: 4, bureau: 'Experian', item: 'Incorrect Address History', status: 'Removed', statusVariant: 'default' as const, date: '2024-05-25', successChance: 80 },
 ];
 
 export type Dispute = typeof allDisputes[0];
@@ -62,7 +63,7 @@ function SubscriptionSimulator({ subscription, setSubscription }: { subscription
 
 
 export default function DisputesPage() {
-  const [subscription, setSubscription] = useState<SubscriptionTier>('starter');
+  const [subscription, setSubscription] = useState<SubscriptionTier>('pro');
   const [selectedDispute, setSelectedDispute] = useState<Dispute | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -92,6 +93,7 @@ export default function DisputesPage() {
                     <TableHead>Bureau</TableHead>
                     <TableHead>Disputed Item</TableHead>
                     <TableHead>Date Submitted</TableHead>
+                    <TableHead>Success Chance</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Action</TableHead>
                   </TableRow>
@@ -102,6 +104,12 @@ export default function DisputesPage() {
                       <TableCell className="font-medium">{dispute.bureau}</TableCell>
                       <TableCell>{dispute.item}</TableCell>
                       <TableCell>{dispute.date}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Progress value={dispute.successChance} className="w-20" />
+                          <span className="text-muted-foreground font-medium">{dispute.successChance}%</span>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <Badge variant={dispute.statusVariant} className={dispute.status === 'Removed' ? 'bg-green-600 hover:bg-green-600/80' : ''}>
                           {dispute.status}

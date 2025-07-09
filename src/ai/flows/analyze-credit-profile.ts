@@ -22,6 +22,11 @@ export type AnalyzeCreditProfileInput = z.infer<typeof AnalyzeCreditProfileInput
 const AnalyzeCreditProfileOutputSchema = z.object({
   summary: z.string().describe('A brief summary of the credit profile analysis.'),
   actionItems: z.array(z.string()).describe('A list of personalized action items to improve the credit profile.'),
+  disputableItems: z.array(z.object({
+    item: z.string().describe('The name of the disputable item from the report (e.g., "Late Payment - Capital One").'),
+    reason: z.string().describe('A brief reason why this item is likely disputable (e.g., "Inaccurate reporting date").'),
+    successProbability: z.number().min(0).max(100).describe('The estimated probability of successfully removing this item, as a percentage (e.g., 75).')
+  })).describe('A list of items identified as potentially disputable, along with their chance of successful removal.')
 });
 export type AnalyzeCreditProfileOutput = z.infer<typeof AnalyzeCreditProfileOutputSchema>;
 
@@ -63,7 +68,7 @@ const prompt = ai.definePrompt({
   name: 'analyzeCreditProfilePrompt',
   input: {schema: AnalyzeCreditProfileInputSchema},
   output: {schema: AnalyzeCreditProfileOutputSchema},
-  prompt: `You are a professional credit analyst. Your task is to analyze the provided credit report and generate a summary and a personalized action plan based on the "Fundable Credit Profile Checklist".
+  prompt: `You are a professional credit analyst. Your task is to analyze the provided credit report, generate a summary and action plan, and identify potentially disputable items with a success probability.
 
 Here is the checklist for a strong, fundable credit profile:
 ${checklist}
@@ -72,15 +77,16 @@ Now, analyze the following credit report:
 Credit Report: {{media url=creditReportDataUri}}
 
 Instructions:
-1. Parse the credit report to identify key metrics like FICO score, payment history, credit utilization, number and type of accounts, credit history length, and inquiries.
-2. Compare the user's profile against each item in the checklist.
-3. For the "Summary", provide a short, clear overview of where the user's credit profile stands.
-4. For the "Action Items", create a list of specific, actionable steps the user should take to meet the checklist criteria. Be direct and provide concrete examples. For instance:
-   - "Your CUR is 42%. Pay down $3,250 on your Visa card to get under 10%."
-   - "You’re missing a 2-year primary tradeline. You should look into getting one."
-   - "You have 3 AUs but no installment loans. Add a Self Lender loan to diversify your credit mix."
+1.  Parse the credit report to identify key metrics like FICO score, payment history, credit utilization, number and type of accounts, credit history length, and inquiries.
+2.  Compare the user's profile against each item in the checklist.
+3.  For the "Summary", provide a short, clear overview of where the user's credit profile stands.
+4.  For the "Action Items", create a list of specific, actionable steps the user should take to meet the checklist criteria. Be direct and provide concrete examples.
+5.  **Crucially, identify all potentially disputable negative items in the report. For each item, create an entry in the 'disputableItems' array.**
+    -   Provide the 'item' name (e.g., "Collection from XYZ Corp").
+    -   Provide a 'reason' why it might be disputable (e.g., "No validation provided," "Account is older than 7 years").
+    -   Estimate a 'successProbability' as a percentage (e.g., 65 for a moderately likely success, 85 for a highly likely success). This should be a number from 0 to 100.
 
-Generate the analysis and provide the output in the specified JSON format.
+Generate the complete analysis and provide the output in the specified JSON format.
 `,
 });
 
