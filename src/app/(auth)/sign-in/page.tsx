@@ -39,9 +39,14 @@ export default function SignInPage() {
             </div>
             <Input id="password" type="password" required />
           </div>
-          <Button type="submit" className="w-full" asChild>
-            <Link href="/dashboard">Sign In</Link>
-          </Button>
+          <div className="grid gap-2">
+            <Button type="submit" className="w-full" asChild>
+              <Link href="/dashboard">Sign In as Client</Link>
+            </Button>
+            <Button type="submit" variant="outline" className="w-full" asChild>
+              <Link href="/affiliate/dashboard">Sign In as Affiliate</Link>
+            </Button>
+          </div>
         </div>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}

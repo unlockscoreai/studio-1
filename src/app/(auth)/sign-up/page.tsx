@@ -1,4 +1,7 @@
+'use client';
+
 import Link from "next/link"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,6 +15,9 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export default function SignUpPage() {
+  const [role, setRole] = useState("client");
+  const dashboardUrl = role === 'client' ? '/dashboard' : '/affiliate/dashboard';
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -47,7 +53,7 @@ export default function SignUpPage() {
           </div>
           <div className="grid gap-2">
             <Label>I am a...</Label>
-            <RadioGroup defaultValue="client" className="flex gap-4">
+            <RadioGroup defaultValue="client" onValueChange={setRole} className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="client" id="r1" />
                 <Label htmlFor="r1">Client</Label>
@@ -59,7 +65,7 @@ export default function SignUpPage() {
             </RadioGroup>
           </div>
           <Button type="submit" className="w-full" asChild>
-            <Link href="/dashboard">Create an account</Link>
+            <Link href={dashboardUrl}>Create an account</Link>
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">
