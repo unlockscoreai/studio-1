@@ -8,6 +8,7 @@ import {
   Rocket,
   Settings,
   User,
+  PlusCircle,
 } from 'lucide-react';
 
 import {
@@ -42,6 +43,7 @@ export default function AffiliateLayout({
 
   const getPageTitle = () => {
     if (pathname === '/affiliate/my-clients') return 'My Clients';
+    if (pathname === '/affiliate/add-client') return 'Add New Client';
     return 'Affiliate Dashboard';
   };
 
@@ -72,6 +74,18 @@ export default function AffiliateLayout({
                 <Link href="/affiliate/dashboard">
                   <LayoutDashboard />
                   <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton 
+                asChild
+                href="/affiliate/add-client"
+                isActive={pathname === '/affiliate/add-client'}
+                tooltip={{ children: 'Add Client' }}>
+                <Link href="/affiliate/add-client">
+                  <PlusCircle />
+                  <span>Add Client</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -120,6 +134,13 @@ export default function AffiliateLayout({
           <div className="flex-1">
             <h1 className="text-lg font-semibold font-headline">{getPageTitle()}</h1>
           </div>
+          {pathname === '/affiliate/dashboard' && (
+              <Button asChild>
+                  <Link href="/affiliate/add-client">
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add New Client
+                  </Link>
+              </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
