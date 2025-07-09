@@ -24,6 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 const formSchema = z.object({
   personalInformation: z.string().min(10, "Please provide more details."),
   disputeReason: z.string().min(10, "Please provide a clear reason for the dispute."),
+  additionalInstructions: z.string().optional(),
   creditReport: z.any().refine((file) => file?.length == 1, "Credit report is required."),
 })
 
@@ -47,6 +48,7 @@ export function GenerateLetterForm() {
     defaultValues: {
       personalInformation: "",
       disputeReason: "",
+      additionalInstructions: "",
     },
   })
   const fileRef = form.register("creditReport")
@@ -62,6 +64,7 @@ export function GenerateLetterForm() {
             personalInformation: values.personalInformation,
             disputeReason: values.disputeReason,
             creditReportData: creditReportData,
+            additionalInstructions: values.additionalInstructions,
         })
         if (result.letter) {
             setGeneratedLetter(result.letter)
@@ -115,6 +118,22 @@ export function GenerateLetterForm() {
                 <FormControl>
                   <Textarea
                     placeholder="Clearly explain why you are disputing the item on your credit report..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="additionalInstructions"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Additional Instructions (Optional)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="e.g., 'Mention the FCRA Section 609.' or 'Keep the tone very firm.'"
                     {...field}
                   />
                 </FormControl>

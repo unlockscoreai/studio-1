@@ -19,6 +19,7 @@ const GenerateCreditDisputeLetterInputSchema = z.object({
     .string()
     .describe('Personal information of the client, including name, address, and account numbers.'),
   disputeReason: z.string().describe('The reason for disputing the credit report information.'),
+  additionalInstructions: z.string().optional().describe('Optional additional instructions for the AI to follow.'),
 });
 export type GenerateCreditDisputeLetterInput = z.infer<typeof GenerateCreditDisputeLetterInputSchema>;
 
@@ -42,6 +43,10 @@ const prompt = ai.definePrompt({
   Credit Report Data: {{media url=creditReportData}}
   Personal Information: {{{personalInformation}}}
   Dispute Reason: {{{disputeReason}}}
+
+  {{#if additionalInstructions}}
+  Follow these additional instructions: {{{additionalInstructions}}}
+  {{/if}}
 
   Ensure the letter is professional, clear, and concise.
   `,
