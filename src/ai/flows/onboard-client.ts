@@ -9,20 +9,21 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { generateCreditDisputeLetter } from './generate-credit-dispute-letter';
 
 // Mock email sending service
 async function sendWelcomeEmailToClient(clientEmail: string, clientName: string, affiliateId: string) {
     console.log(`---
     SENDING EMAIL TO: ${clientEmail}
-    SUBJECT: Your UnlockScore AI account is ready!
+    SUBJECT: Your first dispute letter is ready!
     BODY:
     Hi ${clientName},
 
     Thank you for your interest in UnlockScore AI, referred by affiliate: ${affiliateId}.
     
-    Your credit report has been received and is now under review by our AI.
+    Your first AI-generated dispute letter has been created based on the information provided.
     
-    To complete your setup, please log in to your client portal to finish the onboarding process. This includes verifying your identity and providing some additional details.
+    To complete your setup, please log in to your client portal to review the letter and finish the onboarding process. This includes verifying your identity and providing some additional details.
 
     You can log in at our website to get started.
 
@@ -38,15 +39,15 @@ async function sendNotificationEmailToAffiliate(affiliateEmail: string, clientNa
     // I'll assume affiliateId is the email for this prototype.
     console.log(`---
     SENDING EMAIL TO: ${affiliateEmail}
-    SUBJECT: New Client Submission Received
+    SUBJECT: New Client Submission Received & Letter Generated
     BODY:
     Hi,
 
-    Thank you for your submission. We have received the details for your new client:
+    Thank you for your submission. We have received the details for your new client and generated their first dispute letter:
     Name: ${clientName}
     Email: ${clientEmail}
 
-    We will take it from here.
+    We will take it from here. The client has been notified to log in and complete their onboarding.
 
     Best,
     The UnlockScore AI Team
@@ -60,6 +61,7 @@ const OnboardClientInputSchema = z.object({
   clientEmail: z.string().email().describe('The email address of the client.'),
   clientPhone: z.string().describe('The phone number of the client.'),
   creditReportDataUri: z.string().describe("The client's credit report as a data URI."),
+  disputeReason: z.string().describe('The reason for disputing the credit report information.'),
   affiliateId: z.string().describe('The ID of the referring affiliate.'),
 });
 export type OnboardClientInput = z.infer<typeof OnboardClientInputSchema>;
@@ -67,6 +69,7 @@ export type OnboardClientInput = z.infer<typeof OnboardClientInputSchema>;
 const OnboardClientOutputSchema = z.object({
   success: z.boolean(),
   message: z.string(),
+  generatedLetter: z.string().optional(),
 });
 export type OnboardClientOutput = z.infer<typeof OnboardClientOutputSchema>;
 
@@ -84,14 +87,35 @@ const onboardClientFlow = ai.defineFlow(
   async (input) => {
     // In a real app, you would save the client data to a database here.
     
+    // 1. Generate the dispute letter
+    const personalInformation = `Name: ${input.clientName}\nEmail: ${input.clientEmail}\nPhone: ${input.clientPhone}`;
+    const letterResult = await generateCreditDisputeLetter({
+        creditReportData: input.creditReportDataUri,
+        personalInformation: personalInformation,
+        disputeReason: input.disputeReason,
+    });
+
+    if (!letterResult.letter) {
+        return {
+            success: false,
+            message: "Failed to generate the dispute letter. Please check the inputs and try again."
+        }
+    }
+
+    // In a real app, you would save the generated letter to the database, associated with the client.
+    console.log(`Generated letter for ${input.clientName}:\n`, letterResult.letter);
+
+    // 2. Send notifications
     await sendWelcomeEmailToClient(input.clientEmail, input.clientName, input.affiliateId);
     
     // Assuming affiliateId is their email for this prototype
     await sendNotificationEmailToAffiliate(input.affiliateId, input.clientName, input.clientEmail);
 
+    // 3. Return success and the letter
     return {
       success: true,
-      message: `Client ${input.clientName} onboarded successfully. Emails have been sent.`,
+      message: `Client ${input.clientName} onboarded successfully. Their first dispute letter has been generated.`,
+      generatedLetter: letterResult.letter,
     };
   }
 );
