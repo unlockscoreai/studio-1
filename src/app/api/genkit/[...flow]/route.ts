@@ -10,6 +10,8 @@ import '@/ai/flows/onboard-client';
 import '@/ai/flows/analyze-credit-profile';
 import '@/ai/flows/generate-tradeline-strategy';
 import '@/ai/flows/analyze-bureau-response';
+import '@/ai/flows/analyze-business-credit-report';
+import '@/ai/flows/onboard-business-client';
 
 
 export const POST = nextHandler();

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Rocket, ShieldCheck, Bot, LineChart, Check, FileText, Banknote, Star } from 'lucide-react';
+import { Rocket, ShieldCheck, Bot, LineChart, Check, FileText, Banknote, Star, Briefcase } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -259,10 +259,14 @@ export default function Home() {
             <div className="text-center">
               <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Choose Your Path</h2>
               <p className="max-w-2xl mx-auto mt-4 text-foreground/70">
-                Whether you're fixing your credit or helping others, we have a plan for you.
+                Solutions for personal credit repair, business funding, and affiliate partners.
               </p>
             </div>
-            <div className="grid max-w-md gap-8 mx-auto mt-12 md:max-w-5xl md:grid-cols-3">
+
+            <div className="text-center mt-12">
+              <h3 className="text-2xl font-bold font-headline">For Personal Credit</h3>
+            </div>
+            <div className="grid max-w-md gap-8 mx-auto mt-8 md:max-w-5xl md:grid-cols-3">
                 {clientPricingTiers.map((tier) => (
                     <Card key={tier.name} className={cn("flex flex-col", tier.mostPopular && "border-primary ring-2 ring-primary")}>
                         <CardHeader className="relative">
@@ -291,28 +295,35 @@ export default function Home() {
                     </Card>
                 ))}
             </div>
-            <div className="max-w-lg mx-auto mt-12">
-                <Card className="flex flex-col md:flex-row items-center p-6">
-                    <div className="flex-1">
-                        <h3 className="text-2xl font-bold font-headline">{affiliatePricing.name}</h3>
-                        <p className="text-muted-foreground mt-1">{affiliatePricing.description}</p>
-                         <ul className="space-y-2 mt-4 text-sm">
-                            {affiliatePricing.features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-2">
-                                    <Check className="w-4 h-4 text-green-500" />
-                                    <span>{feature}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                     <div className="text-center md:text-right mt-6 md:mt-0 md:ml-6 shrink-0">
-                        <p className="text-4xl font-bold">{affiliatePricing.price}</p>
-                        <p className="text-muted-foreground">{affiliatePricing.period}</p>
-                        <Button className="w-full mt-4" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
-                            <Link href={affiliatePricing.href}>{affiliatePricing.cta}</Link>
-                        </Button>
-                    </div>
-                </Card>
+
+            <div className="grid gap-12 mt-16 md:grid-cols-2">
+              <Card className="flex flex-col p-6">
+                <CardHeader className="p-0">
+                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Briefcase /> For Business Credit</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 mt-4">
+                  <p className="text-muted-foreground">Get a complete fundability analysis for your business. Our AI analyzes your business credit report to give you actionable steps for securing funding.</p>
+                </CardContent>
+                <CardFooter className="p-0 mt-6">
+                  <Button className="w-full" asChild>
+                    <Link href="/business-intake">Analyze Business Credit</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              <Card className="flex flex-col p-6">
+                <CardHeader className="p-0">
+                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Banknote /> For Affiliates</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 mt-4">
+                  <p className="text-muted-foreground">Partner with us and earn commissions for every client you refer. Get access to our powerful affiliate dashboard and marketing tools.</p>
+                </CardContent>
+                <CardFooter className="p-0 mt-6">
+                  <Button className="w-full" asChild variant="outline">
+                    <Link href="/sign-up">Become an Affiliate</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
             </div>
           </div>
         </section>
