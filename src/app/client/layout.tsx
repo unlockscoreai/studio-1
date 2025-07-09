@@ -12,6 +12,7 @@ import {
   Send,
   Gavel,
   ClipboardCheck,
+  FileHeart,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -50,6 +51,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/cfpb-guide')) return 'CFPB Complaint Guide';
     if (pathname.startsWith('/client/account')) return 'My Account';
     if (pathname.startsWith('/client/onboarding')) return 'Complete Your Onboarding';
+    if (pathname.startsWith('/client/credit-analysis')) return 'Credit Analysis';
     return 'Client Dashboard';
   };
 
@@ -90,6 +92,19 @@ export default function ClientLayout({
                   <Link href="/client/onboarding">
                     <ClipboardCheck />
                     <span>Onboarding</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/credit-analysis"
+                  asChild
+                  isActive={pathname.startsWith('/client/credit-analysis')}
+                  tooltip={{ children: 'Credit Analysis' }}
+                >
+                  <Link href="/client/credit-analysis">
+                    <FileHeart />
+                    <span>Credit Analysis</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
