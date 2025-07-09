@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Rocket, ShieldCheck, Bot, LineChart, Check, FileText, Banknote, Star, Briefcase } from 'lucide-react';
+import { Rocket, ShieldCheck, Bot, LineChart, Check, Banknote, Star, Briefcase, Building } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -118,66 +118,53 @@ export default function Home() {
     },
   ];
 
-  const clientPricingTiers = [
+  const pricingTiers = [
     {
       name: 'Starter',
-      price: '$29',
-      period: '/month',
+      price: '$99',
+      period: 'one-time fee',
+      description: 'For individuals looking to repair their own credit.',
       features: [
-        'AI Letter Generation',
-        'AI Letter Improver',
-        'Initial Credit Analysis',
-        'Dashboard Access',
+        'AI Letter Generation & Improver',
+        'AI Credit Report Analysis',
+        'Client Dashboard Access',
+        'Step-by-step Mailing Guides',
       ],
       cta: 'Get Started',
-      href: '/sign-up'
+      href: '/sign-up',
     },
     {
-      name: 'Pro',
-      price: '$49',
+      name: 'Pro Affiliate',
+      price: '$299',
       period: '/month',
       mostPopular: true,
+      description: 'For professionals managing up to 50 clients.',
       features: [
-        'Everything in Starter, plus:',
-        'Full Dispute Management',
-        'AI Bureau Response Analysis',
-        'Credit Score Tracking',
+        'Manage 30-50 Clients',
+        'Full Affiliate Dashboard',
+        'Client Progress Tracking',
         'Automated Mailing Service',
-        'CFPB Complaint Guidance',
-        'Priority Email Support',
+        'AI Bureau Response Analysis',
       ],
       cta: 'Choose Pro Plan',
-      href: '/sign-up'
+      href: '/sign-up',
     },
     {
-        name: 'VIP',
-        price: '$99',
-        period: '/month',
-        features: [
-            'Everything in Pro, plus:',
-            'We Manage Follow-ups',
-            'Advanced Dispute Tactics',
-            'Dedicated Account Manager',
-        ],
-        cta: 'Go VIP',
-        href: '/sign-up'
-    }
-  ];
-
-  const affiliatePricing = {
-      name: 'Affiliate',
-      price: 'Free',
-      period: 'to join',
-      description: 'Partner with us and earn commissions for every client you refer.',
+      name: 'VIP Affiliate',
+      price: '$699',
+      period: '/month',
+      description: 'For businesses managing a larger client base.',
       features: [
-        'Referral Link Generator',
-        'Real-time Lead Tracking',
-        'Commission Dashboard',
-        'Marketing Materials',
+        'Manage 50-100 Clients',
+        'Priority Support',
+        'Advanced Client Reporting',
+        'Dedicated Account Manager',
+        'Co-branded Materials',
       ],
-      cta: 'Become an Affiliate',
-      href: '/sign-up'
-  };
+      cta: 'Go VIP',
+      href: '/sign-up',
+    },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -257,20 +244,18 @@ export default function Home() {
         <section id="pricing" className="py-20 bg-secondary">
           <div className="container">
             <div className="text-center">
-              <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Choose Your Path</h2>
+              <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Plans for Every Need</h2>
               <p className="max-w-2xl mx-auto mt-4 text-foreground/70">
-                Solutions for personal credit repair, business funding, and affiliate partners.
+                Solutions for individuals, professionals, and enterprise partners.
               </p>
             </div>
 
-            <div className="text-center mt-12">
-              <h3 className="text-2xl font-bold font-headline">For Personal Credit</h3>
-            </div>
-            <div className="grid max-w-md gap-8 mx-auto mt-8 md:max-w-5xl md:grid-cols-3">
-                {clientPricingTiers.map((tier) => (
+            <div className="grid max-w-md gap-8 mx-auto mt-12 md:max-w-5xl md:grid-cols-3">
+                {pricingTiers.map((tier) => (
                     <Card key={tier.name} className={cn("flex flex-col", tier.mostPopular && "border-primary ring-2 ring-primary")}>
                         <CardHeader className="relative">
                             <CardTitle className="font-headline text-2xl">{tier.name}</CardTitle>
+                            <CardDescription>{tier.description}</CardDescription>
                             {tier.mostPopular && <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold rounded-full flex items-center gap-1"><Star className="w-4 h-4" /> Most Popular</div>}
                         </CardHeader>
                         <CardContent className="flex-1">
@@ -313,14 +298,14 @@ export default function Home() {
 
               <Card className="flex flex-col p-6">
                 <CardHeader className="p-0">
-                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Banknote /> For Affiliates</CardTitle>
+                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Building /> White Label & Licensing</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 p-0 mt-4">
-                  <p className="text-muted-foreground">Partner with us and earn commissions for every client you refer. Get access to our powerful affiliate dashboard and marketing tools.</p>
+                  <p className="text-muted-foreground">For partners managing 100+ clients. Get a fully branded version of our platform with dedicated infrastructure and support.</p>
                 </CardContent>
                 <CardFooter className="p-0 mt-6">
                   <Button className="w-full" asChild variant="outline">
-                    <Link href="/sign-up">Become an Affiliate</Link>
+                    <Link href="#">Contact Sales</Link>
                   </Button>
                 </CardFooter>
               </Card>
