@@ -88,7 +88,7 @@ export default function CfpbGuidePage() {
                                 <strong>Describe the Issue:</strong> Clearly explain your problem. State the facts, what you've done to resolve it (i.e., you sent a dispute letter), and what you want the outcome to be. Be professional and concise.
                             </li>
                             <li>
-                                <strong>Upload Your Letters:</strong> Attach a copy of the dispute letter you sent to the bureau. This is crucial evidence.
+                                <strong>Upload Your Documents:</strong> Attach a copy of the dispute letter you sent to the bureau, plus the copies of your ID and proof of address that you included in the mailing. This provides a complete record of your dispute.
                             </li>
                             <li>
                                 <strong>Submit and Track:</strong> After submitting, you will receive a case number. You can use this to track the progress of your complaint on the CFPB portal.

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { MailCheck, Send, CheckCircle } from "lucide-react";
+import { MailCheck, Send, CheckCircle, AlertTriangle } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
@@ -78,13 +78,22 @@ export default function MailingInstructionsPage() {
                 </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Don't Forget Your Documents!</AlertTitle>
+                    <AlertDescription>
+                    For best results, always include a clear photocopy of your driver's license (or other government-issued ID) and a recent utility bill as proof of your address. This helps the bureaus verify your identity quickly.
+                    </AlertDescription>
+                </Alert>
+                
                 <div>
                     <h3 className="text-lg font-semibold mb-2">How to Send Certified Mail</h3>
                     <p className="text-muted-foreground mb-4">
                     Sending your dispute letters via USPS Certified Mail with Return Receipt is crucial. This provides you with a legal record that the credit bureaus received your correspondence, which is vital if you need to take further action.
                     </p>
                     <ol className="list-decimal list-inside space-y-2">
-                    <li>Take your printed and signed dispute letter to any U.S. Post Office.</li>
+                    <li>Place your signed dispute letter, a copy of your ID, and a proof of address into an envelope.</li>
+                    <li>Take your envelope to any U.S. Post Office.</li>
                     <li>Ask the postal clerk for a Certified Mail form (PS Form 3800) and a Return Receipt form (PS Form 3811, the "green card").</li>
                     <li>Fill out the forms with the bureau's address and your own. The clerk can assist you.</li>
                     <li>The clerk will attach the forms and a tracking barcode to your envelope. You will get a receipt with the tracking number.</li>
