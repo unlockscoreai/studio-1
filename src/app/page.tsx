@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Rocket, ShieldCheck, Bot, LineChart, Check, FileText, Banknote } from 'lucide-react';
+import { Rocket, ShieldCheck, Bot, LineChart, Check, FileText, Banknote, Star } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 function LandingHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -117,24 +118,56 @@ export default function Home() {
     },
   ];
 
-  const pricingTiers = [
+  const clientPricingTiers = [
     {
-      name: 'Client',
-      price: '$49',
+      name: 'Starter',
+      price: '$29',
       period: '/month',
       features: [
         'AI Letter Generation',
-        'Unlimited Disputes',
-        'Progress Tracking Dashboard',
-        'Email Support',
+        'AI Letter Improver',
+        'Initial Credit Analysis',
+        'Dashboard Access',
       ],
-      cta: 'Choose Client Plan',
+      cta: 'Get Started',
       href: '/sign-up'
     },
     {
+      name: 'Pro',
+      price: '$49',
+      period: '/month',
+      mostPopular: true,
+      features: [
+        'Everything in Starter, plus:',
+        'Full Dispute Management',
+        'AI Bureau Response Analysis',
+        'Credit Score Tracking',
+        'Priority Email Support',
+      ],
+      cta: 'Choose Pro Plan',
+      href: '/sign-up'
+    },
+    {
+        name: 'VIP',
+        price: '$99',
+        period: '/month',
+        features: [
+            'Everything in Pro, plus:',
+            'We Handle All Mailing',
+            'We Manage Follow-ups',
+            'Advanced Dispute Tactics',
+            'Dedicated Account Manager',
+        ],
+        cta: 'Go VIP',
+        href: '/sign-up'
+    }
+  ];
+
+  const affiliatePricing = {
       name: 'Affiliate',
       price: 'Free',
-      period: '',
+      period: 'to join',
+      description: 'Partner with us and earn commissions for every client you refer.',
       features: [
         'Referral Link Generator',
         'Real-time Lead Tracking',
@@ -143,8 +176,7 @@ export default function Home() {
       ],
       cta: 'Become an Affiliate',
       href: '/sign-up'
-    }
-  ];
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -229,11 +261,12 @@ export default function Home() {
                 Whether you're fixing your credit or helping others, we have a plan for you.
               </p>
             </div>
-            <div className="grid max-w-md gap-8 mx-auto mt-12 md:max-w-2xl md:grid-cols-2">
-                {pricingTiers.map((tier) => (
-                    <Card key={tier.name} className="flex flex-col">
-                        <CardHeader>
+            <div className="grid max-w-md gap-8 mx-auto mt-12 md:max-w-5xl md:grid-cols-3">
+                {clientPricingTiers.map((tier) => (
+                    <Card key={tier.name} className={cn("flex flex-col", tier.mostPopular && "border-primary ring-2 ring-primary")}>
+                        <CardHeader className="relative">
                             <CardTitle className="font-headline text-2xl">{tier.name}</CardTitle>
+                            {tier.mostPopular && <div className="absolute top-0 right-4 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold rounded-full flex items-center gap-1"><Star className="w-4 h-4" /> Most Popular</div>}
                         </CardHeader>
                         <CardContent className="flex-1">
                             <div className="mb-6">
@@ -242,20 +275,43 @@ export default function Home() {
                             </div>
                             <ul className="space-y-4">
                                 {tier.features.map((feature) => (
-                                    <li key={feature} className="flex items-center gap-2">
-                                        <Check className="w-5 h-5 text-green-500" />
+                                    <li key={feature} className="flex items-start gap-2">
+                                        <Check className="w-5 h-5 text-green-500 mt-1 shrink-0" />
                                         <span>{feature}</span>
                                     </li>
                                 ))}
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
+                            <Button className="w-full" asChild variant={tier.mostPopular ? 'default' : 'outline'} style={tier.mostPopular ? { backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' } : {}}>
                                 <Link href={tier.href}>{tier.cta}</Link>
                             </Button>
                         </CardFooter>
                     </Card>
                 ))}
+            </div>
+            <div className="max-w-lg mx-auto mt-12">
+                <Card className="flex flex-col md:flex-row items-center p-6">
+                    <div className="flex-1">
+                        <h3 className="text-2xl font-bold font-headline">{affiliatePricing.name}</h3>
+                        <p className="text-muted-foreground mt-1">{affiliatePricing.description}</p>
+                         <ul className="space-y-2 mt-4 text-sm">
+                            {affiliatePricing.features.map((feature) => (
+                                <li key={feature} className="flex items-center gap-2">
+                                    <Check className="w-4 h-4 text-green-500" />
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                     <div className="text-center md:text-right mt-6 md:mt-0 md:ml-6 shrink-0">
+                        <p className="text-4xl font-bold">{affiliatePricing.price}</p>
+                        <p className="text-muted-foreground">{affiliatePricing.period}</p>
+                        <Button className="w-full mt-4" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
+                            <Link href={affiliatePricing.href}>{affiliatePricing.cta}</Link>
+                        </Button>
+                    </div>
+                </Card>
             </div>
           </div>
         </section>
