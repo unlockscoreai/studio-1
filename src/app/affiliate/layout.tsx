@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Users,
   LayoutDashboard,
@@ -37,6 +38,14 @@ export default function AffiliateLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const getPageTitle = () => {
+    if (pathname === '/affiliate/my-clients') return 'My Clients';
+    return 'Affiliate Dashboard';
+  };
+
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -57,7 +66,7 @@ export default function AffiliateLayout({
               <SidebarMenuButton
                 href="/affiliate/dashboard"
                 asChild
-                isActive
+                isActive={pathname === '/affiliate/dashboard'}
                 tooltip={{ children: 'Dashboard' }}
               >
                 <Link href="/affiliate/dashboard">
@@ -67,9 +76,15 @@ export default function AffiliateLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip={{ children: 'My Clients' }}>
-                <Users />
-                <span>My Clients</span>
+              <SidebarMenuButton 
+                asChild
+                href="/affiliate/my-clients"
+                isActive={pathname === '/affiliate/my-clients'}
+                tooltip={{ children: 'My Clients' }}>
+                <Link href="/affiliate/my-clients">
+                  <Users />
+                  <span>My Clients</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -103,7 +118,7 @@ export default function AffiliateLayout({
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 px-6 sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
-            <h1 className="text-lg font-semibold font-headline">Affiliate Dashboard</h1>
+            <h1 className="text-lg font-semibold font-headline">{getPageTitle()}</h1>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

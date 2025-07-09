@@ -14,12 +14,17 @@ import {z} from 'genkit';
 async function sendWelcomeEmailToClient(clientEmail: string, clientName: string, affiliateId: string) {
     console.log(`---
     SENDING EMAIL TO: ${clientEmail}
-    SUBJECT: Welcome to UnlockScore AI!
+    SUBJECT: Your UnlockScore AI account is ready!
     BODY:
     Hi ${clientName},
 
-    Welcome to UnlockScore AI! You were referred to us by affiliate: ${affiliateId}.
-    We're excited to help you on your credit journey.
+    Thank you for your interest in UnlockScore AI, referred by affiliate: ${affiliateId}.
+    
+    Your credit report has been received and is now under review by our AI.
+    
+    To complete your setup, please log in to your client portal to finish the onboarding process. This includes verifying your identity and providing some additional details.
+
+    You can log in at our website to get started.
 
     Best,
     The UnlockScore AI Team

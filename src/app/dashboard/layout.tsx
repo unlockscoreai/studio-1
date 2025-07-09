@@ -1,11 +1,13 @@
 'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   FileText,
   LayoutDashboard,
   LogOut,
   Rocket,
   Settings,
+  ShieldCheck,
   User,
 } from 'lucide-react';
 
@@ -37,6 +39,13 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const getPageTitle = () => {
+    if (pathname === '/dashboard/onboarding') return 'Complete Your Onboarding';
+    return 'Dashboard';
+  };
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -57,12 +66,25 @@ export default function DashboardLayout({
               <SidebarMenuButton
                 href="/dashboard"
                 asChild
-                isActive
+                isActive={pathname === '/dashboard'}
                 tooltip={{ children: 'Dashboard' }}
               >
                 <Link href="/dashboard">
                   <LayoutDashboard />
                   <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/dashboard/onboarding"
+                asChild
+                isActive={pathname === '/dashboard/onboarding'}
+                tooltip={{ children: 'Onboarding' }}
+              >
+                <Link href="/dashboard/onboarding">
+                  <ShieldCheck />
+                  <span>Onboarding</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -103,7 +125,7 @@ export default function DashboardLayout({
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 px-6 sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
-            <h1 className="text-lg font-semibold font-headline">Dashboard</h1>
+            <h1 className="text-lg font-semibold font-headline">{getPageTitle()}</h1>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
