@@ -37,7 +37,7 @@ function SubscriptionSimulator({ subscription, setSubscription }: { subscription
 }
 
 export default function CfpbGuidePage() {
-  const [subscription, setSubscription] = useState<SubscriptionTier>('starter');
+  const [subscription, setSubscription] = useState<SubscriptionTier>('pro');
   const isSubscribed = subscription === 'pro' || subscription === 'vip';
   
   return (
