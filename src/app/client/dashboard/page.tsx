@@ -16,20 +16,31 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Trash2, FileClock, Sparkles } from 'lucide-react';
+import { TrendingUp, Trash2, FileClock, Sparkles, ListChecks } from 'lucide-react';
 
-const disputes = [
-  { bureau: 'Experian', item: 'Late Payment - Capital One', status: 'Submitted', statusVariant: 'secondary' as const },
-  { bureau: 'Equifax', item: 'Incorrect Balance - Chase', status: 'Bureau Responded', statusVariant: 'outline' as const },
-  { bureau: 'TransUnion', item: 'Unknown Inquiry', status: 'Submitted', statusVariant: 'secondary' as const },
-  { bureau: 'Experian', item: 'Collection Account - XYZ', status: 'Removed', statusVariant: 'default' as const },
+const allDisputes = [
+  // Successfully removed items
+  { id: 1, bureau: 'Experian', item: 'Collection Account - XYZ', status: 'Removed', statusVariant: 'default' as const },
+  { id: 2, bureau: 'TransUnion', item: 'Old Medical Bill', status: 'Removed', statusVariant: 'default' as const },
+  { id: 3, bureau: 'Equifax', item: 'Duplicate Inquiry', status: 'Removed', statusVariant: 'default' as const },
+  { id: 4, bureau: 'Experian', item: 'Incorrect Address History', status: 'Removed', statusVariant: 'default' as const },
+  // Active items still in progress
+  { id: 5, bureau: 'Experian', item: 'Late Payment - Capital One', status: 'Submitted', statusVariant: 'secondary' as const },
+  { id: 6, bureau: 'Equifax', item: 'Incorrect Balance - Chase', status: 'Bureau Responded', statusVariant: 'outline' as const },
+  { id: 7, bureau: 'TransUnion', item: 'Unknown Inquiry', status: 'Submitted', statusVariant: 'secondary' as const },
 ];
+
+const totalDisputed = allDisputes.length;
+const itemsRemoved = allDisputes.filter(d => d.status === 'Removed').length;
+const activeDisputesCount = totalDisputed - itemsRemoved;
+const activeDisputesForTable = allDisputes.filter(d => d.status !== 'Removed');
+
 
 export default function ClientDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Stat Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Current Score</CardTitle>
@@ -42,12 +53,22 @@ export default function ClientDashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Disputed</CardTitle>
+            <ListChecks className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalDisputed}</div>
+            <p className="text-xs text-muted-foreground">Across all bureaus</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Items Removed</CardTitle>
             <Trash2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">+1 this week</p>
+            <div className="text-2xl font-bold">{itemsRemoved}</div>
+            <p className="text-xs text-muted-foreground">Successfully deleted</p>
           </CardContent>
         </Card>
         <Card>
@@ -56,7 +77,7 @@ export default function ClientDashboardPage() {
             <FileClock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">{activeDisputesCount}</div>
             <p className="text-xs text-muted-foreground">Awaiting bureau response</p>
           </CardContent>
         </Card>
@@ -88,8 +109,8 @@ export default function ClientDashboardPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {disputes.map((dispute, index) => (
-                    <TableRow key={index}>
+                  {activeDisputesForTable.map((dispute) => (
+                    <TableRow key={dispute.id}>
                       <TableCell>{dispute.bureau}</TableCell>
                       <TableCell className="font-medium">{dispute.item}</TableCell>
                       <TableCell className="text-right">
