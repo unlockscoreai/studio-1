@@ -9,6 +9,7 @@ import {
   User,
   ShieldAlert,
   Mail,
+  Send,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -43,6 +44,7 @@ export default function ClientLayout({
   const getPageTitle = () => {
     if (pathname.startsWith('/client/disputes')) return 'My Disputes';
     if (pathname.startsWith('/client/letters')) return 'My Letters';
+    if (pathname.startsWith('/client/mailing-instructions')) return 'Mailing Instructions';
     if (pathname.startsWith('/client/account')) return 'My Account';
     return 'Client Dashboard';
   };
@@ -97,6 +99,19 @@ export default function ClientLayout({
                   <Link href="/client/letters">
                     <Mail />
                     <span>My Letters</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/mailing-instructions"
+                  asChild
+                  isActive={pathname.startsWith('/client/mailing-instructions')}
+                  tooltip={{ children: 'Mailing Instructions' }}
+                >
+                  <Link href="/client/mailing-instructions">
+                    <Send />
+                    <span>Mailing Instructions</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
