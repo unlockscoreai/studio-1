@@ -9,6 +9,8 @@ import {
   Settings,
   ShieldCheck,
   User,
+  CheckSquare,
+  Lightbulb,
 } from 'lucide-react';
 
 import {
@@ -43,6 +45,8 @@ export default function DashboardLayout({
 
   const getPageTitle = () => {
     if (pathname === '/dashboard/onboarding') return 'Complete Your Onboarding';
+    if (pathname === '/dashboard/credit-checklist') return 'Credit Checklist';
+    if (pathname === '/dashboard/tradeline-assistant') return 'Tradeline Assistant';
     return 'Dashboard';
   };
 
@@ -85,6 +89,32 @@ export default function DashboardLayout({
                 <Link href="/dashboard/onboarding">
                   <ShieldCheck />
                   <span>Onboarding</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/dashboard/credit-checklist"
+                asChild
+                isActive={pathname === '/dashboard/credit-checklist'}
+                tooltip={{ children: 'Credit Checklist' }}
+              >
+                <Link href="/dashboard/credit-checklist">
+                  <CheckSquare />
+                  <span>Credit Checklist</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/dashboard/tradeline-assistant"
+                asChild
+                isActive={pathname === '/dashboard/tradeline-assistant'}
+                tooltip={{ children: 'Tradeline Assistant' }}
+              >
+                <Link href="/dashboard/tradeline-assistant">
+                  <Lightbulb />
+                  <span>AI Assistant</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

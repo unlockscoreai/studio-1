@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Loader2, Terminal, Copy, Check } from "lucide-react"
+import { Loader2, Terminal, Copy, Check, Sparkles } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 const formSchema = z.object({
@@ -42,6 +42,7 @@ export function ClientIntakeForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [submissionResult, setSubmissionResult] = useState<{success: boolean, message: string} | null>(null);
   const [generatedLetter, setGeneratedLetter] = useState("")
+  const [analysisResult, setAnalysisResult] = useState<{summary: string; actionItems: string[]} | null>(null)
   const [hasCopied, setHasCopied] = useState(false)
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +62,7 @@ export function ClientIntakeForm() {
     setIsLoading(true)
     setSubmissionResult(null)
     setGeneratedLetter("")
+    setAnalysisResult(null)
 
     try {
         const creditReportFile = values.creditReport[0];
@@ -80,8 +82,9 @@ export function ClientIntakeForm() {
         })
 
         setSubmissionResult(result);
-        if (result.success && result.generatedLetter) {
-            setGeneratedLetter(result.generatedLetter);
+        if (result.success) {
+            if (result.generatedLetter) setGeneratedLetter(result.generatedLetter);
+            if (result.analysis) setAnalysisResult(result.analysis);
             form.reset();
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
@@ -98,6 +101,7 @@ export function ClientIntakeForm() {
         description: errorMessage,
       })
       setGeneratedLetter("");
+      setAnalysisResult(null)
     } finally {
       setIsLoading(false)
     }
@@ -205,22 +209,49 @@ export function ClientIntakeForm() {
           <AlertDescription>{submissionResult.message}</AlertDescription>
         </Alert>
       )}
-      {generatedLetter && (
-        <Card className="mt-8">
-            <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                    <CardTitle className="font-headline">Generated Dispute Letter</CardTitle>
-                    <CardDescription>The client has been notified to review and complete onboarding.</CardDescription>
-                </div>
-                <Button variant="outline" size="icon" onClick={handleCopy} aria-label="Copy letter text">
-                    {hasCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                </Button>
-            </CardHeader>
-            <CardContent>
-                <Textarea readOnly value={generatedLetter} className="h-96 bg-secondary" />
-            </CardContent>
-        </Card>
-      )}
+      <div className="grid md:grid-cols-2 gap-6 mt-8">
+        {analysisResult && (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-primary" />
+                        Credit Profile Analysis
+                    </CardTitle>
+                    <CardDescription>AI-generated summary and action plan for the client.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold mb-1">Summary</h4>
+                        <p className="text-sm text-muted-foreground">{analysisResult.summary}</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold mb-2">Action Plan</h4>
+                        <ul className="list-disc pl-5 space-y-1 text-sm">
+                            {analysisResult.actionItems.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </CardContent>
+            </Card>
+        )}
+        {generatedLetter && (
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle className="font-headline">Generated Dispute Letter</CardTitle>
+                        <CardDescription>The client has been notified to review this.</CardDescription>
+                    </div>
+                    <Button variant="outline" size="icon" onClick={handleCopy} aria-label="Copy letter text">
+                        {hasCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                    <Textarea readOnly value={generatedLetter} className="h-80 bg-secondary" />
+                </CardContent>
+            </Card>
+        )}
+      </div>
     </div>
   )
 }
