@@ -47,7 +47,7 @@ export default function BusinessClientLayout({
     if (pathname.startsWith('/business-client/get-reports')) return 'Get Business Reports';
     if (pathname.startsWith('/business-client/book-consultation')) return 'Book Consultation';
     if (pathname.startsWith('/business-client/funding')) return 'Funding';
-    if (pathname.startsWith('/business-client/account')) return 'My Account';
+    if (pathname.startsWith('/business-client/account')) return 'My Business';
     return 'Business Dashboard';
   };
 
@@ -120,7 +120,7 @@ export default function BusinessClientLayout({
                   href="/business-client/account"
                   asChild
                   isActive={pathname.startsWith('/business-client/account')}
-                  tooltip={{ children: 'My Account' }}
+                  tooltip={{ children: 'My Business' }}
                 >
                   <Link href="/business-client/account">
                     <Building />
