@@ -67,13 +67,14 @@ export function BusinessIntakeForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      businessName: "",
-      ownerEmail: "",
-      ein: "",
-      businessPhone: "",
-      yearsInBusiness: "",
-      monthlyRevenue: "",
-      manualBusinessDetails: "",
+      businessName: "Acme Corp",
+      state: "CA",
+      ownerEmail: "test@example.com",
+      ein: "12-3456789",
+      businessPhone: "555-123-4567",
+      yearsInBusiness: "5",
+      monthlyRevenue: "50000",
+      manualBusinessDetails: "We have 5 active tradelines, mostly with net-30 terms. Our payment history is clean for the last 2 years. We are looking to apply for a business loan in the next 6 months.",
     },
   })
   
