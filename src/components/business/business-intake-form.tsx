@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { useState, useRef, useEffect } from "react"
@@ -66,6 +67,8 @@ export function BusinessIntakeForm() {
   const [analysis, setAnalysis] = useState<AnalyzeBusinessCreditReportOutput | null>(null)
   const [isClient, setIsClient] = useState(false)
   const { toast } = useToast()
+
+  const hasApiKey = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     setIsClient(true)
@@ -188,16 +191,15 @@ export function BusinessIntakeForm() {
             <FormItem>
               <FormLabel>Business Address</FormLabel>
               <FormControl>
-                {isClient ? (
+                {isClient && hasApiKey ? (
                   <GooglePlacesAutocomplete
-                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
                       selectProps={{
                           ...field,
                           placeholder: 'Start typing your business address...',
                           styles: {
                             input: (base) => ({
                               ...base,
-                              // This attempts to match shadcn's input.
                               paddingLeft: '0.75rem',
                               paddingRight: '0.75rem',
                             }),
@@ -215,10 +217,20 @@ export function BusinessIntakeForm() {
                       }}
                   />
                 ) : (
-                  <Input placeholder="Start typing your business address..." disabled />
+                  <Input
+                    placeholder="Enter full business address"
+                    value={field.value?.label || ''}
+                    onChange={(e) => field.onChange({ label: e.target.value, value: e.target.value })}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    disabled={!isClient}
+                  />
                 )}
               </FormControl>
-              <FormDescription>As you type, Google will suggest addresses.</FormDescription>
+              <FormDescription>
+                {hasApiKey ? "As you type, Google will suggest addresses." : "To enable address autocompletion, please add a Google Maps API key."}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -321,3 +333,5 @@ export function BusinessIntakeForm() {
     </Form>
   )
 }
+
+    
