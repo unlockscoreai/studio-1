@@ -3,8 +3,8 @@
 import type { AnalyzeBusinessCreditReportOutput } from "@/ai/flows/analyze-business-credit-report";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, TrendingUp, Handshake, Target, ShieldAlert } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, CheckCircle, TrendingUp, Handshake, Target, ShieldAlert, Calendar } from "lucide-react";
 
 interface BusinessReportCardProps {
     analysis: AnalyzeBusinessCreditReportOutput;
@@ -20,7 +20,7 @@ const InfoItem = ({ label, value }: { label: string, value: string | number | nu
 );
 
 export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
-    const { fundabilityScore, fundabilityGrade, businessSummary, creditScoreBreakdown, riskFactors, actionPlan } = analysis;
+    const { fundabilityScore, socialScore, fundabilityGrade, businessSummary, creditScoreBreakdown, riskFactors, actionPlan, coachCallToAction } = analysis;
     
     const getScoreColor = () => {
         if (fundabilityScore >= 80) return 'bg-green-600';
@@ -56,6 +56,7 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                             <InfoItem label="Years in Business" value={businessSummary.yearsInBusiness} />
                             <InfoItem label="Monthly Revenue" value={businessSummary.monthlyRevenue} />
                             <InfoItem label="SoS Status" value={businessSummary.status} />
+                            <InfoItem label="Social Score" value={socialScore} />
                         </div>
                     </div>
                 </section>
@@ -109,6 +110,18 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                         ))}
                     </ul>
                 </section>
+
+                 <Separator />
+
+                {/* Coach CTA */}
+                <section className="text-center bg-secondary p-6 rounded-lg">
+                    <h3 className="font-headline text-lg font-semibold mb-3 flex items-center justify-center gap-2"><Calendar className="text-primary"/> Book Your Custom Funding Plan</h3>
+                    <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">{coachCallToAction}</p>
+                    <Button>
+                        Book an Appointment
+                    </Button>
+                </section>
+
             </CardContent>
         </Card>
     );

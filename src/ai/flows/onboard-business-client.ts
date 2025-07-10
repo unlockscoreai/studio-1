@@ -30,6 +30,8 @@ async function sendWelcomeEmailToBusiness(clientEmail: string, clientName: strin
     Next Steps:
     ${analysis.actionPlan.map(item => `- ${item}`).join('\n')}
 
+    ${analysis.coachCallToAction}
+
     To see your full report and get started with our tools, please log in to your portal.
 
     Best,

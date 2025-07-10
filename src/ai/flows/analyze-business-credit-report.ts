@@ -31,6 +31,7 @@ export type AnalyzeBusinessCreditReportInput = z.infer<typeof AnalyzeBusinessCre
 
 const AnalyzeBusinessCreditReportOutputSchema = z.object({
   fundabilityScore: z.number().min(0).max(100).describe("A fundability score from 0 to 100, representing how ready the business is for funding."),
+  socialScore: z.number().min(0).max(100).describe("A score from 0-100 representing the business's social media and online presence strength, based on a simulated web search."),
   fundabilityGrade: z.string().describe("A fundability letter grade (A, B, C, D, F) based on the score."),
   businessSummary: z.object({
       businessName: z.string(),
@@ -47,6 +48,7 @@ const AnalyzeBusinessCreditReportOutputSchema = z.object({
   }).describe("A breakdown of key business credit scores, if available from an uploaded report."),
   riskFactors: z.array(z.string()).describe("A list of identified red flags or risks holding back funding potential (e.g., 'Website not found', 'No Google reviews', 'UCC filings present')."),
   actionPlan: z.array(z.string()).describe("A list of 3-5 specific, actionable steps to improve the business credit profile and become bank-ready."),
+  coachCallToAction: z.string().describe("A call to action encouraging the user to book an appointment with a business coach to create a custom funding plan."),
 });
 export type AnalyzeBusinessCreditReportOutput = z.infer<typeof AnalyzeBusinessCreditReportOutputSchema>;
 
@@ -64,6 +66,8 @@ const prompt = ai.definePrompt({
 
 First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence and Secretary of State (SoS) status.
 
+Simulate a web search using the provided business name, phone number, and email to assess their general online footprint.
+
 The user has provided the following additional information:
 {{#if ein}}EIN: {{ein}}{{/if}}
 {{#if yearsInBusiness}}Years in Business: {{yearsInBusiness}}{{/if}}
@@ -80,18 +84,20 @@ No credit report was provided. Base your analysis on the public data from the to
 {{/if}}
 
 Now, generate the complete fundability report in the specified JSON format:
-1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. A low score (<50) indicates significant issues. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
-2.  **Fundability Grade**: Assign a letter grade based on the score (90-100: A, 80-89: B, 70-79: C, 60-69: D, <60: F).
-3.  **Business Summary**: Create a structured summary.
+1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
+2.  **Social Score**: Based on the business's website, Google reviews, and social media presence from the tool, generate a score from 0-100. A high score (80+) means a strong, trustworthy online presence.
+3.  **Fundability Grade**: Assign a letter grade based on the score (90-100: A, 80-89: B, 70-79: C, 60-69: D, <60: F).
+4.  **Business Summary**: Create a structured summary.
     -   'businessName': The name of the business.
     -   'entityType': The legal entity type from the tool.
     -   'yearsInBusiness': The years in business provided by the user.
     -   'monthlyRevenue': The monthly revenue provided by the user.
     -   'status': The SoS status from the tool.
     -   'summaryText': Write a professional summary paragraph about the business's status and online presence.
-4.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
-5.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
-6.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
+5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
+6.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
+7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
+8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a call with a business coach to build their custom funding plan. Example: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a free consultation with one of our business coaches today."
 
 The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform.
 `,

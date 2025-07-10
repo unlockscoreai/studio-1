@@ -7,6 +7,7 @@ import { BusinessReportCard } from "@/components/business/business-report-card";
 // In a real application, this would be fetched from your database after the initial scan.
 const mockAnalysis = {
   fundabilityScore: 82,
+  socialScore: 75,
   fundabilityGrade: 'B',
   businessSummary: {
     businessName: 'Volunteer Express Logistics LLC',
@@ -29,7 +30,8 @@ const mockAnalysis = {
     "Establish an Equifax Business credit profile by opening a new tradeline that reports to them.",
     "Increase social media activity on LinkedIn to build brand authority.",
     "Prepare your last 6 months of bank statements for upcoming funding applications."
-  ]
+  ],
+  coachCallToAction: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a free consultation with one of our business coaches today."
 };
 
 export default function BusinessDashboardPage() {
