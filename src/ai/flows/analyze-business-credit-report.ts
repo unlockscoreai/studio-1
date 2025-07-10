@@ -15,6 +15,7 @@ import { getBusinessDetailsFromState } from '@/ai/tools/get-business-details';
 const AnalyzeBusinessCreditReportInputSchema = z.object({
   businessName: z.string().describe("The name of the business to analyze."),
   state: z.string().length(2).describe("The 2-letter postal code for the state where the business is registered."),
+  businessAddress: z.string().optional().describe('The full physical address of the business.'),
   ein: z.string().optional().describe('The Employer Identification Number.'),
   yearsInBusiness: z.string().optional().describe('How many years the business has been in operation.'),
   monthlyRevenue: z.string().optional().describe('The average monthly revenue of the business.'),
@@ -76,6 +77,7 @@ The user has provided the following additional information:
 {{#if yearsInBusiness}}Years in Business: {{yearsInBusiness}}{{/if}}
 {{#if monthlyRevenue}}Monthly Revenue: {{monthlyRevenue}}{{/if}}
 {{#if businessPhone}}Business Phone: {{businessPhone}}{{/if}}
+{{#if businessAddress}}Business Address: {{businessAddress}}{{/if}}
 {{#if manualBusinessDetails}}Manual Details: {{manualBusinessDetails}}{{/if}}
 
 Next, check if a credit report was uploaded.

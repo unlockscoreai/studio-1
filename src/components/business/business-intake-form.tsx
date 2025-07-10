@@ -23,6 +23,7 @@ import { Loader2, CheckCircle } from "lucide-react"
 import { BusinessReportCard } from "./business-report-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "../ui/textarea"
+import GooglePlacesAutocomplete from "react-google-places-autocomplete"
 
 
 const states = [
@@ -38,13 +39,14 @@ const formSchema = z.object({
   businessName: z.string().min(2, "Business name is required."),
   state: z.string({ required_error: "Please select a state."}),
   ownerEmail: z.string().email("Please enter a valid email address for where to send the report."),
+  businessAddress: z.object({ label: z.string(), value: z.any() }).optional(),
   ein: z.string().optional(),
   businessPhone: z.string().optional(),
   yearsInBusiness: z.string().optional(),
   monthlyRevenue: z.string().optional(),
   creditReport: z.any().optional(),
   manualBusinessDetails: z.string().optional(),
-}).refine(data => data.creditReport?.length === 1 || data.manualBusinessDetails, {
+}).refine(data => data.creditReport?.length > 0 || data.manualBusinessDetails, {
     message: "Either a credit report or a manual description is required.",
     path: ["manualBusinessDetails"],
 });
@@ -70,6 +72,7 @@ export function BusinessIntakeForm() {
       businessName: "Volunteer Express Logistics LLC",
       state: "TN",
       ownerEmail: "contact@volunteerexpress.com",
+      businessAddress: undefined,
       ein: "98-7654321",
       businessPhone: "(615) 555-1234",
       yearsInBusiness: "3",
@@ -92,6 +95,7 @@ export function BusinessIntakeForm() {
       const result = await analyzeBusinessCreditReport({
           businessName: values.businessName,
           state: values.state,
+          businessAddress: values.businessAddress?.label,
           ein: values.ein,
           businessPhone: values.businessPhone,
           yearsInBusiness: values.yearsInBusiness,
@@ -171,6 +175,46 @@ export function BusinessIntakeForm() {
             )}
             />
         </div>
+
+        <FormField
+          control={form.control}
+          name="businessAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Business Address</FormLabel>
+              <FormControl>
+                 <GooglePlacesAutocomplete
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                    selectProps={{
+                        ...field,
+                        placeholder: 'Start typing your business address...',
+                        styles: {
+                           input: (base) => ({
+                            ...base,
+                            // This attempts to match shadcn's input.
+                            paddingLeft: '0.75rem',
+                            paddingRight: '0.75rem',
+                           }),
+                           control: (base) => ({
+                            ...base,
+                             borderColor: 'hsl(var(--input))',
+                             borderRadius: 'var(--radius)',
+                             minHeight: '2.5rem',
+                             boxShadow: 'none',
+                             '&:hover': {
+                               borderColor: 'hsl(var(--input))',
+                             }
+                           })
+                        }
+                    }}
+                 />
+              </FormControl>
+              <FormDescription>As you type, Google will suggest addresses.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
 
         <div className="grid md:grid-cols-2 gap-6">
             <FormField

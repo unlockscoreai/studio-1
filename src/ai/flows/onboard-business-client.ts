@@ -49,6 +49,7 @@ const OnboardBusinessClientInputSchema = z.object({
   monthlyRevenue: z.string().describe('The average monthly revenue of the business.'),
   businessEmail: z.string().email().describe('The email address of the business contact.'),
   businessPhone: z.string().describe('The phone number of the business.'),
+  businessAddress: z.string().optional().describe("The business's full physical address."),
   businessCreditReportDataUri: z.string().optional().describe("The client's business credit report as a data URI."),
   manualBusinessDetails: z.string().optional().describe("A manual description of the business's credit situation."),
 });
@@ -83,6 +84,7 @@ const onboardBusinessClientFlow = ai.defineFlow(
         yearsInBusiness: input.yearsInBusiness,
         monthlyRevenue: input.monthlyRevenue,
         businessPhone: input.businessPhone,
+        businessAddress: input.businessAddress,
         businessCreditReportDataUri: input.businessCreditReportDataUri,
         manualBusinessDetails: input.manualBusinessDetails,
     });
