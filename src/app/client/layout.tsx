@@ -14,6 +14,7 @@ import {
   ClipboardCheck,
   FileHeart,
   FileText,
+  Briefcase,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -50,6 +51,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/letters')) return 'My Letters';
     if (pathname.startsWith('/client/mailing-instructions')) return 'Mailing Instructions';
     if (pathname.startsWith('/client/cfpb-guide')) return 'CFPB Complaint Guide';
+    if (pathname.startsWith('/client/business-ai')) return 'Unlock Business AI';
     if (pathname.startsWith('/client/account')) return 'My Account';
     if (pathname.startsWith('/client/onboarding')) return 'Complete Your Onboarding';
     if (pathname.startsWith('/client/credit-analysis')) return 'Credit Analysis';
@@ -172,6 +174,19 @@ export default function ClientLayout({
                   <Link href="/client/cfpb-guide">
                     <Gavel />
                     <span>CFPB Guide</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/business-ai"
+                  asChild
+                  isActive={pathname.startsWith('/client/business-ai')}
+                  tooltip={{ children: 'Business AI' }}
+                >
+                  <Link href="/client/business-ai">
+                    <Briefcase />
+                    <span>Business AI</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
