@@ -30,7 +30,7 @@ const AnalyzeBusinessCreditReportInputSchema = z.object({
 });
 export type AnalyzeBusinessCreditReportInput = z.infer<typeof AnalyzeBusinessCreditReportInputSchema>;
 
-const AnalyzeBusinessCreditReportOutputSchema = z.object({
+export const AnalyzeBusinessCreditReportOutputSchema = z.object({
   fundabilityScore: z.number().min(0).max(100).describe("A fundability score from 0 to 100, representing how ready the business is for funding."),
   socialScore: z.number().min(0).max(100).describe("A score from 0-100 representing the business's social media and online presence strength, based on a simulated web search."),
   fundabilityGrade: z.string().describe("A fundability letter grade (A, B, C, D, F) based on the score."),
