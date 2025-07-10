@@ -12,6 +12,8 @@ import '@/ai/flows/generate-tradeline-strategy';
 import '@/ai/flows/analyze-bureau-response';
 import '@/ai/flows/analyze-business-credit-report';
 import '@/ai/flows/onboard-business-client';
+import '@/ai/flows/generate-vendor-application';
+import '@/ai/flows/predict-funding-approval';
 
 
 export const POST = nextHandler();

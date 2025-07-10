@@ -149,7 +149,9 @@ export default function BusinessClientLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  href="/business-client/funding"
                   asChild
+                  isActive={pathname.startsWith('/business-client/funding')}
                   tooltip={{ children: 'Funding' }}
                 >
                   <Link href="/business-client/funding">
