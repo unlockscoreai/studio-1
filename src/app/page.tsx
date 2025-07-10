@@ -30,7 +30,6 @@ function LandingHeader() {
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
             <Link href="#features" className="text-foreground/60 transition-colors hover:text-foreground/80">Features</Link>
-            <Link href="#testimonials" className="text-foreground/60 transition-colors hover:text-foreground/80">Testimonials</Link>
             <Link href="#pricing" className="text-foreground/60 transition-colors hover:text-foreground/80">Pricing</Link>
             <Link href="/business-intake" className="text-foreground/60 transition-colors hover:text-foreground/80">Business AI</Link>
             <Link href="/sign-in" className="text-foreground/60 transition-colors hover:text-foreground/80">Affiliates</Link>
@@ -49,7 +48,6 @@ function LandingHeader() {
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="#features" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Features</Link>
-            <Link href="#testimonials" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Testimonials</Link>
             <Link href="#pricing" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Pricing</Link>
             <Link href="/business-intake" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Business AI</Link>
             <Link href="/sign-in" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Affiliates</Link>
