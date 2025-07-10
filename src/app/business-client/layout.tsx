@@ -13,6 +13,7 @@ import {
   Building,
   CalendarCheck,
   Briefcase,
+  TrendingUp,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -48,6 +49,7 @@ export default function BusinessClientLayout({
     if (pathname.startsWith('/business-client/get-reports')) return 'Get Business Reports';
     if (pathname.startsWith('/business-client/book-consultation')) return 'Book Consultation';
     if (pathname.startsWith('/business-client/vendor-applications')) return 'Vendor Applications';
+    if (pathname.startsWith('/business-client/business-growth')) return 'Business Growth';
     if (pathname.startsWith('/business-client/funding')) return 'Funding';
     if (pathname.startsWith('/business-client/account')) return 'My Business';
     return 'Business Dashboard';
@@ -116,6 +118,19 @@ export default function BusinessClientLayout({
                   <Link href="/business-client/vendor-applications">
                     <Briefcase />
                     <span>Vendor Applications</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/business-client/business-growth"
+                  asChild
+                  isActive={pathname.startsWith('/business-client/business-growth')}
+                  tooltip={{ children: 'Business Growth' }}
+                >
+                  <Link href="/business-client/business-growth">
+                    <TrendingUp />
+                    <span>Business Growth</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
