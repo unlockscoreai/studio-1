@@ -11,55 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { analyzeBusinessCreditReport, type AnalyzeBusinessCreditReportOutput } from './analyze-business-credit-report';
-
-
-// Mock email sending service
-async function sendWelcomeEmailToBusiness(clientEmail: string, clientName: string, analysis: AnalyzeBusinessCreditReportOutput) {
-    console.log(`---
-    SENDING EMAIL TO: ${clientEmail}
-    SUBJECT: Your Business Credit Fundability Report is ready!
-    BODY:
-    Hi ${clientName},
-
-    Thank you for your interest in UnlockScore AI's business credit services.
-    
-    Your AI-generated Business Credit Fundability Report has been created based on the information you provided.
-    
-    Here is a brief summary:
-    Fundability Grade: ${analysis.fundabilityGrade}
-    Next Steps:
-    ${analysis.actionPlan.map(item => `- ${item}`).join('\n')}
-
-    ${analysis.coachCallToAction}
-
-    To see your full report and get started with our tools, please log in to your portal.
-
-    Best,
-    The UnlockScore AI Team
-    ---`);
-    // In a real app, you'd use an email service like Resend, SendGrid, etc.
-    return Promise.resolve();
-}
-
-// Mock affiliate notification service
-async function sendNotificationEmailToAffiliateForBusiness(affiliateEmail: string, businessName: string, ownerEmail: string) {
-    console.log(`---
-    SENDING EMAIL TO: ${affiliateEmail}
-    SUBJECT: New Business Lead Submitted: ${businessName}
-    BODY:
-    Hi,
-
-    You have a new business lead. We have received the details and generated their fundability report:
-    Business Name: ${businessName}
-    Contact Email: ${ownerEmail}
-
-    The lead has been notified to log in to their portal to view the report.
-
-    Best,
-    The UnlockScore AI Team
-    ---`);
-    return Promise.resolve();
-}
+import { addToGoHighLevelWorkflow } from '@/services/gohighlevel';
 
 
 const OnboardBusinessClientInputSchema = z.object({
@@ -120,11 +72,32 @@ const onboardBusinessClientFlow = ai.defineFlow(
     
     console.log(`Business credit analysis for ${input.businessName}:\n`, analysisResult);
 
-    // Send notifications
-    await sendWelcomeEmailToBusiness(input.businessEmail, input.businessName, analysisResult);
+    // Trigger GoHighLevel Workflows
+    // In a real app, these workflow IDs would come from your GoHighLevel account.
+    const clientWelcomeWorkflowId = "GHL_BUSINESS_WELCOME_WORKFLOW_ID";
+    const affiliateNotificationWorkflowId = "GHL_BUSINESS_AFFILIATE_NOTIFICATION_WORKFLOW_ID";
+
+    // Add new business client to welcome workflow
+    await addToGoHighLevelWorkflow(clientWelcomeWorkflowId, {
+        name: input.businessName,
+        email: input.businessEmail,
+        phone: input.businessPhone,
+        tags: ['New Business Lead', `Affiliate: ${input.affiliateId || 'none'}`],
+        // You would pass analysis results as custom fields
+        fundability_grade: analysisResult.fundabilityGrade,
+        fundability_score: analysisResult.fundabilityScore,
+    });
+
     if (input.affiliateId && input.affiliateId !== "none") {
-        // Assuming affiliateId is their email for this prototype
-        await sendNotificationEmailToAffiliateForBusiness(input.affiliateId, input.businessName, input.businessEmail);
+        // Notify affiliate by adding them to a separate workflow
+        await addToGoHighLevelWorkflow(affiliateNotificationWorkflowId, {
+            name: input.affiliateId, // Assuming affiliateId is name
+            email: input.affiliateId, // Assuming affiliateId is email
+            tags: ['Affiliate Notification'],
+            // Pass the new lead's details as custom fields for the email template
+            new_lead_name: input.businessName,
+            new_lead_email: input.businessEmail,
+        });
     }
     
     return {

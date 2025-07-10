@@ -11,68 +11,8 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { generateCreditDisputeLetter } from './generate-credit-dispute-letter';
 import { analyzeCreditProfile, type AnalyzeCreditProfileOutput } from './analyze-credit-profile';
+import { addToGoHighLevelWorkflow } from '@/services/gohighlevel';
 
-// Mock email sending service
-async function sendWelcomeEmailToClient(clientEmail: string, clientName: string, affiliateId: string, analysis?: AnalyzeCreditProfileOutput) {
-    let analysisSection = '';
-    if (analysis) {
-        analysisSection = `
-    Here is a brief analysis of the credit profile submitted:
-    Summary: ${analysis.summary}
-    Action Items:
-    ${analysis.actionItems.map(item => `- ${item}`).join('\n')}
-        `;
-
-        if (analysis.disputableItems && analysis.disputableItems.length > 0) {
-            analysisSection += `
-    \nWe've also identified the following items you may be able to dispute:
-    ${analysis.disputableItems.map(item => `- ${item.item} (Success Chance: ${item.successProbability}%)`).join('\n')}
-            `;
-        }
-    }
-
-    console.log(`---
-    SENDING EMAIL TO: ${clientEmail}
-    SUBJECT: Your first dispute letter is ready!
-    BODY:
-    Hi ${clientName},
-
-    Thank you for your interest in UnlockScore AI, referred by affiliate: ${affiliateId}.
-    
-    Your first AI-generated dispute letter has been created based on the information provided.
-    ${analysisSection}
-    To complete your setup, please log in to your client portal to review the letter and finish the onboarding process. This includes verifying your identity and providing some additional details.
-
-    You can log in at our website to get started.
-
-    Best,
-    The UnlockScore AI Team
-    ---`);
-    // In a real app, you'd use an email service like Resend, SendGrid, etc.
-    return Promise.resolve();
-}
-
-async function sendNotificationEmailToAffiliate(affiliateEmail: string, clientName: string, clientEmail: string) {
-    // We don't have the affiliate's email, so I'll just use a placeholder.
-    // I'll assume affiliateId is the email for this prototype.
-    console.log(`---
-    SENDING EMAIL TO: ${affiliateEmail}
-    SUBJECT: New Client Submission Received & Letter Generated
-    BODY:
-    Hi,
-
-    Thank you for your submission. We have received the details for your new client and generated their first dispute letter:
-    Name: ${clientName}
-    Email: ${clientEmail}
-
-    We will take it from here. The client has been notified to log in, review their letter in the "My Letters" section, and complete their onboarding.
-
-    Best,
-    The UnlockScore AI Team
-    ---`);
-    // In a real app, you'd use an email service like Resend, SendGrid, etc.
-    return Promise.resolve();
-}
 
 const OnboardClientInputSchema = z.object({
   clientName: z.string().describe('The full name of the client.'),
@@ -143,11 +83,33 @@ const onboardClientFlow = ai.defineFlow(
     console.log(`Credit analysis for ${input.clientName}:\n`, analysisResult);
 
 
-    // 3. Send notifications
-    await sendWelcomeEmailToClient(input.clientEmail, input.clientName, input.affiliateId, analysisResult);
+    // 3. Trigger GoHighLevel Workflows
+    // In a real app, these workflow IDs would come from your GoHighLevel account.
+    const clientWelcomeWorkflowId = "GHL_PERSONAL_CLIENT_WELCOME_WORKFLOW_ID";
+    const affiliateNotificationWorkflowId = "GHL_PERSONAL_AFFILIATE_NOTIFICATION_WORKFLOW_ID";
+
+    // Add new client to their welcome workflow
+    await addToGoHighLevelWorkflow(clientWelcomeWorkflowId, {
+      name: input.clientName,
+      email: input.clientEmail,
+      phone: input.clientPhone,
+      tags: ['New Lead', 'Personal Credit', `Affiliate: ${input.affiliateId}`],
+      // You can pass the analysis summary and other data as custom fields
+      analysis_summary: analysisResult.summary,
+    });
     
+    // Notify the affiliate by adding them to a separate workflow
     // Assuming affiliateId is their email for this prototype
-    await sendNotificationEmailToAffiliate(input.affiliateId, input.clientName, input.clientEmail);
+    if (input.affiliateId !== "none") {
+        await addToGoHighLevelWorkflow(affiliateNotificationWorkflowId, {
+            name: input.affiliateId,
+            email: input.affiliateId,
+            tags: ['Affiliate Notification'],
+            // Pass the new client's details as custom fields for the email template
+            new_lead_name: input.clientName,
+            new_lead_email: input.clientEmail,
+        });
+    }
 
     // 4. Return success and the letter
     return {
