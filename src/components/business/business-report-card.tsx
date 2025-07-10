@@ -14,9 +14,9 @@ interface BusinessReportCardProps {
 
 const InfoItem = ({ label, value }: { label: string, value: string | number | null | undefined }) => (
     value || value === 0 ? (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-start">
             <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="font-semibold text-sm">{value}</p>
+            <p className="font-semibold text-sm text-right">{value}</p>
         </div>
     ) : null
 );
@@ -55,9 +55,13 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                         <p className="text-muted-foreground mb-4">{businessSummary.summaryText}</p>
                         <div className="space-y-1">
                             <InfoItem label="Entity Type" value={businessSummary.entityType} />
-                            <InfoItem label="Years in Business" value={businessSummary.yearsInBusiness} />
-                            <InfoItem label="Monthly Revenue" value={businessSummary.monthlyRevenue} />
                             <InfoItem label="SoS Status" value={businessSummary.status} />
+                            <InfoItem label="Registered Agent" value={businessSummary.registeredAgent} />
+                            <InfoItem label="Mailing Address" value={businessSummary.mailingAddress} />
+                            <InfoItem label="Last SoS Update" value={businessSummary.lastHistoryUpdate} />
+                            <Separator className="my-2" />
+                            <InfoItem label="Years in Business" value={businessSummary.yearsInBusiness} />
+                            <InfoItem label="Avg. Monthly Revenue" value={businessSummary.monthlyRevenue} />
                             <InfoItem label="Social Score" value={socialScore} />
                         </div>
                     </div>
@@ -130,5 +134,3 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
         </Card>
     );
 }
-
-    

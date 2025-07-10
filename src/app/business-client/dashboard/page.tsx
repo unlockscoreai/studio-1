@@ -15,6 +15,9 @@ const mockAnalysis = {
     yearsInBusiness: '3',
     monthlyRevenue: '$75,000',
     status: 'Active',
+    registeredAgent: 'C T CORPORATION SYSTEM',
+    mailingAddress: '800 S GAY ST, SUITE 2102, KNOXVILLE, TN, 37929',
+    lastHistoryUpdate: '2023-04-01',
     summaryText: "Volunteer Express Logistics LLC is an active and established Limited Liability Company with a strong online presence, including a professional website and positive Google reviews. The business appears credible and well-positioned for the next steps in building its financial profile.",
   },
   creditScoreBreakdown: {
@@ -31,7 +34,7 @@ const mockAnalysis = {
     "Increase social media activity on LinkedIn to build brand authority.",
     "Prepare your last 6 months of bank statements for upcoming funding applications."
   ],
-  coachCallToAction: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a free consultation with one of our business coaches today."
+  coachCallToAction: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 };
 
 export default function BusinessDashboardPage() {

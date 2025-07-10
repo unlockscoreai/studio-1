@@ -39,6 +39,9 @@ const AnalyzeBusinessCreditReportOutputSchema = z.object({
       yearsInBusiness: z.string().optional(),
       monthlyRevenue: z.string().optional(),
       status: z.string().optional().describe("The current status of the business (e.g., Active, Inactive, Dissolved)."),
+      registeredAgent: z.string().optional().describe("The name of the registered agent on file with the SoS."),
+      mailingAddress: z.string().optional().describe("The official mailing address on file with the SoS."),
+      lastHistoryUpdate: z.string().optional().describe("The date of the last history update with the SoS."),
       summaryText: z.string().describe("A professional summary of the business's current fundability status, entity details, and online presence."),
   }),
   creditScoreBreakdown: z.object({
@@ -87,12 +90,15 @@ Now, generate the complete fundability report in the specified JSON format:
 1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
 2.  **Social Score**: Based on the business's website, Google reviews, and social media presence from the tool, generate a score from 0-100. A high score (80+) means a strong, trustworthy online presence.
 3.  **Fundability Grade**: Assign a letter grade based on the score (90-100: A, 80-89: B, 70-79: C, 60-69: D, <60: F).
-4.  **Business Summary**: Create a structured summary.
+4.  **Business Summary**: Create a structured summary. Use the data from the 'getBusinessDetailsFromState' tool to fill in 'entityType', 'status', 'registeredAgent', 'mailingAddress', and 'lastHistoryUpdate'.
     -   'businessName': The name of the business.
     -   'entityType': The legal entity type from the tool.
     -   'yearsInBusiness': The years in business provided by the user.
     -   'monthlyRevenue': The monthly revenue provided by the user.
     -   'status': The SoS status from the tool.
+    -   'registeredAgent': The registered agent from the tool.
+    -   'mailingAddress': The mailing address from the tool.
+    -   'lastHistoryUpdate': The last history update date from the tool.
     -   'summaryText': Write a professional summary paragraph about the business's status and online presence.
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
 6.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
