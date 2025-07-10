@@ -35,7 +35,7 @@ const AnalyzeBusinessCreditReportOutputSchema = z.object({
   businessSummary: z.object({
       businessName: z.string(),
       entityType: z.string().optional(),
-      yearsInBusiness: z.number().optional(),
+      yearsInBusiness: z.string().optional(),
       monthlyRevenue: z.string().optional(),
       status: z.string().optional().describe("The current status of the business (e.g., Active, Inactive, Dissolved)."),
       summaryText: z.string().describe("A professional summary of the business's current fundability status, entity details, and online presence."),
@@ -62,7 +62,7 @@ const prompt = ai.definePrompt({
   tools: [getBusinessDetailsFromState],
   prompt: `You are an expert business funding coach for Unlock Score AI. Your task is to create a professional audit report on how fundable a business is.
 
-First, you MUST use the getBusinessDetailsFromState tool to look up the business's public information. This data is the primary source for the online presence and Secretary of State (SoS) status.
+First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence and Secretary of State (SoS) status.
 
 The user has provided the following additional information:
 {{#if ein}}EIN: {{ein}}{{/if}}
