@@ -13,6 +13,7 @@ import {
   UserCircle,
   BarChart3,
   Mail,
+  Link2,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -51,6 +52,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/payouts') return 'Payouts';
     if (pathname === '/affiliate/reports') return 'Reports';
     if (pathname === '/affiliate/messaging') return 'Messaging';
+    if (pathname === '/affiliate/tradeline-links') return 'Tradeline Links';
     return 'Affiliate Dashboard';
   };
 
@@ -105,6 +107,19 @@ export default function AffiliateLayout({
                   <Link href="/affiliate/client-management">
                     <Users />
                     <span>Clients</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  href="/affiliate/tradeline-links"
+                  isActive={pathname === '/affiliate/tradeline-links'}
+                  tooltip={{ children: 'Tradeline Links' }}
+                >
+                  <Link href="/affiliate/tradeline-links">
+                    <Link2 />
+                    <span>Tradeline Links</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
