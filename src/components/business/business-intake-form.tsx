@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -64,7 +64,12 @@ async function fileToDataUri(file: File): Promise<string> {
 export function BusinessIntakeForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [analysis, setAnalysis] = useState<AnalyzeBusinessCreditReportOutput | null>(null)
+  const [isClient, setIsClient] = useState(false)
   const { toast } = useToast()
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -183,31 +188,35 @@ export function BusinessIntakeForm() {
             <FormItem>
               <FormLabel>Business Address</FormLabel>
               <FormControl>
-                 <GooglePlacesAutocomplete
-                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                    selectProps={{
-                        ...field,
-                        placeholder: 'Start typing your business address...',
-                        styles: {
-                           input: (base) => ({
-                            ...base,
-                            // This attempts to match shadcn's input.
-                            paddingLeft: '0.75rem',
-                            paddingRight: '0.75rem',
-                           }),
-                           control: (base) => ({
-                            ...base,
-                             borderColor: 'hsl(var(--input))',
-                             borderRadius: 'var(--radius)',
-                             minHeight: '2.5rem',
-                             boxShadow: 'none',
-                             '&:hover': {
-                               borderColor: 'hsl(var(--input))',
-                             }
-                           })
-                        }
-                    }}
-                 />
+                {isClient ? (
+                  <GooglePlacesAutocomplete
+                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                      selectProps={{
+                          ...field,
+                          placeholder: 'Start typing your business address...',
+                          styles: {
+                            input: (base) => ({
+                              ...base,
+                              // This attempts to match shadcn's input.
+                              paddingLeft: '0.75rem',
+                              paddingRight: '0.75rem',
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              borderColor: 'hsl(var(--input))',
+                              borderRadius: 'var(--radius)',
+                              minHeight: '2.5rem',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: 'hsl(var(--input))',
+                              }
+                            })
+                          }
+                      }}
+                  />
+                ) : (
+                  <Input placeholder="Start typing your business address..." disabled />
+                )}
               </FormControl>
               <FormDescription>As you type, Google will suggest addresses.</FormDescription>
               <FormMessage />
