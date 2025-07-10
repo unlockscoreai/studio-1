@@ -28,9 +28,9 @@ const AnalyzeBusinessCreditReportOutputSchema = z.object({
   fundabilityScore: z.number().min(0).max(100).describe("A fundability score from 0 to 100, representing how ready the business is for funding."),
   businessSummary: z.string().describe("A professional summary of the business's current fundability status, entity details, and online presence."),
   creditScoreBreakdown: z.object({
-      paydexScore: z.string().optional().describe("The Paydex score from Dun & Bradstreet."),
-      experianIntelliscore: z.string().optional().describe("The Experian Intelliscore."),
-      equifaxBusinessScore: z.string().optional().describe("The Equifax business credit score."),
+      paydexScore: z.string().nullable().optional().describe("The Paydex score from Dun & Bradstreet."),
+      experianIntelliscore: z.string().nullable().optional().describe("The Experian Intelliscore."),
+      equifaxBusinessScore: z.string().nullable().optional().describe("The Equifax business credit score."),
   }).describe("A breakdown of key business credit scores, if available from an uploaded report."),
   riskFactors: z.array(z.string()).describe("A list of identified red flags or risks holding back funding potential (e.g., 'Website not found', 'No Google reviews', 'UCC filings present')."),
   actionPlan: z.array(z.string()).describe("A list of 3-5 specific, actionable steps to improve the business credit profile and become bank-ready."),
@@ -62,7 +62,7 @@ No credit report was provided. Base your analysis solely on the public data retr
 Now, generate the complete fundability report:
 1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. A low score (<50) indicates significant issues. Base this on all available data (SoS status, web presence, credit report data if available).
 2.  **Business Summary**: Write a professional summary. Start with the business name and its SoS status. Mention its online presence (website, reviews, social media).
-3.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. Otherwise, leave these fields blank.
+3.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
 4.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
 5.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
 
