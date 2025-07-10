@@ -19,9 +19,10 @@ import {
 } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Send, FileText, CheckCircle } from "lucide-react"
+import { Loader2, Send, Wand2, CheckCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Textarea } from "../ui/textarea"
+import { Label } from "../ui/label"
 
 const vendors = [
   { id: 'uline', name: 'Uline' },
@@ -52,13 +53,14 @@ const mockBusinessDetails = {
 export function VendorApplicationForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<GenerateAndSendVendorApplicationOutput | null>(null)
+  const [step, setStep] = useState<'form' | 'preview' | 'sent'>('form');
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
   
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function handleGeneratePreview(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     setResult(null)
 
@@ -68,8 +70,9 @@ export function VendorApplicationForm() {
         vendorName: vendors.find(v => v.id === values.vendor)?.name || values.vendor,
       });
 
-      if (response.success) {
+      if (response.success && response.applicationText) {
         setResult(response);
+        setStep('preview');
       } else {
         throw new Error(response.message || "An unknown error occurred.")
       }
@@ -86,10 +89,65 @@ export function VendorApplicationForm() {
     }
   }
 
+  async function handleSendApplication() {
+    setIsLoading(true);
+    // Simulate sending delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setStep('sent');
+    setIsLoading(false);
+    toast({
+        title: "Application Sent!",
+        description: result?.message,
+    });
+  }
+
+  function handleReset() {
+    form.reset();
+    setResult(null);
+    setStep('form');
+  }
+
+  if (step === 'sent') {
+    return (
+        <div className="space-y-4">
+            <Alert variant="default" className="border-green-500 text-green-700">
+                <CheckCircle className="h-4 w-4 !text-green-500" />
+                <AlertTitle>Application Sent Successfully!</AlertTitle>
+                <AlertDescription>
+                    {result?.message}
+                </AlertDescription>
+            </Alert>
+            <Button onClick={handleReset}>Start New Application</Button>
+        </div>
+    )
+  }
+
+  if (step === 'preview' && result) {
+    return (
+        <div className="space-y-4">
+            <div className="space-y-2">
+                <Label>Generated Application Preview</Label>
+                <Textarea readOnly value={result.applicationText} className="h-80 bg-muted" />
+            </div>
+             <div className="flex gap-2">
+                <Button onClick={handleSendApplication} disabled={isLoading}>
+                    {isLoading ? (
+                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</>
+                    ) : (
+                        <><Send className="mr-2 h-4 w-4" /> Send Application</>
+                    )}
+                </Button>
+                <Button variant="outline" onClick={handleReset} disabled={isLoading}>
+                    Cancel
+                </Button>
+            </div>
+        </div>
+    )
+  }
+
   return (
-    <div className="space-y-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
+        <form onSubmit={form.handleSubmit(handleGeneratePreview)} className="space-y-6 max-w-lg">
           <FormField
             control={form.control}
             name="vendor"
@@ -115,30 +173,12 @@ export function VendorApplicationForm() {
           />
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</>
             ) : (
-                <><Send className="mr-2 h-4 w-4" /> Generate & Send Application</>
+                <><Wand2 className="mr-2 h-4 w-4" /> Generate Preview</>
             )}
           </Button>
         </form>
       </Form>
-
-      {result && (
-        <div className="mt-6 space-y-4">
-            <Alert variant="default" className="border-green-500 text-green-700">
-                <CheckCircle className="h-4 w-4 !text-green-500" />
-                <AlertTitle>Application Sent!</AlertTitle>
-                <AlertDescription>
-                    {result.message}
-                </AlertDescription>
-            </Alert>
-            
-            <div className="space-y-2">
-                <Label>Generated Application Content (for your records)</Label>
-                <Textarea readOnly value={result.applicationText} className="h-80 bg-muted" />
-            </div>
-        </div>
-      )}
-    </div>
   )
 }
