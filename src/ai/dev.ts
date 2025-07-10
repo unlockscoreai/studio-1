@@ -1,3 +1,4 @@
+
 import { config } from 'dotenv';
 config();
 
@@ -10,3 +11,4 @@ import '@/ai/flows/analyze-bureau-response.ts';
 import '@/ai/flows/analyze-business-credit-report.ts';
 import '@/ai/flows/onboard-business-client.ts';
 import '@/ai/tools/get-business-details.ts';
+import '@/ai/flows/generate-vendor-application.ts';

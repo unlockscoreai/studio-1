@@ -12,6 +12,7 @@ import {
   DollarSign,
   Building,
   CalendarCheck,
+  Briefcase,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -46,6 +47,7 @@ export default function BusinessClientLayout({
   const getPageTitle = () => {
     if (pathname.startsWith('/business-client/get-reports')) return 'Get Business Reports';
     if (pathname.startsWith('/business-client/book-consultation')) return 'Book Consultation';
+    if (pathname.startsWith('/business-client/vendor-applications')) return 'Vendor Applications';
     if (pathname.startsWith('/business-client/funding')) return 'Funding';
     if (pathname.startsWith('/business-client/account')) return 'My Business';
     return 'Business Dashboard';
@@ -80,6 +82,19 @@ export default function BusinessClientLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  href="/business-client/account"
+                  asChild
+                  isActive={pathname.startsWith('/business-client/account')}
+                  tooltip={{ children: 'My Business' }}
+                >
+                  <Link href="/business-client/account">
+                    <Building />
+                    <span>My Business</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
                   href="/business-client/get-reports"
                   asChild
                   isActive={pathname.startsWith('/business-client/get-reports')}
@@ -88,6 +103,19 @@ export default function BusinessClientLayout({
                   <Link href="/business-client/get-reports">
                     <FileText />
                     <span>Get Reports</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/business-client/vendor-applications"
+                  asChild
+                  isActive={pathname.startsWith('/business-client/vendor-applications')}
+                  tooltip={{ children: 'Vendor Applications' }}
+                >
+                  <Link href="/business-client/vendor-applications">
+                    <Briefcase />
+                    <span>Vendor Applications</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -112,19 +140,6 @@ export default function BusinessClientLayout({
                   <Link href="/business-client/funding">
                     <DollarSign />
                     <span>Funding</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  href="/business-client/account"
-                  asChild
-                  isActive={pathname.startsWith('/business-client/account')}
-                  tooltip={{ children: 'My Business' }}
-                >
-                  <Link href="/business-client/account">
-                    <Building />
-                    <span>My Business</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -186,5 +201,3 @@ export default function BusinessClientLayout({
     </SidebarProvider>
   );
 }
-
-    
