@@ -13,6 +13,7 @@ import {
   Gavel,
   ClipboardCheck,
   FileHeart,
+  FileText,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -52,6 +53,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/account')) return 'My Account';
     if (pathname.startsWith('/client/onboarding')) return 'Complete Your Onboarding';
     if (pathname.startsWith('/client/credit-analysis')) return 'Credit Analysis';
+    if (pathname.startsWith('/client/get-credit-reports')) return 'Get Credit Reports';
     return 'Client Dashboard';
   };
 
@@ -105,6 +107,19 @@ export default function ClientLayout({
                   <Link href="/client/credit-analysis">
                     <FileHeart />
                     <span>Credit Analysis</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/get-credit-reports"
+                  asChild
+                  isActive={pathname.startsWith('/client/get-credit-reports')}
+                  tooltip={{ children: 'Get Credit Reports' }}
+                >
+                  <Link href="/client/get-credit-reports">
+                    <FileText />
+                    <span>Get Credit Reports</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
