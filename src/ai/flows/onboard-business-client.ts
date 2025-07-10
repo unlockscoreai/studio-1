@@ -77,6 +77,10 @@ const onboardBusinessClientFlow = ai.defineFlow(
     const analysisResult = await analyzeBusinessCreditReport({
         businessName: input.businessName,
         state: input.state,
+        ein: input.ein,
+        yearsInBusiness: input.yearsInBusiness,
+        monthlyRevenue: input.monthlyRevenue,
+        businessPhone: input.businessPhone,
         businessCreditReportDataUri: input.businessCreditReportDataUri,
         manualBusinessDetails: input.manualBusinessDetails,
     });
@@ -87,27 +91,16 @@ const onboardBusinessClientFlow = ai.defineFlow(
             message: "Failed to analyze the business credit report. Please check the file and try again."
         }
     }
-
-    // Enhance the analysis with the data from the form that might not be in the report
-    const finalAnalysis = {
-        ...analysisResult,
-        businessSummary: {
-            ...analysisResult.businessSummary,
-            businessName: input.businessName,
-            yearsInBusiness: parseInt(input.yearsInBusiness, 10),
-            monthlyRevenue: input.monthlyRevenue,
-        }
-    }
     
-    console.log(`Business credit analysis for ${input.businessName}:\n`, finalAnalysis);
+    console.log(`Business credit analysis for ${input.businessName}:\n`, analysisResult);
 
     // Send notifications
-    await sendWelcomeEmailToBusiness(input.businessEmail, input.businessName, finalAnalysis);
+    await sendWelcomeEmailToBusiness(input.businessEmail, input.businessName, analysisResult);
     
     return {
       success: true,
       message: `Business client ${input.businessName} onboarded successfully. Their fundability report has been generated.`,
-      analysis: finalAnalysis,
+      analysis: analysisResult,
     };
   }
 );

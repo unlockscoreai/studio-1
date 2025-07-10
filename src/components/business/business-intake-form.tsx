@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2, CheckCircle } from "lucide-react"
 import { BusinessReportCard } from "./business-report-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "../ui/textarea"
 
 
 const states = [
@@ -36,7 +37,26 @@ const formSchema = z.object({
   businessName: z.string().min(2, "Business name is required."),
   state: z.string({ required_error: "Please select a state."}),
   ownerEmail: z.string().email("Please enter a valid email address for where to send the report."),
+  ein: z.string().optional(),
+  businessPhone: z.string().optional(),
+  yearsInBusiness: z.string().optional(),
+  monthlyRevenue: z.string().optional(),
+  creditReport: z.any().optional(),
+  manualBusinessDetails: z.string().optional(),
+}).refine(data => data.creditReport?.length === 1 || data.manualBusinessDetails, {
+    message: "Either a credit report or a manual description is required.",
+    path: ["manualBusinessDetails"],
 });
+
+async function fileToDataUri(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+}
+
 
 export function BusinessIntakeForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -56,11 +76,20 @@ export function BusinessIntakeForm() {
     setAnalysis(null)
 
     try {
-      // For a lead magnet, we are not using the uploaded report. 
-      // The AI flow is designed to handle this case and rely on public data.
+      let creditReportDataUri: string | undefined;
+      if (values.creditReport && values.creditReport[0]) {
+        creditReportDataUri = await fileToDataUri(values.creditReport[0]);
+      }
+      
       const result = await analyzeBusinessCreditReport({
           businessName: values.businessName,
           state: values.state,
+          ein: values.ein,
+          businessPhone: values.businessPhone,
+          yearsInBusiness: values.yearsInBusiness,
+          monthlyRevenue: values.monthlyRevenue,
+          businessCreditReportDataUri: creditReportDataUri,
+          manualBusinessDetails: values.manualBusinessDetails,
       })
 
       if (result) {
@@ -99,46 +128,124 @@ export function BusinessIntakeForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
+        <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+            control={form.control}
+            name="businessName"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Legal Business Name</FormLabel>
+                <FormControl><Input placeholder="Acme Corporation" {...field} /></FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>State of Registration</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a state" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    {states.map((state) => (
+                        <SelectItem key={state} value={state}>{state}</SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+                control={form.control}
+                name="ownerEmail"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Your Email Address</FormLabel>
+                    <FormControl><Input type="email" placeholder="you@company.com" {...field} /></FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="businessPhone"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Business Phone (Optional)</FormLabel>
+                    <FormControl><Input placeholder="(555) 123-4567" {...field} /></FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+                control={form.control}
+                name="yearsInBusiness"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Years in Business (Optional)</FormLabel>
+                    <FormControl><Input placeholder="3" {...field} /></FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="monthlyRevenue"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Avg. Monthly Revenue (Optional)</FormLabel>
+                    <FormControl><Input placeholder="$10,000" {...field} /></FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+        </div>
         <FormField
-          control={form.control}
-          name="businessName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Legal Business Name</FormLabel>
-              <FormControl><Input placeholder="Acme Corporation" {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="state"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>State of Registration</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a state" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {states.map((state) => (
-                    <SelectItem key={state} value={state}>{state}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+            control={form.control}
+            name="ein"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>EIN (Optional)</FormLabel>
+                <FormControl><Input placeholder="12-3456789" {...field} /></FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
         />
         <FormField
             control={form.control}
-            name="ownerEmail"
+            name="creditReport"
+            render={({ field: { onChange, onBlur, name, ref } }) => (
+              <FormItem>
+                <FormLabel>Upload Business Credit Report (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="file" accept=".pdf,.doc,.docx,.txt" onChange={e => onChange(e.target.files)} ref={ref} />
+                </FormControl>
+                <FormDescription>Upload a D&B, Experian, or Equifax business report for the most accurate analysis.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="manualBusinessDetails"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your Email Address</FormLabel>
-                <FormControl><Input type="email" placeholder="you@company.com" {...field} /></FormControl>
+                <FormLabel>Or, Describe Your Business's Credit (if no report)</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Describe your tradelines, payment history, etc." {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

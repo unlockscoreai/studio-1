@@ -10,31 +10,31 @@ interface BusinessReportCardProps {
     analysis: AnalyzeBusinessCreditReportOutput;
 }
 
-const InfoItem = ({ label, value }: { label: string, value: string | number | undefined }) => (
-    value ? (
-        <div>
+const InfoItem = ({ label, value }: { label: string, value: string | number | null | undefined }) => (
+    value || value === 0 ? (
+        <div className="flex justify-between items-center">
             <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="font-semibold">{value}</p>
+            <p className="font-semibold text-sm">{value}</p>
         </div>
     ) : null
 );
 
 export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
-    const { fundabilityScore, businessSummary, creditScoreBreakdown, riskFactors, actionPlan } = analysis;
+    const { fundabilityScore, fundabilityGrade, businessSummary, creditScoreBreakdown, riskFactors, actionPlan } = analysis;
     
     const getScoreColor = () => {
         if (fundabilityScore >= 80) return 'bg-green-600';
-        if (fundabilityScore >= 50) return 'bg-yellow-500';
+        if (fundabilityScore >= 60) return 'bg-yellow-500';
         return 'bg-red-600';
     };
 
     return (
         <Card className="w-full border-t-4 border-primary">
-            <CardHeader className="text-center">
-                <CardTitle className="font-headline text-2xl">Business Fundability Report</CardTitle>
+            <CardHeader className="text-center pb-4">
+                <CardTitle className="font-headline text-2xl">Business Fundability Report for {businessSummary.businessName}</CardTitle>
                 <CardDescription>An AI-powered analysis of your business's credit and funding readiness.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8">
+            <CardContent className="space-y-6">
                 
                 {/* Score & Summary */}
                 <section className="grid md:grid-cols-5 gap-6">
@@ -46,11 +46,17 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                                 <TrendingUp className="h-5 w-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-3 text-center">A score of 80+ is considered highly fundable.</p>
+                        <p className="text-sm text-muted-foreground mt-3 text-center">Grade: <span className="font-bold">{fundabilityGrade}</span> (A score of 80+ is highly fundable)</p>
                     </div>
                     <div className="md:col-span-3">
                         <h3 className="font-headline text-lg font-semibold mb-2 flex items-center gap-2"><Handshake /> Business Summary</h3>
-                        <p className="text-muted-foreground">{businessSummary}</p>
+                        <p className="text-muted-foreground mb-4">{businessSummary.summaryText}</p>
+                        <div className="space-y-1">
+                            <InfoItem label="Entity Type" value={businessSummary.entityType} />
+                            <InfoItem label="Years in Business" value={businessSummary.yearsInBusiness} />
+                            <InfoItem label="Monthly Revenue" value={businessSummary.monthlyRevenue} />
+                            <InfoItem label="SoS Status" value={businessSummary.status} />
+                        </div>
                     </div>
                 </section>
 
@@ -59,7 +65,7 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                  {/* Credit Scores & Risks */}
                 <section className="grid md:grid-cols-2 gap-8">
                      <div>
-                        <h3 className="font-headline text-lg font-semibold mb-3 flex items-center gap-2"><ShieldAlert /> Risk Factors</h3>
+                        <h3 className="font-headline text-lg font-semibold mb-3 flex items-center gap-2"><ShieldAlert /> Key Risk Factors</h3>
                         {riskFactors.length > 0 ? (
                             <ul className="space-y-2">
                                 {riskFactors.map((factor, i) => (
@@ -82,8 +88,8 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                             <InfoItem label="Paydex Score (D&B)" value={creditScoreBreakdown.paydexScore} />
                             <InfoItem label="Experian Intelliscore" value={creditScoreBreakdown.experianIntelliscore} />
                             <InfoItem label="Equifax Business Score" value={creditScoreBreakdown.equifaxBusinessScore} />
-                             {!creditScoreBreakdown.paydexScore && !creditScoreBreakdown.experianIntelliscore && (
-                                <p className="text-sm text-muted-foreground">No credit report was uploaded. For a deeper analysis, upload a D&B, Experian, or Equifax business report.</p>
+                             {!creditScoreBreakdown.paydexScore && !creditScoreBreakdown.experianIntelliscore && !creditScoreBreakdown.equifaxBusinessScore &&(
+                                <p className="text-sm text-muted-foreground pt-2">No credit report was uploaded. For a deeper analysis, upload a D&B, Experian, or Equifax business report.</p>
                              )}
                         </div>
                     </div>
