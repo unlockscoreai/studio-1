@@ -110,8 +110,8 @@ export default function AffiliateDashboardPage() {
 
       <Card>
         <CardHeader>
-            <CardTitle>Client Pipeline</CardTitle>
-            <CardDescription>Track the progress of your referred clients.</CardDescription>
+            <CardTitle>Client Pipelines</CardTitle>
+            <CardDescription>Track the progress of your personal and business referred clients.</CardDescription>
         </CardHeader>
         <CardContent>
             <ClientPipeline />
