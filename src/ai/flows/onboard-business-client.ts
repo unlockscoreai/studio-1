@@ -10,7 +10,8 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { analyzeBusinessCreditReport, AnalyzeBusinessCreditReportOutputSchema, type AnalyzeBusinessCreditReportOutput } from './analyze-business-credit-report';
+import { analyzeBusinessCreditReport, type AnalyzeBusinessCreditReportOutput } from './analyze-business-credit-report';
+import { AnalyzeBusinessCreditReportOutputSchema } from '@/ai/schemas/business-report-schema';
 import { addToGoHighLevelWorkflow } from '@/services/gohighlevel';
 
 
