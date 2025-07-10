@@ -35,6 +35,24 @@ export const getBusinessDetailsFromState = ai.defineTool(
     // 3. A web scraper or social media search tool.
     // 4. A WHOIS/domain lookup service.
 
+    // Specific mock for a real Tennessee business
+    if (input.businessName.toLowerCase() === "volunteer express logistics llc" && input.state.toUpperCase() === "TN") {
+        return {
+            isFound: true,
+            officialName: 'Volunteer Express Logistics LLC',
+            entityType: 'LLC',
+            formationDate: '2021-05-10',
+            status: 'Active',
+            websiteFound: true,
+            googleReviews: 28,
+            socialLinks: [
+                `linkedin.com/company/volunteer-express-logistics`,
+            ],
+            dunsStatus: "found",
+            hasDomainEmail: true,
+        };
+    }
+
     // For this prototype, we'll return mock data based on the business name.
     const isCorp = input.businessName.toLowerCase().includes("corp");
     const hasLogistics = input.businessName.toLowerCase().includes("logistics");
