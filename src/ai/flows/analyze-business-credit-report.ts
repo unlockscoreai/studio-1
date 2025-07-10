@@ -1,9 +1,9 @@
 
 'use server';
 /**
- * @fileOverview Analyzes a business credit report to generate a fundability summary.
+ * @fileOverview Analyzes a business's fundability based on public records and/or an uploaded credit report.
  *
- * - analyzeBusinessCreditReport - A function that analyzes a business credit report.
+ * - analyzeBusinessCreditReport - A function that runs the analysis.
  * - AnalyzeBusinessCreditReportInput - The input type for the function.
  * - AnalyzeBusinessCreditReportOutput - The return type for the function.
  */
@@ -19,31 +19,21 @@ const AnalyzeBusinessCreditReportInputSchema = z.object({
     .string()
     .optional()
     .describe(
-      "A business credit report file (D&B, Experian Biz, or Equifax Biz) as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "An optional business credit report file (D&B, Experian Biz, or Equifax Biz) as a data URI. If provided, this is used for a deeper analysis."
     ),
-  manualBusinessDetails: z.string().optional().describe("A textual description of the business's credit situation, provided by the user if no report is available."),
 });
 export type AnalyzeBusinessCreditReportInput = z.infer<typeof AnalyzeBusinessCreditReportInputSchema>;
 
 const AnalyzeBusinessCreditReportOutputSchema = z.object({
-  businessSummary: z.object({
-      businessName: z.string().describe("The name of the business."),
-      dunsNumber: z.string().optional().describe("The Dun & Bradstreet D-U-N-S number."),
-      entityType: z.string().optional().describe("The legal entity type of the business (e.g., LLC, Corp)."),
-      yearsInBusiness: z.number().optional().describe("The number of years the business has been in operation."),
-      monthlyRevenue: z.string().optional().describe("The reported monthly revenue."),
-  }).describe("A summary of the business's basic information."),
+  fundabilityScore: z.number().min(0).max(100).describe("A fundability score from 0 to 100, representing how ready the business is for funding."),
+  businessSummary: z.string().describe("A professional summary of the business's current fundability status, entity details, and online presence."),
   creditScoreBreakdown: z.object({
       paydexScore: z.string().optional().describe("The Paydex score from Dun & Bradstreet."),
       experianIntelliscore: z.string().optional().describe("The Experian Intelliscore."),
       equifaxBusinessScore: z.string().optional().describe("The Equifax business credit score."),
-      activeTradelines: z.number().optional().describe("The number of active tradelines."),
-      averageAccountAge: z.string().optional().describe("The average age of all credit accounts."),
-      creditUtilization: z.string().optional().describe("The business credit utilization percentage."),
-  }).describe("A breakdown of key business credit scores and metrics."),
-  riskFactors: z.array(z.string()).describe("A list of identified risk factors, such as UCC filings, late payments, public records, or a thin credit file."),
-  fundabilityGrade: z.string().length(1, { message: "Must be a single letter grade from A-F." }).describe("A single letter grade (A-F) representing the overall fundability of the business."),
-  actionPlan: z.array(z.string()).describe("A list of 3-5 specific, actionable steps to improve the business credit profile."),
+  }).describe("A breakdown of key business credit scores, if available from an uploaded report."),
+  riskFactors: z.array(z.string()).describe("A list of identified red flags or risks holding back funding potential (e.g., 'Website not found', 'No Google reviews', 'UCC filings present')."),
+  actionPlan: z.array(z.string()).describe("A list of 3-5 specific, actionable steps to improve the business credit profile and become bank-ready."),
 });
 export type AnalyzeBusinessCreditReportOutput = z.infer<typeof AnalyzeBusinessCreditReportOutputSchema>;
 
@@ -57,27 +47,26 @@ const prompt = ai.definePrompt({
   input: {schema: AnalyzeBusinessCreditReportInputSchema},
   output: {schema: AnalyzeBusinessCreditReportOutputSchema},
   tools: [getBusinessDetailsFromState],
-  prompt: `You are a business credit analyst for Unlock Score AI. The user will upload a business credit report from Dun & Bradstreet, Experian Business, or Equifax Business, OR they will provide a manual description of their credit situation.
+  prompt: `You are an expert business funding coach for Unlock Score AI. Your task is to create a professional audit report on how fundable a business is.
 
-Your job is to:
-1.  First, use the getBusinessDetailsFromState tool to look up the official business information from the Secretary of State based on the provided 'businessName' and 'state'. This is the authoritative source for entity type and formation date.
-2.  Next, extract key data from the provided credit report or manual description: DUNS number, Paydex score, Experian score, account age, # of tradelines, credit utilization, and any derogatory items (collections, UCCs, liens, etc.).
-3.  Synthesize information from both the Secretary of State lookup and the user-provided details to form a complete picture.
-4.  Identify any red flags or missing components that may affect business fundability. For each identified risk, add it to the 'riskFactors' array.
-5.  Provide a fundability rating (A–F) and assign it to the 'fundabilityGrade' field.
-6.  Offer 3–5 specific action steps to improve their business credit profile and add them to the 'actionPlan' array.
+First, you MUST use the getBusinessDetailsFromState tool to look up the business's public information. This data is the primary source for the online presence and Secretary of State (SoS) status.
 
-Do NOT assume anything. Base your analysis strictly on the data provided and the data retrieved from the tool.
-
+Next, check if a credit report was uploaded.
 {{#if businessCreditReportDataUri}}
-Source Information (from uploaded report):
-{{media url=businessCreditReportDataUri}}
+A credit report has been provided. Analyze it to extract key financial data: Paydex score, Experian score, Equifax score, UCC filings, late payments, and public records.
+Report: {{media url=businessCreditReportDataUri}}
 {{else}}
-Source Information (from manual description):
-{{{manualBusinessDetails}}}
+No credit report was provided. Base your analysis solely on the public data retrieved from the tool.
 {{/if}}
 
-Generate the complete analysis and provide the output in the specified JSON format.
+Now, generate the complete fundability report:
+1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. A low score (<50) indicates significant issues. Base this on all available data (SoS status, web presence, credit report data if available).
+2.  **Business Summary**: Write a professional summary. Start with the business name and its SoS status. Mention its online presence (website, reviews, social media).
+3.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. Otherwise, leave these fields blank.
+4.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
+5.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
+
+The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform. Generate the report in the specified JSON format.
 `,
 });
 

@@ -289,11 +289,11 @@ export default function Home() {
                   <CardTitle className="font-headline text-2xl flex items-center gap-2"><Briefcase /> For Business Credit</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 p-0 mt-4">
-                  <p className="text-muted-foreground">Get a complete fundability analysis for your business. Our AI analyzes your business credit report to give you actionable steps for securing funding.</p>
+                  <p className="text-muted-foreground">Get a complete fundability analysis for your business. Our AI analyzes your public records and credit to give you actionable steps for securing funding.</p>
                 </CardContent>
                 <CardFooter className="p-0 mt-6">
                   <Button className="w-full" asChild>
-                    <Link href="/business-intake">Analyze Business Credit</Link>
+                    <Link href="/business-intake">Get Free Business Scan</Link>
                   </Button>
                 </CardFooter>
               </Card>
