@@ -123,11 +123,18 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                 <section className="text-center bg-secondary p-6 rounded-lg">
                     <h3 className="font-headline text-lg font-semibold mb-3 flex items-center justify-center gap-2"><Calendar className="text-primary"/> Book Your Custom Funding Plan</h3>
                     <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">{coachCallToAction}</p>
-                    <Button asChild>
-                        <Link href="/business-client/book-consultation">
-                            Book an Appointment
-                        </Link>
-                    </Button>
+                    <div className="flex items-center justify-center gap-4">
+                        <Button asChild>
+                            <Link href="/business-client/book-consultation">
+                                Book an Appointment
+                            </Link>
+                        </Button>
+                        <Button asChild variant="outline">
+                            <Link href="/business-client/dashboard">
+                                Access Business Portal
+                            </Link>
+                        </Button>
+                    </div>
                 </section>
 
             </CardContent>
