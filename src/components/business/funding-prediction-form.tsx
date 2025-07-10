@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import Link from "next/link"
 import { predictFundingApproval } from "@/ai/flows/predict-funding-approval"
 import type { PredictFundingApprovalOutput } from "@/ai/flows/predict-funding-approval"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Sparkles, Target, Banknote, Percent, FileText } from "lucide-react"
+import { Loader2, Sparkles, Target, Banknote, Percent, FileText, Calendar } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "../ui/progress"
 import { Separator } from "../ui/separator"
@@ -197,6 +198,19 @@ export function FundingPredictionForm() {
                 <AlertTitle>Overall Summary</AlertTitle>
                 <AlertDescription>{result.overallSummary}</AlertDescription>
             </Alert>
+            <Card className="text-center bg-secondary p-4 rounded-lg">
+                <CardHeader>
+                    <CardTitle className="font-headline flex items-center justify-center gap-2"><Calendar className="w-6 h-6 text-primary"/> Discuss Your Funding Options</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-muted-foreground max-w-2xl mx-auto">Ready to take the next step? Our funding experts can help you navigate these options and create a tailored strategy for your business.</p>
+                    <Button asChild>
+                        <Link href="/business-client/book-consultation">
+                            Book a Funding Consultation
+                        </Link>
+                    </Button>
+                </CardContent>
+            </Card>
         </div>
       )}
     </div>
