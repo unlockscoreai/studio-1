@@ -89,11 +89,13 @@ const onboardBusinessClientFlow = ai.defineFlow(
         fundability_score: analysisResult.fundabilityScore,
     });
 
+    // Assuming the affiliate ID is their email for the notification.
+    // In a real app, you would look up the affiliate's details from your database.
     if (input.affiliateId && input.affiliateId !== "none") {
         // Notify affiliate by adding them to a separate workflow
         await addToGoHighLevelWorkflow(affiliateNotificationWorkflowId, {
-            name: input.affiliateId, // Assuming affiliateId is name
-            email: input.affiliateId, // Assuming affiliateId is email
+            name: input.affiliateId,
+            email: input.affiliateId,
             tags: ['Affiliate Notification'],
             // Pass the new lead's details as custom fields for the email template
             new_lead_name: input.businessName,
