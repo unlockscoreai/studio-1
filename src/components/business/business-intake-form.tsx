@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef } from "react"
@@ -68,6 +69,11 @@ export function BusinessIntakeForm() {
     defaultValues: {
       businessName: "",
       ownerEmail: "",
+      ein: "",
+      businessPhone: "",
+      yearsInBusiness: "",
+      monthlyRevenue: "",
+      manualBusinessDetails: "",
     },
   })
   
