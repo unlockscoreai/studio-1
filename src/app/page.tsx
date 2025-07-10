@@ -32,6 +32,7 @@ function LandingHeader() {
             <Link href="#features" className="text-foreground/60 transition-colors hover:text-foreground/80">Features</Link>
             <Link href="#testimonials" className="text-foreground/60 transition-colors hover:text-foreground/80">Testimonials</Link>
             <Link href="#pricing" className="text-foreground/60 transition-colors hover:text-foreground/80">Pricing</Link>
+            <Link href="/business-intake" className="text-foreground/60 transition-colors hover:text-foreground/80">Business AI</Link>
           </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
@@ -49,6 +50,7 @@ function LandingHeader() {
             <Link href="#features" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Features</Link>
             <Link href="#testimonials" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Testimonials</Link>
             <Link href="#pricing" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Pricing</Link>
+            <Link href="/business-intake" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Business AI</Link>
           </div>
         </div>
       )}
