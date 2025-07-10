@@ -16,7 +16,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export default function SignUpPage() {
   const [role, setRole] = useState("client");
-  const dashboardUrl = role === 'client' ? '/client/dashboard' : '/affiliate/dashboard';
+  
+  let dashboardUrl = '/client/dashboard';
+  if (role === 'affiliate') {
+    dashboardUrl = '/affiliate/dashboard';
+  } else if (role === 'business') {
+    dashboardUrl = '/business-client/dashboard';
+  }
 
   return (
     <Card className="mx-auto max-w-sm">
@@ -53,7 +59,7 @@ export default function SignUpPage() {
           </div>
           <div className="grid gap-2">
             <Label>I am a...</Label>
-            <RadioGroup defaultValue="client" onValueChange={setRole} className="flex gap-4">
+            <RadioGroup defaultValue="client" onValueChange={setRole} className="flex flex-wrap gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="client" id="r1" />
                 <Label htmlFor="r1">Client</Label>
@@ -61,6 +67,10 @@ export default function SignUpPage() {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="affiliate" id="r2" />
                 <Label htmlFor="r2">Affiliate</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="business" id="r3" />
+                <Label htmlFor="r3">Business</Label>
               </div>
             </RadioGroup>
           </div>
