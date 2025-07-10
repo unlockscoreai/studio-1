@@ -14,6 +14,7 @@ import {
   BarChart3,
   Mail,
   Link2,
+  TrendingUp,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -53,6 +54,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/reports') return 'Reports';
     if (pathname === '/affiliate/messaging') return 'Messaging';
     if (pathname === '/affiliate/tradeline-links') return 'Tradeline Links';
+    if (pathname === '/affiliate/business-growth') return 'Business Growth';
     return 'Affiliate Dashboard';
   };
 
@@ -107,6 +109,19 @@ export default function AffiliateLayout({
                   <Link href="/affiliate/client-management">
                     <Users />
                     <span>Clients</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  href="/affiliate/business-growth"
+                  isActive={pathname === '/affiliate/business-growth'}
+                  tooltip={{ children: 'Business Growth' }}
+                >
+                  <Link href="/affiliate/business-growth">
+                    <TrendingUp />
+                    <span>Business Growth</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
