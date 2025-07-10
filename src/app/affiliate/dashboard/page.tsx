@@ -1,9 +1,10 @@
+
 'use client';
 
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, DollarSign, BarChart, Link as LinkIcon, Copy, Check } from "lucide-react";
+import { Users, DollarSign, BarChart, Link as LinkIcon, Copy, Check, Building } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ClientPipeline } from "@/components/affiliate/ClientPipeline";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +14,7 @@ export default function AffiliateDashboardPage() {
   const { toast } = useToast();
   // In a real app, the affiliate ID would be dynamic based on the logged-in user.
   const affiliateId = "creditup-solutions";
-  const referralLink = `https://unlockscore.ai/intake?affiliate_id=${affiliateId}`;
+  const referralLink = `https://unlockscore.ai/business-intake?affiliate_id=${affiliateId}`;
 
   const handleCopy = () => {
     if(typeof navigator.clipboard?.writeText !== 'function') {
@@ -37,12 +38,22 @@ export default function AffiliateDashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Referrals</CardTitle>
+            <CardTitle className="text-sm font-medium">Personal Referrals</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">125</div>
             <p className="text-xs text-muted-foreground">+15 this month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Business Referrals</CardTitle>
+            <Building className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">32</div>
+            <p className="text-xs text-muted-foreground">+5 this month</p>
           </CardContent>
         </Card>
         <Card>
@@ -67,8 +78,8 @@ export default function AffiliateDashboardPage() {
         </Card>
         <Card className="col-span-1 lg:col-span-4">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><LinkIcon className="h-5 w-5" /> Your Referral Link</CardTitle>
-                <CardDescription>Share this link to refer clients. You'll earn a commission on every successful signup.</CardDescription>
+                <CardTitle className="flex items-center gap-2"><LinkIcon className="h-5 w-5" /> Your Business Referral Link</CardTitle>
+                <CardDescription>Share this link to refer business clients. You'll earn a commission on every successful signup.</CardDescription>
             </CardHeader>
             <CardContent className="flex gap-2">
                 <Input readOnly value={referralLink} />

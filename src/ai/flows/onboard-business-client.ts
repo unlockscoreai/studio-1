@@ -41,6 +41,27 @@ async function sendWelcomeEmailToBusiness(clientEmail: string, clientName: strin
     return Promise.resolve();
 }
 
+// Mock affiliate notification service
+async function sendNotificationEmailToAffiliateForBusiness(affiliateEmail: string, businessName: string, ownerEmail: string) {
+    console.log(`---
+    SENDING EMAIL TO: ${affiliateEmail}
+    SUBJECT: New Business Lead Submitted: ${businessName}
+    BODY:
+    Hi,
+
+    You have a new business lead. We have received the details and generated their fundability report:
+    Business Name: ${businessName}
+    Contact Email: ${ownerEmail}
+
+    The lead has been notified to log in to their portal to view the report.
+
+    Best,
+    The UnlockScore AI Team
+    ---`);
+    return Promise.resolve();
+}
+
+
 const OnboardBusinessClientInputSchema = z.object({
   businessName: z.string().describe('The name of the business.'),
   state: z.string().length(2).describe("The 2-letter postal code for the state where the business is registered."),
@@ -52,6 +73,7 @@ const OnboardBusinessClientInputSchema = z.object({
   businessAddress: z.string().optional().describe("The business's full physical address."),
   businessCreditReportDataUri: z.string().optional().describe("The client's business credit report as a data URI."),
   manualBusinessDetails: z.string().optional().describe("A manual description of the business's credit situation."),
+  affiliateId: z.string().optional().describe('The ID of the referring affiliate.'),
 });
 export type OnboardBusinessClientInput = z.infer<typeof OnboardBusinessClientInputSchema>;
 
@@ -100,6 +122,10 @@ const onboardBusinessClientFlow = ai.defineFlow(
 
     // Send notifications
     await sendWelcomeEmailToBusiness(input.businessEmail, input.businessName, analysisResult);
+    if (input.affiliateId && input.affiliateId !== "none") {
+        // Assuming affiliateId is their email for this prototype
+        await sendNotificationEmailToAffiliateForBusiness(input.affiliateId, input.businessName, input.businessEmail);
+    }
     
     return {
       success: true,

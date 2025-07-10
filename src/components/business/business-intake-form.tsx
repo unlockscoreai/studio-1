@@ -1,12 +1,11 @@
 
-
 "use client"
 
 import { useState, useRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { analyzeBusinessCreditReport } from "@/ai/flows/analyze-business-credit-report"
+import { onboardBusinessClient } from "@/ai/flows/onboard-business-client"
 import type { AnalyzeBusinessCreditReportOutput } from "@/ai/flows/analyze-business-credit-report"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,11 +19,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, CheckCircle } from "lucide-react"
+import { Loader2, CheckCircle, Terminal } from "lucide-react"
 import { BusinessReportCard } from "./business-report-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "../ui/textarea"
 import GooglePlacesAutocomplete from "react-google-places-autocomplete"
+import { useSearchParams } from "next/navigation"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 
 
 const states = [
@@ -67,6 +68,8 @@ export function BusinessIntakeForm() {
   const [analysis, setAnalysis] = useState<AnalyzeBusinessCreditReportOutput | null>(null)
   const [isClient, setIsClient] = useState(false)
   const { toast } = useToast()
+  const searchParams = useSearchParams();
+  const affiliateId = searchParams.get('affiliate_id');
 
   const hasApiKey = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -100,9 +103,10 @@ export function BusinessIntakeForm() {
         creditReportDataUri = await fileToDataUri(values.creditReport[0]);
       }
       
-      const result = await analyzeBusinessCreditReport({
+      const result = await onboardBusinessClient({
           businessName: values.businessName,
           state: values.state,
+          businessEmail: values.ownerEmail,
           businessAddress: values.businessAddress?.label,
           ein: values.ein,
           businessPhone: values.businessPhone,
@@ -110,14 +114,15 @@ export function BusinessIntakeForm() {
           monthlyRevenue: values.monthlyRevenue,
           businessCreditReportDataUri: creditReportDataUri,
           manualBusinessDetails: values.manualBusinessDetails,
+          affiliateId: affiliateId || undefined,
       })
 
-      if (result) {
-          setAnalysis(result);
+      if (result.success && result.analysis) {
+          setAnalysis(result.analysis);
           // In a real app, you would also now save the lead's email (values.ownerEmail)
           // and associate it with the generated report.
       } else {
-          throw new Error("Analysis failed to return a result.")
+          throw new Error(result.message || "Analysis failed to return a result.")
       }
     } catch (error) {
       console.error(error)
@@ -148,6 +153,15 @@ export function BusinessIntakeForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
+        {affiliateId && (
+            <Alert>
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Affiliate Referral</AlertTitle>
+                <AlertDescription>
+                    You have been referred by: <span className="font-semibold">{affiliateId}</span>
+                </AlertDescription>
+            </Alert>
+        )}
         <div className="grid md:grid-cols-2 gap-6">
             <FormField
             control={form.control}
@@ -333,5 +347,3 @@ export function BusinessIntakeForm() {
     </Form>
   )
 }
-
-    
