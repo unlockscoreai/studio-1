@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -10,6 +11,7 @@ import {
   FileText,
   DollarSign,
   Building,
+  CalendarCheck,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -43,6 +45,7 @@ export default function BusinessClientLayout({
 
   const getPageTitle = () => {
     if (pathname.startsWith('/business-client/get-reports')) return 'Get Business Reports';
+    if (pathname.startsWith('/business-client/book-consultation')) return 'Book Consultation';
     if (pathname.startsWith('/business-client/funding')) return 'Funding';
     if (pathname.startsWith('/business-client/account')) return 'My Account';
     return 'Business Dashboard';
@@ -85,6 +88,19 @@ export default function BusinessClientLayout({
                   <Link href="/business-client/get-reports">
                     <FileText />
                     <span>Get Reports</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+                <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/business-client/book-consultation"
+                  asChild
+                  isActive={pathname.startsWith('/business-client/book-consultation')}
+                  tooltip={{ children: 'Book Consultation' }}
+                >
+                  <Link href="/business-client/book-consultation">
+                    <CalendarCheck />
+                    <span>Book Consultation</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -170,3 +186,5 @@ export default function BusinessClientLayout({
     </SidebarProvider>
   );
 }
+
+    

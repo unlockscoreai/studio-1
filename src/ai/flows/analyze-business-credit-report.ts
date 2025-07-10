@@ -48,7 +48,7 @@ const AnalyzeBusinessCreditReportOutputSchema = z.object({
   }).describe("A breakdown of key business credit scores, if available from an uploaded report."),
   riskFactors: z.array(z.string()).describe("A list of identified red flags or risks holding back funding potential (e.g., 'Website not found', 'No Google reviews', 'UCC filings present')."),
   actionPlan: z.array(z.string()).describe("A list of 3-5 specific, actionable steps to improve the business credit profile and become bank-ready."),
-  coachCallToAction: z.string().describe("A call to action encouraging the user to book an appointment with a business coach to create a custom funding plan."),
+  coachCallToAction: z.string().describe("A call to action encouraging the user to book a paid, 30-minute, $99 appointment with a business coach to create a custom funding plan covering business structure, planning, and next steps."),
 });
 export type AnalyzeBusinessCreditReportOutput = z.infer<typeof AnalyzeBusinessCreditReportOutputSchema>;
 
@@ -97,7 +97,7 @@ Now, generate the complete fundability report in the specified JSON format:
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
 6.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
 7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
-8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a call with a business coach to build their custom funding plan. Example: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a free consultation with one of our business coaches today."
+8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their fundability profile, and create an actionable plan. Example: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 
 The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform.
 `,
@@ -114,3 +114,5 @@ const analyzeBusinessCreditReportFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    

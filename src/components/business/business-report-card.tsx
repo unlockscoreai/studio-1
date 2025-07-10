@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { AnalyzeBusinessCreditReportOutput } from "@/ai/flows/analyze-business-credit-report";
@@ -5,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CheckCircle, TrendingUp, Handshake, Target, ShieldAlert, Calendar } from "lucide-react";
+import Link from "next/link";
 
 interface BusinessReportCardProps {
     analysis: AnalyzeBusinessCreditReportOutput;
@@ -117,8 +119,10 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                 <section className="text-center bg-secondary p-6 rounded-lg">
                     <h3 className="font-headline text-lg font-semibold mb-3 flex items-center justify-center gap-2"><Calendar className="text-primary"/> Book Your Custom Funding Plan</h3>
                     <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">{coachCallToAction}</p>
-                    <Button>
-                        Book an Appointment
+                    <Button asChild>
+                        <Link href="/business-client/book-consultation">
+                            Book an Appointment
+                        </Link>
                     </Button>
                 </section>
 
@@ -126,3 +130,5 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
         </Card>
     );
 }
+
+    
