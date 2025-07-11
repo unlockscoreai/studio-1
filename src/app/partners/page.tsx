@@ -48,6 +48,7 @@ export default function PartnersPage() {
       description: 'For power affiliates and coaches who need the ultimate toolkit for personal and business clients.',
       features: [
         'All Pro Features, plus:',
+        'Manages up to 50 clients',
         'Full Business AI Portal Access',
         'AI Business Fundability Scan',
         'Done-for-You Vendor Applications',
