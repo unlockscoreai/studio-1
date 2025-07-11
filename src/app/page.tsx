@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -124,8 +125,8 @@ export default function Home() {
     {
       name: 'Starter',
       price: '$99',
-      period: 'one-time fee',
-      description: 'For individuals repairing their credit with a manual, guided process.',
+      period: '/month',
+      description: 'For individuals who want to manually repair their own credit with our powerful AI tools.',
       features: [
         'AI Letter Generation & Improver',
         'AI Credit Report Analysis',
@@ -137,7 +138,7 @@ export default function Home() {
     },
     {
       name: 'Pro',
-      price: '$49',
+      price: '$199',
       period: '/month',
       mostPopular: true,
       description: 'For individuals who want a fully automated credit repair experience.',
@@ -153,9 +154,9 @@ export default function Home() {
     },
     {
       name: 'VIP',
-      price: '$99',
+      price: '$599',
       period: '/month',
-      description: 'For users who want both personal credit repair and business funding.',
+      description: 'The ultimate plan for both personal credit repair and business funding.',
       features: [
         'All Pro Features, plus:',
         'Full Business AI Portal Access',
