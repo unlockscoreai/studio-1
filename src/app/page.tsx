@@ -125,7 +125,7 @@ export default function Home() {
       name: 'Starter',
       price: '$99',
       period: 'one-time fee',
-      description: 'For individuals looking to repair their own credit.',
+      description: 'For individuals repairing their credit with a manual, guided process.',
       features: [
         'AI Letter Generation & Improver',
         'AI Credit Report Analysis',
@@ -136,32 +136,32 @@ export default function Home() {
       href: '/sign-up',
     },
     {
-      name: 'Pro Affiliate',
-      price: '$299',
+      name: 'Pro',
+      price: '$49',
       period: '/month',
       mostPopular: true,
-      description: 'For professionals managing up to 50 clients.',
+      description: 'For individuals who want a fully automated credit repair experience.',
       features: [
-        'Manage 30-50 Clients',
-        'Full Affiliate Dashboard',
-        'Client Progress Tracking',
-        'Automated Mailing Service',
+        'Everything in Starter, plus:',
+        'Automated Dispute Mailing',
         'AI Bureau Response Analysis',
+        'Real-time Dispute Tracking',
+        'CFPB Complaint Guide',
       ],
       cta: 'Choose Pro Plan',
       href: '/sign-up',
     },
     {
-      name: 'VIP Affiliate',
-      price: '$699',
+      name: 'VIP',
+      price: '$99',
       period: '/month',
-      description: 'For businesses managing a larger client base.',
+      description: 'For users who want both personal credit repair and business funding.',
       features: [
-        'Manage 50-100 Clients',
-        'Priority Support',
-        'Advanced Client Reporting',
-        'Dedicated Account Manager',
-        'Co-branded Materials',
+        'All Pro Features, plus:',
+        'Full Business AI Portal Access',
+        'AI Business Fundability Scan',
+        'Done-for-You Vendor Applications',
+        'AI Funding Pre-Approval Engine',
       ],
       cta: 'Go VIP',
       href: '/sign-up',
@@ -248,7 +248,7 @@ export default function Home() {
             <div className="text-center">
               <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Plans for Every Need</h2>
               <p className="max-w-2xl mx-auto mt-4 text-foreground/70">
-                Solutions for individuals, professionals, and enterprise partners.
+                Whether you're repairing your own credit or building a business, we have a plan for you.
               </p>
             </div>
 
@@ -286,14 +286,14 @@ export default function Home() {
             <div className="grid gap-12 mt-16 md:grid-cols-2">
               <Card className="flex flex-col p-6">
                 <CardHeader className="p-0">
-                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Briefcase /> For Business Credit</CardTitle>
+                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Briefcase /> For Affiliates</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 p-0 mt-4">
-                  <p className="text-muted-foreground">Get a complete fundability analysis for your business. Our AI analyzes your public records and credit to give you actionable steps for securing funding.</p>
+                  <p className="text-muted-foreground">Join our affiliate program and earn commissions by referring personal and business clients. Powerful dashboard and real-time tracking included.</p>
                 </CardContent>
                 <CardFooter className="p-0 mt-6">
                   <Button className="w-full" asChild>
-                    <Link href="/business-intake">Get Free Business Scan</Link>
+                    <Link href="/sign-up">Become an Affiliate</Link>
                   </Button>
                 </CardFooter>
               </Card>
