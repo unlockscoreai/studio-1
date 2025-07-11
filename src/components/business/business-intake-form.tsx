@@ -143,7 +143,7 @@ export function BusinessIntakeForm() {
             <div className="text-center">
               <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold">Analysis Complete!</h3>
-              <p className="text-muted-foreground">Here is the fundability report for {form.getValues('businessName')}.</p>
+              <p className="text-muted-foreground">Here is the Unlock Score™ report for {form.getValues('businessName')}.</p>
             </div>
             <BusinessReportCard analysis={analysis} />
         </div>

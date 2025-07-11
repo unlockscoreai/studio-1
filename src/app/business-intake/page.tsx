@@ -7,9 +7,9 @@ function BusinessIntakePageContent() {
     return (
         <Card className="w-full max-w-3xl mx-auto my-8">
             <CardHeader className="text-center">
-                <CardTitle className="font-headline text-3xl">Get Your Free Business Fundability Scan</CardTitle>
+                <CardTitle className="font-headline text-3xl">Get Your Free Unlock Score™</CardTitle>
                 <CardDescription className="text-lg">
-                See how fundable your business is in minutes. Our AI analyzes your public records to give you a roadmap to success.
+                See how ready your business is for funding in minutes. Our AI analyzes your public records to give you a roadmap to success.
                 </CardDescription>
             </CardHeader>
             <CardContent>

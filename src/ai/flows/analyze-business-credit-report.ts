@@ -43,7 +43,7 @@ const prompt = ai.definePrompt({
   input: {schema: AnalyzeBusinessCreditReportInputSchema},
   output: {schema: AnalyzeBusinessCreditReportOutputSchema},
   tools: [getBusinessDetailsFromState],
-  prompt: `You are an expert business funding coach for Unlock Score AI. Your task is to create a professional audit report on how fundable a business is.
+  prompt: `You are an expert business funding coach for Unlock Score AI. Your task is to create a professional audit report on how fundable a business is, using our proprietary "Unlock Score" metric.
 
 First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence and Secretary of State (SoS) status.
 
@@ -65,10 +65,15 @@ Report: {{media url=businessCreditReportDataUri}}
 No credit report was provided. Base your analysis on the public data from the tool and any manual details provided.
 {{/if}}
 
-Now, generate the complete fundability report in the specified JSON format:
-1.  **Fundability Score**: Create a score from 0-100. A high score (80+) means the business is highly fundable. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
+Now, generate the complete Unlock Score™ report in the specified JSON format:
+1.  **Unlock Score**: Create a score from 0-1000. A high score (800+) means the business is highly fundable. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
 2.  **Social Score**: Based on the business's website, Google reviews, and social media presence from the tool, generate a score from 0-100. A high score (80+) means a strong, trustworthy online presence.
-3.  **Fundability Grade**: Assign a letter grade based on the score (90-100: A, 80-89: B, 70-79: C, 60-69: D, <60: F).
+3.  **Unlock Tier**: Assign a tier label based on the Unlock Score:
+    - 0–399: "High Risk"
+    - 400–649: "Limited"
+    - 650–799: "Fundable"
+    - 800–949: "Highly Fundable"
+    - 950–1000: "Unlock VIP"
 4.  **Business Summary**: Create a structured summary. Use the data from the 'getBusinessDetailsFromState' tool to fill in 'entityType', 'status', 'registeredAgent', 'mailingAddress', and 'lastHistoryUpdate'.
     -   'businessName': The name of the business.
     -   'entityType': The legal entity type from the tool.
@@ -81,8 +86,8 @@ Now, generate the complete fundability report in the specified JSON format:
     -   'summaryText': Write a professional summary paragraph about the business's status and online presence.
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
 6.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
-7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their fundability. These should directly address the identified risk factors.
-8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their fundability profile, and create an actionable plan. Example: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
+7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their Unlock Score™. These should directly address the identified risk factors.
+8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their fundability profile, and create an actionable plan to raise their Unlock Score. Example: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 
 The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform.
 `,

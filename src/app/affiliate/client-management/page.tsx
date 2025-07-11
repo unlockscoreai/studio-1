@@ -56,9 +56,9 @@ const personalClients = [
 
 // Mock data for business clients
 const businessClients = [
-  { id: 1, name: 'Volunteer Express Logistics LLC', status: 'Analysis Complete', dateSubmitted: '2024-07-20', fundabilityScore: 82 },
-  { id: 2, name: 'Innovate Tech Corp', status: 'Onboarding', dateSubmitted: '2024-07-22', fundabilityScore: 65 },
-  { id: 3, name: 'Main Street Cafe', status: 'Booked Consultation', dateSubmitted: '2024-07-18', fundabilityScore: 75 },
+  { id: 1, name: 'Volunteer Express Logistics LLC', status: 'Analysis Complete', dateSubmitted: '2024-07-20', unlockScore: 820 },
+  { id: 2, name: 'Innovate Tech Corp', status: 'Onboarding', dateSubmitted: '2024-07-22', unlockScore: 650 },
+  { id: 3, name: 'Main Street Cafe', status: 'Booked Consultation', dateSubmitted: '2024-07-18', unlockScore: 750 },
 ];
 
 
@@ -138,7 +138,7 @@ export default function ClientManagementPage() {
                     <TableRow>
                         <TableHead className="w-[250px]">Business Name</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Fundability Score</TableHead>
+                        <TableHead>Unlock Score™</TableHead>
                         <TableHead className="text-right">Date Submitted</TableHead>
                     </TableRow>
                     </TableHeader>
@@ -153,8 +153,8 @@ export default function ClientManagementPage() {
                             </TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-2">
-                                    <Progress value={client.fundabilityScore} className="w-24" />
-                                    <span className="font-semibold">{client.fundabilityScore}</span>
+                                    <Progress value={client.unlockScore / 10} className="w-24" />
+                                    <span className="font-semibold">{client.unlockScore}</span>
                                 </div>
                             </TableCell>
                             <TableCell className="text-right">{client.dateSubmitted}</TableCell>

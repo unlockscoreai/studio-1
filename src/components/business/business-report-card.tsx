@@ -22,18 +22,18 @@ const InfoItem = ({ label, value }: { label: string, value: string | number | nu
 );
 
 export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
-    const { fundabilityScore, socialScore, fundabilityGrade, businessSummary, creditScoreBreakdown, riskFactors, actionPlan, coachCallToAction } = analysis;
+    const { unlockScore, socialScore, unlockTier, businessSummary, creditScoreBreakdown, riskFactors, actionPlan, coachCallToAction } = analysis;
     
     const getScoreColor = () => {
-        if (fundabilityScore >= 80) return 'bg-green-600';
-        if (fundabilityScore >= 60) return 'bg-yellow-500';
+        if (unlockScore >= 800) return 'bg-green-600';
+        if (unlockScore >= 650) return 'bg-yellow-500';
         return 'bg-red-600';
     };
 
     return (
         <Card className="w-full border-t-4 border-primary">
             <CardHeader className="text-center pb-4">
-                <CardTitle className="font-headline text-2xl">Business Fundability Report for {businessSummary.businessName}</CardTitle>
+                <CardTitle className="font-headline text-2xl">Unlock Score™ Report for {businessSummary.businessName}</CardTitle>
                 <CardDescription>An AI-powered analysis of your business's credit and funding readiness.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -41,14 +41,14 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                 {/* Score & Summary */}
                 <section className="grid md:grid-cols-5 gap-6">
                     <div className="md:col-span-2 flex flex-col items-center justify-center p-4 bg-muted rounded-lg">
-                        <h3 className="font-headline text-lg font-semibold mb-2">Fundability Score</h3>
+                        <h3 className="font-headline text-lg font-semibold mb-2">Unlock Score™</h3>
                          <div className="relative">
-                            <div className={`text-5xl font-bold text-white px-6 py-4 rounded-full ${getScoreColor()}`}>{fundabilityScore}</div>
+                            <div className={`text-5xl font-bold text-white px-6 py-4 rounded-full ${getScoreColor()}`}>{unlockScore}</div>
                             <div className="absolute -top-1 -right-1 p-2 bg-background rounded-full shadow-md">
                                 <TrendingUp className="h-5 w-5 text-primary" />
                             </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-3 text-center">Grade: <span className="font-bold">{fundabilityGrade}</span> (A score of 80+ is highly fundable)</p>
+                        <p className="text-sm text-muted-foreground mt-3 text-center">Tier: <span className="font-bold">{unlockTier}</span> (A score of 800+ is Highly Fundable)</p>
                     </div>
                     <div className="md:col-span-3">
                         <h3 className="font-headline text-lg font-semibold mb-2 flex items-center gap-2"><Handshake /> Business Summary</h3>

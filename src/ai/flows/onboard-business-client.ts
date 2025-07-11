@@ -85,8 +85,8 @@ const onboardBusinessClientFlow = ai.defineFlow(
         phone: input.businessPhone,
         tags: ['New Business Lead', `Affiliate: ${input.affiliateId || 'none'}`],
         // You would pass analysis results as custom fields
-        fundability_grade: analysisResult.fundabilityGrade,
-        fundability_score: analysisResult.fundabilityScore,
+        unlock_score: analysisResult.unlockScore,
+        unlock_tier: analysisResult.unlockTier,
     });
 
     // Assuming the affiliate ID is their email for the notification.
@@ -95,7 +95,7 @@ const onboardBusinessClientFlow = ai.defineFlow(
         // Notify affiliate by adding them to a separate workflow
         await addToGoHighLevelWorkflow(affiliateNotificationWorkflowId, {
             name: input.affiliateId,
-            email: input.affiliateId,
+            email: input.affiliateId, // This assumes affiliateId is an email, adjust if not
             tags: ['Affiliate Notification'],
             // Pass the new lead's details as custom fields for the email template
             new_lead_name: input.businessName,
@@ -105,7 +105,7 @@ const onboardBusinessClientFlow = ai.defineFlow(
     
     return {
       success: true,
-      message: `Business client ${input.businessName} onboarded successfully. Their fundability report has been generated.`,
+      message: `Business client ${input.businessName} onboarded successfully. Their Unlock Score™ report has been generated.`,
       analysis: analysisResult,
     };
   }

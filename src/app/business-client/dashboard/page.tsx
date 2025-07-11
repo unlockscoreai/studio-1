@@ -6,9 +6,9 @@ import { BusinessReportCard } from "@/components/business/business-report-card";
 // This is mock data representing the output from the `runBusinessScan` AI flow.
 // In a real application, this would be fetched from your database after the initial scan.
 const mockAnalysis = {
-  fundabilityScore: 82,
+  unlockScore: 820,
   socialScore: 75,
-  fundabilityGrade: 'B',
+  unlockTier: 'Highly Fundable',
   businessSummary: {
     businessName: 'Volunteer Express Logistics LLC',
     entityType: 'LLC',
@@ -34,7 +34,7 @@ const mockAnalysis = {
     "Increase social media activity on LinkedIn to build brand authority.",
     "Prepare your last 6 months of bank statements for upcoming funding applications."
   ],
-  coachCallToAction: "Your business has a strong foundation! To create a custom funding plan and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
+  coachCallToAction: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score™ and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 };
 
 export default function BusinessDashboardPage() {
@@ -44,7 +44,7 @@ export default function BusinessDashboardPage() {
             <CardHeader>
                 <CardTitle className="font-headline">Welcome to your Business Dashboard</CardTitle>
                 <CardDescription>
-                This is your central hub for managing and improving your business's fundability.
+                This is your central hub for managing and improving your business's funding readiness, measured by your Unlock Score™.
                 </CardDescription>
             </CardHeader>
             <CardContent>

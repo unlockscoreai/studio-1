@@ -33,7 +33,7 @@ const initialChecklistState = {
 const checklistData = [
   {
     category: 'Business Foundation',
-    description: 'The basic building blocks for a fundable business.',
+    description: 'The basic building blocks for a credible and fundable business.',
     items: [
       { id: 'entity', label: 'Business Name & Entity', description: 'Your business is officially registered with the Secretary of State (e.g., LLC, C-Corp).' },
       { id: 'ein', label: 'Employer Identification Number (EIN)', description: 'You have a federal tax ID number for your business from the IRS.' },
@@ -125,7 +125,7 @@ export default function MyBusinessPage() {
             <CardHeader>
                 <CardTitle className="font-headline">My Business Checklist</CardTitle>
                 <CardDescription>
-                Track your progress towards building a highly fundable business. Check off items as you complete them.
+                Track your progress towards building a highly fundable business and improving your Unlock Score™.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -136,7 +136,7 @@ export default function MyBusinessPage() {
                         {completionPercentage}%
                     </div>
                     <div>
-                        <p className="font-semibold">Your Fundability Progress</p>
+                        <p className="font-semibold">Your Readiness Progress</p>
                         <p className="text-muted-foreground">{totalCompleted} of {totalItems} tasks completed</p>
                     </div>
                 </div>
