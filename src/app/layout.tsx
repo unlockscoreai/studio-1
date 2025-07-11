@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
+import { AiChatWidget } from '@/components/site/ai-chat-widget';
 
 export const metadata: Metadata = {
   title: 'UnlockScore AI',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         {children}
         <Toaster />
+        <AiChatWidget />
       </body>
     </html>
   );

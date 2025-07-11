@@ -13,4 +13,5 @@ import '@/ai/flows/onboard-business-client.ts';
 import '@/ai/tools/get-business-details.ts';
 import '@/ai/flows/generate-vendor-application.ts';
 import '@/ai/flows/predict-funding-approval.ts';
+import '@/ai/flows/site-chat.ts';
 
