@@ -1,19 +1,5 @@
-import { nextHandler } from '@genkit-ai/next/server';
-import { config } from 'dotenv';
-config();
+import { NextResponse } from 'next/server';
 
-// Import flows so they are registered.
-// These imports will in turn import and initialize the ai object from @/ai/genkit.ts
-import '@/ai/flows/generate-credit-dispute-letter';
-import '@/ai/flows/improve-uploaded-letter';
-import '@/ai/flows/onboard-client';
-import '@/ai/flows/analyze-credit-profile';
-import '@/ai/flows/generate-tradeline-strategy';
-import '@/ai/flows/analyze-bureau-response';
-import '@/ai/flows/analyze-business-credit-report';
-import '@/ai/flows/onboard-business-client';
-import '@/ai/flows/generate-vendor-application';
-import '@/ai/flows/predict-funding-approval';
-
-
-export const POST = nextHandler();
+export async function POST() {
+  return NextResponse.json({ message: 'Genkit API temporarily disabled for deployment' });
+}
