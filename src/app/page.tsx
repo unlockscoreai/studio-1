@@ -33,7 +33,7 @@ function LandingHeader() {
             <Link href="#features" className="text-foreground/60 transition-colors hover:text-foreground/80">Features</Link>
             <Link href="#pricing" className="text-foreground/60 transition-colors hover:text-foreground/80">Pricing</Link>
             <Link href="/business-intake" className="text-foreground/60 transition-colors hover:text-foreground/80">Business AI</Link>
-            <Link href="/sign-in" className="text-foreground/60 transition-colors hover:text-foreground/80">Affiliates</Link>
+            <Link href="/partners" className="text-foreground/60 transition-colors hover:text-foreground/80">Partners</Link>
           </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
@@ -51,7 +51,7 @@ function LandingHeader() {
             <Link href="#features" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Features</Link>
             <Link href="#pricing" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Pricing</Link>
             <Link href="/business-intake" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Business AI</Link>
-            <Link href="/sign-in" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Affiliates</Link>
+            <Link href="/partners" className="block px-3 py-2 rounded-md text-base font-medium text-foreground/60 hover:text-foreground/80">Partners</Link>
           </div>
         </div>
       )}
@@ -152,21 +152,6 @@ export default function Home() {
       cta: 'Choose Pro Plan',
       href: '/sign-up',
     },
-    {
-      name: 'VIP',
-      price: '$599',
-      period: '/month',
-      description: 'The ultimate plan for both personal credit repair and business funding.',
-      features: [
-        'All Pro Features, plus:',
-        'Full Business AI Portal Access',
-        'AI Business Fundability Scan',
-        'Done-for-You Vendor Applications',
-        'AI Funding Pre-Approval Engine',
-      ],
-      cta: 'Go VIP',
-      href: '/sign-up',
-    },
   ];
 
   return (
@@ -253,7 +238,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid max-w-md gap-8 mx-auto mt-12 md:max-w-5xl md:grid-cols-3">
+            <div className="grid max-w-4xl gap-8 mx-auto mt-12 md:grid-cols-2">
                 {pricingTiers.map((tier) => (
                     <Card key={tier.name} className={cn("flex flex-col", tier.mostPopular && "border-primary ring-2 ring-primary")}>
                         <CardHeader className="relative">
@@ -283,35 +268,11 @@ export default function Home() {
                     </Card>
                 ))}
             </div>
-
-            <div className="grid gap-12 mt-16 md:grid-cols-2">
-              <Card className="flex flex-col p-6">
-                <CardHeader className="p-0">
-                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Briefcase /> For Affiliates</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 p-0 mt-4">
-                  <p className="text-muted-foreground">Join our affiliate program and earn commissions by referring personal and business clients. Powerful dashboard and real-time tracking included.</p>
-                </CardContent>
-                <CardFooter className="p-0 mt-6">
-                  <Button className="w-full" asChild>
-                    <Link href="/sign-up">Become an Affiliate</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              <Card className="flex flex-col p-6">
-                <CardHeader className="p-0">
-                  <CardTitle className="font-headline text-2xl flex items-center gap-2"><Building /> White Label & Licensing</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 p-0 mt-4">
-                  <p className="text-muted-foreground">For partners managing 100+ clients. Get a fully branded version of our platform with dedicated infrastructure and support.</p>
-                </CardContent>
-                <CardFooter className="p-0 mt-6">
-                  <Button className="w-full" asChild variant="outline">
-                    <Link href="#">Contact Sales</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+             <div className="text-center mt-12">
+                <p className="text-lg text-foreground/80">Are you an affiliate or looking for a white-label solution?</p>
+                <Button variant="link" asChild className="text-lg">
+                    <Link href="/partners">View Partner & VIP Pricing</Link>
+                </Button>
             </div>
           </div>
         </section>
