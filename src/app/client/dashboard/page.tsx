@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -177,7 +178,7 @@ export default function ClientDashboardPage() {
           )}
 
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
           <Card className="bg-gradient-to-br from-accent/80 to-primary/80 text-primary-foreground border-none shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center gap-2">
@@ -191,6 +192,24 @@ export default function ClientDashboardPage() {
               </p>
               <Button variant="secondary" className="w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90">
                 Upgrade Now
+              </Button>
+            </CardContent>
+          </Card>
+           <Card>
+            <CardHeader>
+              <CardTitle className="font-headline flex items-center gap-2">
+                <TrendingUp className="w-6 h-6" />
+                Unlock Score Boosters
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Discover powerful tools and services to build your credit profile faster. Report rent, get credit-builder loans, and more.
+              </p>
+              <Button asChild className="w-full" variant="outline">
+                <Link href="/client/credit-boosters">
+                  View Credit Boosters
+                </Link>
               </Button>
             </CardContent>
           </Card>

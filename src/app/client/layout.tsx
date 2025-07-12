@@ -16,6 +16,7 @@ import {
   FileText,
   Briefcase,
   Lightbulb,
+  TrendingUp,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -58,6 +59,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/credit-analysis')) return 'Credit Analysis';
     if (pathname.startsWith('/client/get-credit-reports')) return 'Get Credit Reports';
     if (pathname.startsWith('/client/tradeline-strategy')) return 'Tradeline Strategy';
+    if (pathname.startsWith('/client/credit-boosters')) return 'Credit Boosters';
     return 'Client Dashboard';
   };
 
@@ -163,6 +165,19 @@ export default function ClientLayout({
                   <Link href="/client/tradeline-strategy">
                     <Lightbulb />
                     <span>Tradeline Strategy</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/credit-boosters"
+                  asChild
+                  isActive={pathname.startsWith('/client/credit-boosters')}
+                  tooltip={{ children: 'Credit Boosters' }}
+                >
+                  <Link href="/client/credit-boosters">
+                    <TrendingUp />
+                    <span>Credit Boosters</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
