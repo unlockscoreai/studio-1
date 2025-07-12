@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -139,8 +140,8 @@ const initialFoundationState: Record<string, string> = {
 const initialVendorState: Record<string, boolean> = {
     uline: true, grainger: true, quill: true, summa: true, // Tier 1 (4)
     home_depot: true, lowes: true, amazon: true, // Tier 2 (3)
-    wex: true, fuelman: true, shell_biz: false, // Tier 3 (2)
-    chase_ink: true, capital_one_spark: false, brex: false, // Tier 4 (2)
+    wex: true, fuelman: true, // Tier 3 (2)
+    chase_ink: true, // Tier 4 (1)
 };
 
 
@@ -190,12 +191,23 @@ const ReadinessPieChart = ({ data }: { data: { name: string, value: number }[] }
     return (
         <ResponsiveContainer width="100%" height={200}>
             <PieChart>
-                <Pie data={data} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value" nameKey="name" label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}>
+                <Pie 
+                    data={data} 
+                    cx="50%" 
+                    cy="50%" 
+                    labelLine={false} 
+                    outerRadius={80} 
+                    fill="#8884d8" 
+                    dataKey="value" 
+                    nameKey="name" 
+                    label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}
+                    fontSize={12}
+                >
                     {data.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>
-                <Tooltip formatter={(value, name) => [`${value}% Complete`, name]} />
+                <Tooltip formatter={(value, name) => [`${value}%`, `Section Weight`]} />
                 <Legend />
             </PieChart>
         </ResponsiveContainer>
@@ -238,25 +250,28 @@ export default function MyBusinessPage() {
 
   const readinessData = useMemo(() => {
     const foundationItems = checklistData.find(c => c.category === 'Business Foundation')?.items.map(i => i.id) || [];
-    const isFoundationComplete = foundationItems.every(id => completedItems[id]);
+    const completedFoundation = foundationItems.filter(id => completedItems[id]).length;
+    const isFoundationComplete = completedFoundation >= 6;
 
     const bureauItems = checklistData.find(c => c.category === 'Business Credit Bureaus')?.items.map(i => i.id) || [];
-    const isBureausComplete = bureauItems.some(id => completedItems[id]);
+    const completedBureaus = bureauItems.filter(id => completedItems[id]).length;
+    const isBureausComplete = completedBureaus >= 1;
 
     const tradelineTiers = checklistData.find(c => c.category === 'Tradeline Building')?.items || [];
-    const isTradelinesComplete = tradelineTiers.every(tier => {
+    let completedTiers = 0;
+    tradelineTiers.forEach(tier => {
         const vendorIds = tier.vendors?.map(v => v.id) || [];
         const completedInTier = vendorIds.filter(vId => selectedVendors[vId]).length;
-        return completedInTier >= 3;
+        if (completedInTier >= 3) {
+            completedTiers++;
+        }
     });
+    const isTradelinesComplete = completedTiers >= 4;
 
     const financialItems = checklistData.find(c => c.category === 'Financial Readiness')?.items.map(i => i.id) || [];
-    const isFinancialsComplete = financialItems.every(id => completedItems[id]);
+    const completedFinancials = financialItems.filter(id => completedItems[id]).length;
+    const isFinancialsComplete = completedFinancials >= 3;
     
-    const totalTasks = foundationItems.length + bureauItems.length + tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0) + financialItems.length;
-    const completedTasks = Object.values(completedItems).filter(Boolean).length + Object.values(selectedVendors).filter(Boolean).length;
-    const hasSolidProfile = completedTasks >= 28;
-
     let overallProgress = 0;
     if (isFoundationComplete) overallProgress += 25;
     if (isBureausComplete) overallProgress += 25;
@@ -264,11 +279,20 @@ export default function MyBusinessPage() {
     if (isFinancialsComplete) overallProgress += 25;
     
     const pieData = [
-        { name: 'Foundation', value: isFoundationComplete ? 100 : 0 },
-        { name: 'Bureaus', value: isBureausComplete ? 100 : 0 },
-        { name: 'Tradelines', value: isTradelinesComplete ? 100 : 0 },
-        { name: 'Financials', value: isFinancialsComplete ? 100 : 0 },
-    ];
+        { name: 'Foundation', value: isFoundationComplete ? 25 : 0 },
+        { name: 'Bureaus', value: isBureausComplete ? 25 : 0 },
+        { name: 'Tradelines', value: isTradelinesComplete ? 25 : 0 },
+        { name: 'Financials', value: isFinancialsComplete ? 25 : 0 },
+    ].filter(d => d.value > 0);
+
+    // If no sections are complete, show a placeholder so the chart isn't empty
+    if(pieData.length === 0){
+        pieData.push({name: "Incomplete", value: 100});
+    }
+
+    const totalTasks = foundationItems.length + bureauItems.length + tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0) + financialItems.length;
+    const completedTasks = Object.values(completedItems).filter(Boolean).length + Object.values(selectedVendors).filter(Boolean).length;
+    const hasSolidProfile = completedTasks >= 28;
 
     return {
         pieData,
@@ -399,3 +423,4 @@ export default function MyBusinessPage() {
     </div>
   );
 }
+
