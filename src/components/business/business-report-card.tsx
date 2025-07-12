@@ -1,12 +1,16 @@
 
 "use client";
 
+import { useRef } from "react";
 import type { AnalyzeBusinessCreditReportOutput } from "@/ai/flows/analyze-business-credit-report";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, CheckCircle, TrendingUp, Handshake, Target, ShieldAlert, Calendar } from "lucide-react";
+import { AlertCircle, CheckCircle, TrendingUp, Handshake, Target, ShieldAlert, Calendar, Download } from "lucide-react";
 import Link from "next/link";
+import { generatePdf } from "@/lib/pdf-generator";
+import { useToast } from "@/hooks/use-toast";
+
 
 interface BusinessReportCardProps {
     analysis: AnalyzeBusinessCreditReportOutput;
@@ -23,6 +27,8 @@ const InfoItem = ({ label, value }: { label: string, value: string | number | nu
 
 export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
     const { unlockScore, socialScore, unlockTier, businessSummary, creditScoreBreakdown, riskFactors, actionPlan, coachCallToAction } = analysis;
+    const reportRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
     
     const getScoreColor = () => {
         if (unlockScore >= 800) return 'bg-green-600';
@@ -30,8 +36,27 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
         return 'bg-red-600';
     };
 
+    const handleDownloadPdf = () => {
+        const reportElement = reportRef.current;
+        if (!reportElement) {
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Could not find the report element to download.',
+            });
+            return;
+        }
+
+        toast({
+            title: 'Generating PDF...',
+            description: 'Your report is being prepared for download.',
+        });
+
+        generatePdf(reportElement, `Unlock_Score_Report_${businessSummary.businessName.replace(/\s+/g, '_')}.pdf`);
+    };
+
     return (
-        <Card className="w-full border-t-4 border-primary">
+        <Card className="w-full border-t-4 border-primary" ref={reportRef}>
             <CardHeader className="text-center pb-4">
                 <CardTitle className="font-headline text-2xl">Unlock Score™ Report for {businessSummary.businessName}</CardTitle>
                 <CardDescription>An AI-powered analysis of your business's credit and funding readiness.</CardDescription>
@@ -120,10 +145,10 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                  <Separator />
 
                 {/* Coach CTA */}
-                <section className="text-center bg-secondary p-6 rounded-lg">
+                <section className="text-center bg-secondary p-6 rounded-lg" data-html2canvas-ignore="true">
                     <h3 className="font-headline text-lg font-semibold mb-3 flex items-center justify-center gap-2"><Calendar className="text-primary"/> Book Your Custom Funding Plan</h3>
                     <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">{coachCallToAction}</p>
-                    <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center justify-center gap-4 flex-wrap">
                         <Button asChild>
                             <Link href="/business-client/book-consultation">
                                 Book an Appointment
@@ -133,6 +158,9 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
                             <Link href="/business-client/dashboard">
                                 Access Business Portal
                             </Link>
+                        </Button>
+                         <Button variant="outline" onClick={handleDownloadPdf}>
+                            <Download className="mr-2 h-4 w-4" /> Download Report
                         </Button>
                     </div>
                 </section>
