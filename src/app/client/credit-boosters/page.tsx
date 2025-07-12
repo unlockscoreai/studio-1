@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, TrendingUp, Info } from "lucide-react";
+import { ExternalLink, TrendingUp, Info, Banknote, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const creditBoosters = [
@@ -10,6 +10,8 @@ const creditBoosters = [
     url: "https://www.ava.finance/",
     type: "Credit-Builder Card",
     price: "$9/month",
+    limit: "Up to $2,500",
+    reportsTo: ["Experian", "Equifax", "TransUnion"],
     potentialBoost: "10-50+ points",
   },
   {
@@ -18,6 +20,8 @@ const creditBoosters = [
     url: "https://kikoff.com/",
     type: "Credit-Builder Loan",
     price: "$5/month",
+    limit: "$750 revolving line",
+    reportsTo: ["Experian", "Equifax"],
     potentialBoost: "20-60+ points",
   },
   {
@@ -26,6 +30,8 @@ const creditBoosters = [
     url: "https://www.self.inc/",
     type: "Credit-Builder Loan",
     price: "Starts at $25/month",
+    limit: "Varies by plan ($520+)",
+    reportsTo: ["Experian", "Equifax", "TransUnion"],
     potentialBoost: "30-70+ points",
   },
   {
@@ -34,6 +40,8 @@ const creditBoosters = [
     url: "https://www.boompay.app/",
     type: "Rent Reporting",
     price: "$2/month + initial fee",
+    limit: "Your Rent Amount",
+    reportsTo: ["Experian", "Equifax", "TransUnion"],
     potentialBoost: "10-40+ points",
   },
   {
@@ -42,6 +50,8 @@ const creditBoosters = [
     url: "https://extra.app/",
     type: "Credit-Building Debit Card",
     price: "Starts at $20/month",
+    limit: "Based on bank balance",
+    reportsTo: ["Experian", "Equifax"],
     potentialBoost: "20-50+ points",
   },
   {
@@ -50,6 +60,8 @@ const creditBoosters = [
     url: "https://trygrain.com/",
     type: "Alternative Credit Line",
     price: "Interest on balance",
+    limit: "Up to $1,000",
+    reportsTo: ["TransUnion"],
     potentialBoost: "25-60+ points",
   },
 ];
@@ -79,6 +91,16 @@ export default function CreditBoostersPage() {
               </CardHeader>
               <CardContent className="flex-grow space-y-4">
                 <p className="text-muted-foreground">{booster.description}</p>
+                 <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                        <Banknote className="h-4 w-4 text-muted-foreground" />
+                        <span><strong>Limit:</strong> {booster.limit}</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                        <span><strong>Reports to:</strong> {booster.reportsTo.join(', ')}</span>
+                    </div>
+                </div>
                  <div className="flex items-start gap-2 text-sm text-green-700 bg-green-50 p-3 rounded-md border border-green-200">
                     <TrendingUp className="h-4 w-4 mt-0.5 shrink-0" />
                     <span><strong>Potential Boost:</strong> {booster.potentialBoost}</span>
