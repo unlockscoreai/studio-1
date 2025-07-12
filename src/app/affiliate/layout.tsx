@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -50,7 +51,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/client-management') return 'Client Management';
     if (pathname === '/affiliate/add-client') return 'Add New Client';
     if (pathname === '/affiliate/700-club') return 'UnlockScore AI 700 Club';
-    if (pathname === '/affiliate/payouts') return 'Payouts';
+    if (pathname === '/affiliate/billing') return 'Billing & Credits';
     if (pathname === '/affiliate/reports') return 'Reports';
     if (pathname === '/affiliate/messaging') return 'Messaging';
     if (pathname === '/affiliate/tradeline-links') return 'Tradeline Links';
@@ -180,13 +181,13 @@ export default function AffiliateLayout({
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  href="/affiliate/payouts"
-                  isActive={pathname === '/affiliate/payouts'}
-                  tooltip={{ children: 'Payouts' }}
+                  href="/affiliate/billing"
+                  isActive={pathname === '/affiliate/billing'}
+                  tooltip={{ children: 'Billing & Credits' }}
                 >
-                  <Link href="/affiliate/payouts">
+                  <Link href="/affiliate/billing">
                     <DollarSign />
-                    <span>Payouts</span>
+                    <span>Billing</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

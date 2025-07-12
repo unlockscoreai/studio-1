@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import {
@@ -17,6 +18,7 @@ import {
   Loader2,
   CheckCircle,
   Zap,
+  AlertTriangle,
 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -60,6 +62,9 @@ type MailingStatus = {
     trackingNumber?: string;
     cost?: number;
 };
+// In a real app, this would be fetched based on the client's associated affiliate.
+const mockAffiliateCreditBalance = 48;
+
 
 function SubscriptionSimulator({
   subscription,
@@ -132,6 +137,7 @@ export default function LettersPage() {
 
 
   const isSubscribed = subscription === 'pro' || subscription === 'vip';
+  const hasCredits = mockAffiliateCreditBalance > 0;
 
   return (
     <div className="space-y-6">
@@ -144,23 +150,29 @@ export default function LettersPage() {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline flex items-center gap-2"><Zap className="w-5 h-5 text-primary"/> Automation Settings</CardTitle>
-                <CardDescription>Enable auto-disputes to have new letters sent automatically as soon as they are generated.</CardDescription>
+                <CardDescription>Enable auto-disputes to have new letters sent automatically using your affiliate's mail credits.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="flex items-center space-x-3">
-                    <Switch id="auto-dispute-toggle" checked={autoDispute} onCheckedChange={setAutoDispute} aria-label="Automated Disputes Toggle"/>
-                    <Label htmlFor="auto-dispute-toggle">Automated Disputes</Label>
+                    <Switch id="auto-dispute-toggle" checked={autoDispute} onCheckedChange={setAutoDispute} aria-label="Automated Disputes Toggle" disabled={!hasCredits}/>
+                    <Label htmlFor="auto-dispute-toggle" className={!hasCredits ? 'text-muted-foreground' : ''}>Automated Disputes</Label>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                    {autoDispute ? "Automatic mailing is active. You can turn this off to approve letters manually." : "Turn this on to have us mail your letters for you automatically."}
-                </p>
+                {!hasCredits ? (
+                    <p className="text-sm text-destructive mt-2 flex items-center gap-2">
+                       <AlertTriangle className="w-4 h-4" /> Your affiliate is out of mail credits. Automation is disabled.
+                    </p>
+                ) : (
+                    <p className="text-sm text-muted-foreground mt-2">
+                        {autoDispute ? "Automatic mailing is active. 1 credit will be used per letter." : "Turn this on to have us mail your letters for you automatically."}
+                    </p>
+                )}
             </CardContent>
         </Card>
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">My Letters</CardTitle>
             <CardDescription>
-              Review your generated letters here. {autoDispute ? 'Automated mailing is active.' : 'Approve letters to send them for mailing.'}
+              Review your generated letters here. {autoDispute && hasCredits ? 'Automated mailing is active.' : 'Approve letters to send them for mailing.'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -168,7 +180,7 @@ export default function LettersPage() {
               const currentStatus = mailingStatus[letter.id];
               const isMailedManually = currentStatus?.state === 'sent';
               const isLoading = currentStatus?.state === 'loading';
-              const isMailedAutomatically = letter.status === 'Awaiting Approval' && autoDispute;
+              const isMailedAutomatically = letter.status === 'Awaiting Approval' && autoDispute && hasCredits;
               const isAlreadyMailed = letter.status === 'Mailed';
               const showAsMailed = isMailedManually || isMailedAutomatically || isAlreadyMailed;
 
@@ -190,14 +202,14 @@ export default function LettersPage() {
                             <Button
                             size="sm"
                             onClick={() => handleMailLetter(letter.id, letter.title, letter.content, letter.cost)}
-                            disabled={isLoading}
+                            disabled={isLoading || !hasCredits}
                             >
                                 {isLoading ? (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 ) : (
                                     <Send className="mr-2 h-4 w-4" />
                                 )}
-                            Approve & Mail for ${letter.cost.toFixed(2)}
+                            Approve & Mail (1 Credit)
                             </Button>
                         ) : (
                             <Button size="sm" variant="outline" disabled>
@@ -211,7 +223,7 @@ export default function LettersPage() {
                         <CheckCircle className='h-4 w-4' />
                         <AlertTitle>Mailing Confirmation</AlertTitle>
                         <AlertDescription>
-                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span> - Cost: <span className='font-mono'>${currentStatus.cost?.toFixed(2)}</span>
+                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span> - Cost: <span className='font-mono'>1 Credit</span>
                         </AlertDescription>
                     </Alert>
                 )}
