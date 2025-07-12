@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, TrendingUp, Info, Banknote, ShieldCheck } from "lucide-react";
@@ -63,6 +64,46 @@ const creditBoosters = [
     limit: "Up to $1,000",
     reportsTo: ["TransUnion"],
     potentialBoost: "25-60+ points",
+  },
+  {
+    name: "Nav Prime",
+    description: "The only all-in-one service that gives you up to two business tradelines and detailed business/personal credit reports.",
+    url: "https://www.nav.com/prime/",
+    type: "Business Tradeline Service",
+    price: "$49.99/month",
+    limit: "Nav Prime Card (up to $2,000)",
+    reportsTo: ["D&B", "Experian Biz", "Equifax Biz"],
+    potentialBoost: "Establishes multiple tradelines",
+  },
+    {
+    name: "eCredable Business Lift",
+    description: "Reports your business utility and telecom payments (power, internet, mobile phone) to major business credit bureaus.",
+    url: "https://business.ecredable.com/",
+    type: "Business Utility Reporting",
+    price: "$29.95/month",
+    limit: "Your Bill Amounts",
+    reportsTo: ["Equifax Biz", "Creditsafe"],
+    potentialBoost: "Builds business credit with existing bills",
+  },
+    {
+    name: "Crown Office Supplies",
+    description: "A popular Net-30 vendor for office supplies. Ideal for establishing an initial business credit profile with a small purchase.",
+    url: "https://crownofficesupplies.com/",
+    type: "Net-30 Vendor",
+    price: "Min. $30 purchase",
+    limit: "Net-30 Terms",
+    reportsTo: ["Equifax Biz", "Credit Safe", "Ansonia"],
+    potentialBoost: "Adds a foundational vendor tradeline",
+  },
+    {
+    name: "Uline",
+    description: "A well-known Net-30 vendor for shipping and industrial supplies. Requires an established business entity to get approved.",
+    url: "https://www.uline.com/",
+    type: "Net-30 Vendor",
+    price: "Varies by purchase",
+    limit: "Net-30 Terms",
+    reportsTo: ["D&B", "Experian Biz"],
+    potentialBoost: "Adds a strong vendor tradeline",
   },
 ];
 
