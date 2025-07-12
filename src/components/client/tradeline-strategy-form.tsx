@@ -76,6 +76,15 @@ export function TradelineStrategyForm() {
     }
   }
 
+  const handlePurchase = (tradelineType: string) => {
+    // In a real app, this would trigger the Stripe checkout flow.
+    // For this prototype, we'll just show a confirmation toast.
+    toast({
+        title: "Redirecting to Checkout...",
+        description: `You are being redirected to a secure Stripe page to complete your purchase for the ${tradelineType}.`
+    });
+  }
+
   return (
     <div className="space-y-8">
       <Form {...form}>
@@ -158,7 +167,7 @@ export function TradelineStrategyForm() {
                         <p><strong>Limit:</strong> ${strategy.revolvingTradeline.limit.toLocaleString()}</p>
                         <p><strong>Age:</strong> {strategy.revolvingTradeline.ageInMonths} months</p>
                         <p className="font-bold text-lg mt-2">Cost: ${strategy.revolvingTradeline.cost.toLocaleString()}</p>
-                        <Button className="w-full mt-4"><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
+                        <Button className="w-full mt-4" onClick={() => handlePurchase("Revolving Tradeline")}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
                       </CardContent>
                     </Card>
                   ) : (
@@ -178,7 +187,7 @@ export function TradelineStrategyForm() {
                         <p><strong>Amount:</strong> ${strategy.autoTradeline.limit.toLocaleString()}</p>
                         <p><strong>Age:</strong> {strategy.autoTradeline.ageInMonths} months</p>
                         <p className="font-bold text-lg mt-2">Cost: ${strategy.autoTradeline.cost.toLocaleString()}</p>
-                        <Button className="w-full mt-4"><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
+                        <Button className="w-full mt-4" onClick={() => handlePurchase("Auto Tradeline")}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
                       </CardContent>
                     </Card>
                   ) : (
