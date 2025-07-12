@@ -54,12 +54,12 @@ You are reviewing a credit report PDF uploaded by a client. Your job is to:
 5.  **Use a Human Tone**: Write in a professional, human tone. Be direct, confident, and slightly personal. Use strong legal and emotional language like "This is a formal demand...", "I am asserting my rights...", "This entry is inaccurate, misleading, and incomplete...". Avoid AI-like phrasing.
 6.  **Generate Bureau-Specific Letters**:
     *   Create a separate dispute letter for EACH bureau (Equifax, TransUnion, Experian) found in the PDF.
-    *   **IMPORTANT**: ONLY generate a letter for a bureau if its data is clearly present in the uploaded file. If there's no Experian section, do not create an `experianLetter`.
+    *   **IMPORTANT**: ONLY generate a letter for a bureau if its data is clearly present in the uploaded file. If there's no Experian section, do not create an 'experianLetter'.
     *   Each letter must only list accounts and inquiries specific to that bureau.
 7.  **Generate Additional Documents**:
-    *   `inquiryDisputeLetter`: A single, separate letter listing all questionable hard inquiries.
-    *   `section609Request`: A formal letter demanding the method of verification for items the bureaus might claim are "verified".
-    *   `creditRebuildingPlan`: An optional, simple action plan for the client to improve their credit.
+    *   'inquiryDisputeLetter': A single, separate letter listing all questionable hard inquiries.
+    *   'section609Request': A formal letter demanding the method of verification for items the bureaus might claim are "verified".
+    *   'creditRebuildingPlan': An optional, simple action plan for the client to improve their credit.
 
 **Client's Personal Information for Letterhead**:
 {{{personalInformation}}}
