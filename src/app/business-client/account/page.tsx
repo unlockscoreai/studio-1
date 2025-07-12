@@ -49,6 +49,8 @@ const checklistData = [
                 { id: 'quill', name: 'Quill'},
                 { id: 'summa', name: 'Summa Office Supplies'},
                 { id: 'crown', name: 'Crown Office Supplies'},
+                { id: 'creative_analytics', name: 'Creative Analytics'},
+                { id: 'shirtsy', name: 'Shirtsy'},
             ]
         },
         { 
@@ -60,6 +62,9 @@ const checklistData = [
                 { id: 'lowes', name: 'Lowe\'s Commercial'},
                 { id: 'staples', name: 'Staples Business'},
                 { id: 'amazon', name: 'Amazon Business'},
+                { id: 'walmart_biz', name: 'Walmart Business'},
+                { id: 'bestbuy_biz', name: 'Best Buy Business'},
+                { id: 'officedepot_biz', name: 'Office Depot Business'},
             ]
         },
         { 
@@ -70,6 +75,9 @@ const checklistData = [
                 { id: 'wex', name: 'WEX Fleet Cards'},
                 { id: 'fuelman', name: 'Fuelman'},
                 { id: 'shell', name: 'Shell Small Business Card'},
+                { id: 'bp_biz', name: 'BP Business Solutions'},
+                { id: 'sunoco_biz', name: 'Sunoco Universal Fleet Card'},
+                { id: 'chevron_biz', name: 'Chevron & Texaco Business Card'},
             ]
         },
         { 
@@ -80,6 +88,9 @@ const checklistData = [
                 { id: 'amex_biz', name: 'Amex Business Platinum/Gold'},
                 { id: 'chase_ink', name: 'Chase Ink Business'},
                 { id: 'capital_one_spark', name: 'Capital One Spark'},
+                { id: 'brex', name: 'Brex Card'},
+                { id: 'us_bank_biz', name: 'U.S. Bank Business Cards'},
+                { id: 'bank_of_america_biz', name: 'Bank of America Business Cards'},
             ]
         },
     ],
