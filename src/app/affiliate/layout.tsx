@@ -52,7 +52,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/client-management') return 'Client Management';
     if (pathname === '/affiliate/add-client') return 'Add New Client';
     if (pathname === '/affiliate/700-club') return 'UnlockScore AI 700 Club';
-    if (pathname === '/affiliate/billing') return 'Billing & Credits';
+    if (pathname === '/affiliate/mailing-center') return 'Mailing Center';
     if (pathname === '/affiliate/reports') return 'Reports';
     if (pathname === '/affiliate/messaging') return 'Messaging';
     if (pathname === '/affiliate/tradeline-links') return 'Tradeline Links';
@@ -112,6 +112,19 @@ export default function AffiliateLayout({
                   <Link href="/affiliate/client-management">
                     <Users />
                     <span>Clients</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  href="/affiliate/mailing-center"
+                  isActive={pathname === '/affiliate/mailing-center'}
+                  tooltip={{ children: 'Mailing Center' }}
+                >
+                  <Link href="/affiliate/mailing-center">
+                    <Mail />
+                    <span>Mailing Center</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
