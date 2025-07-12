@@ -37,12 +37,51 @@ const checklistData = [
   },
   {
     category: 'Tradeline Building',
-    description: 'Building a strong payment history with vendor and financial accounts.',
+    description: 'Building a strong payment history with vendor and financial accounts. Check off the accounts you have successfully opened.',
     items: [
-      { id: 'tier1', label: '3+ Tier 1 Vendor Accounts', description: 'You have at least 3 active net-30/60 accounts with vendors that report to business credit bureaus (e.g., Uline, Grainger).', link: 'https://www.nav.com/resource/vendor-accounts/' },
-      { id: 'tier2', label: '2+ Tier 2 Store Credit Accounts', description: 'You have at least 2 store credit cards (e.g., Home Depot, Lowes) that report to business bureaus.', link: 'https://www.cardrates.com/advice/best-business-store-credit-cards/' },
-      { id: 'tier3', label: '1+ Tier 3 Fleet/Gas Card', description: 'You have a fleet or gas card (e.g., WEX, Fuelman) for business vehicle expenses.', link: 'https://www.wexinc.com/' },
-      { id: 'tier4', label: '1+ Tier 4 Business Credit Card', description: 'You have a major business credit card (e.g., Visa, Mastercard, Amex) in the business name.', link: 'https://www.nerdwallet.com/best/business/credit-cards' },
+        { 
+            id: 'tier1', 
+            label: 'Tier 1: Starter Vendor Accounts', 
+            description: 'Aim for at least 3-5 of these to build your initial Paydex score.', 
+            vendors: [
+                { id: 'uline', name: 'Uline'},
+                { id: 'grainger', name: 'Grainger'},
+                { id: 'quill', name: 'Quill'},
+                { id: 'summa', name: 'Summa Office Supplies'},
+                { id: 'crown', name: 'Crown Office Supplies'},
+            ]
+        },
+        { 
+            id: 'tier2', 
+            label: 'Tier 2: Retail & Store Credit', 
+            description: 'After establishing Tier 1, add 2-3 of these store credit accounts.',
+            vendors: [
+                { id: 'home_depot', name: 'Home Depot Commercial'},
+                { id: 'lowes', name: 'Lowe\'s Commercial'},
+                { id: 'staples', name: 'Staples Business'},
+                { id: 'amazon', name: 'Amazon Business'},
+            ]
+        },
+        { 
+            id: 'tier3', 
+            label: 'Tier 3: Fleet & Gas Cards',
+            description: 'If applicable, add 1-2 fleet or gas cards.',
+            vendors: [
+                { id: 'wex', name: 'WEX Fleet Cards'},
+                { id: 'fuelman', name: 'Fuelman'},
+                { id: 'shell', name: 'Shell Small Business Card'},
+            ]
+        },
+        { 
+            id: 'tier4', 
+            label: 'Tier 4: Business Credit Cards',
+            description: 'The final tier. Aim for at least one major business card.',
+            vendors: [
+                { id: 'amex_biz', name: 'Amex Business Platinum/Gold'},
+                { id: 'chase_ink', name: 'Chase Ink Business'},
+                { id: 'capital_one_spark', name: 'Capital One Spark'},
+            ]
+        },
     ],
   },
     {
@@ -62,8 +101,7 @@ const initialChecklistState: Record<string, boolean> = {
   entity: true, ein: true, bankAccount: true, address: true, phone: true, website: true,
   // Bureaus
   duns: true, experian: true, equifax: false,
-  // Tradelines
-  tier1: true, tier2: false, tier3: false, tier4: false,
+  // Tradelines - Tiers themselves are not checkable
   // Financials
   cashflow: true, statements: true, financialDocs: false,
 };
@@ -75,6 +113,13 @@ const initialFoundationState: Record<string, string> = {
     address: '800 S Gay St, Knoxville, TN 37929',
     phone: '(615) 555-1234',
     website: 'contact@volunteerexpress.com',
+};
+
+const initialVendorState: Record<string, boolean> = {
+    uline: true, grainger: true, quill: true, // Tier 1
+    home_depot: false, // Tier 2
+    wex: true, // Tier 3
+    chase_ink: false, // Tier 4
 };
 
 
@@ -121,6 +166,7 @@ function ChecklistItem({ label, description, link, isCompleted, onToggle }: Chec
 export default function MyBusinessPage() {
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>(initialChecklistState);
   const [foundationDetails, setFoundationDetails] = useState(initialFoundationState);
+  const [selectedVendors, setSelectedVendors] = useState<Record<string, boolean>>(initialVendorState);
   const { toast } = useToast();
 
   const handleToggle = (id: string) => {
@@ -130,24 +176,36 @@ export default function MyBusinessPage() {
     }));
   };
 
+  const handleVendorToggle = (vendorId: string) => {
+    setSelectedVendors((prev) => ({
+      ...prev,
+      [vendorId]: !prev[vendorId],
+    }));
+  };
+
   const handleFoundationChange = (id: string, value: string) => {
     setFoundationDetails(prev => ({ ...prev, [id]: value }));
   };
 
   const handleSaveChanges = () => {
-    // In a real app, this would save the `foundationDetails` and `completedItems` to a database
+    // In a real app, this would save the `foundationDetails`, `completedItems`, and `selectedVendors` to a database
     console.log('Saving foundation details:', foundationDetails);
     console.log('Saving checklist status:', completedItems);
+    console.log('Saving vendor selections:', selectedVendors);
     toast({
-      title: 'Details Saved',
-      description: 'Your business foundation information has been updated.',
+      title: 'Progress Saved',
+      description: 'Your business checklist information has been updated.',
     });
   };
 
-  const totalItems = checklistData.flatMap(cat => cat.items).length;
-  // Completed items are based on the checkbox state.
+  const totalItems = checklistData.flatMap(cat => cat.category !== 'Tradeline Building' ? cat.items : []).length;
   const totalCompleted = Object.values(completedItems).filter(Boolean).length;
-  const completionPercentage = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
+  const totalVendors = checklistData.flatMap(c => c.items.flatMap(i => i.vendors || [])).length;
+  const completedVendors = Object.values(selectedVendors).filter(Boolean).length;
+  const overallTotal = totalItems + totalVendors;
+  const overallCompleted = totalCompleted + completedVendors;
+
+  const completionPercentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -167,7 +225,7 @@ export default function MyBusinessPage() {
                     </div>
                     <div>
                         <p className="font-semibold">Your Readiness Progress</p>
-                        <p className="text-muted-foreground">{totalCompleted} of {totalItems} tasks completed</p>
+                        <p className="text-muted-foreground">{overallCompleted} of {overallTotal} tasks completed</p>
                     </div>
                 </div>
             </CardContent>
@@ -186,45 +244,69 @@ export default function MyBusinessPage() {
                 </CardHeader>
                 
                 {category.category === 'Business Foundation' ? (
-                  <>
-                    <CardContent className="divide-y divide-border -p-6">
-                        {category.items.map((item) => {
-                            const Icon = completedItems[item.id] ? CheckCircle : XCircle;
-                            const colorClass = completedItems[item.id] ? 'text-green-600' : 'text-red-600';
-                            return (
-                                <div key={item.id} className="flex items-start gap-4 p-4 transition-colors hover:bg-muted/50">
-                                    <div className="flex-shrink-0 pt-1">
-                                        <Checkbox
-                                            checked={!!completedItems[item.id]}
-                                            onCheckedChange={() => handleToggle(item.id)}
-                                            className="h-6 w-6"
-                                        />
-                                    </div>
-                                    <div className="flex-grow space-y-2">
-                                        <div className="flex items-center gap-2">
-                                            <Icon className={cn('h-5 w-5', colorClass)} />
-                                            <Label htmlFor={item.id} className="font-semibold">{item.label}</Label>
-                                        </div>
-                                        <Input
-                                            id={item.id}
-                                            value={foundationDetails[item.id] || ''}
-                                            onChange={(e) => handleFoundationChange(item.id, e.target.value)}
-                                            placeholder={`Enter your ${item.label}...`}
-                                        />
-                                        <p className="text-sm text-muted-foreground">{item.description}</p>
-                                        {item.link && (
-                                            <Button variant="link" asChild className="p-0 h-auto">
-                                                <a href={item.link} target="_blank" rel="noopener noreferrer">
-                                                    Get Started <ExternalLink className="ml-1.5 h-4 w-4" />
-                                                </a>
-                                            </Button>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </CardContent>
-                  </>
+                  <CardContent className="divide-y divide-border -p-6">
+                      {category.items.map((item) => {
+                          const Icon = completedItems[item.id] ? CheckCircle : XCircle;
+                          const colorClass = completedItems[item.id] ? 'text-green-600' : 'text-red-600';
+                          return (
+                              <div key={item.id} className="flex items-start gap-4 p-4 transition-colors hover:bg-muted/50">
+                                  <div className="flex-shrink-0 pt-1">
+                                      <Checkbox
+                                          checked={!!completedItems[item.id]}
+                                          onCheckedChange={() => handleToggle(item.id)}
+                                          className="h-6 w-6"
+                                      />
+                                  </div>
+                                  <div className="flex-grow space-y-2">
+                                      <div className="flex items-center gap-2">
+                                          <Icon className={cn('h-5 w-5', colorClass)} />
+                                          <Label htmlFor={item.id} className="font-semibold">{item.label}</Label>
+                                      </div>
+                                      <Input
+                                          id={item.id}
+                                          value={foundationDetails[item.id] || ''}
+                                          onChange={(e) => handleFoundationChange(item.id, e.target.value)}
+                                          placeholder={`Enter your ${item.label}...`}
+                                      />
+                                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                                      {item.link && (
+                                          <Button variant="link" asChild className="p-0 h-auto">
+                                              <a href={item.link} target="_blank" rel="noopener noreferrer">
+                                                  Get Started <ExternalLink className="ml-1.5 h-4 w-4" />
+                                              </a>
+                                          </Button>
+                                      )}
+                                  </div>
+                              </div>
+                          )
+                      })}
+                  </CardContent>
+                ) : category.category === 'Tradeline Building' ? (
+                  <CardContent className="space-y-6">
+                    {category.items.map((tier) => (
+                      <div key={tier.id}>
+                        <h4 className="font-semibold">{tier.label}</h4>
+                        <p className="text-sm text-muted-foreground mb-3">{tier.description}</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {tier.vendors?.map((vendor) => (
+                            <div key={vendor.id} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={vendor.id}
+                                checked={!!selectedVendors[vendor.id]}
+                                onCheckedChange={() => handleVendorToggle(vendor.id)}
+                              />
+                              <label
+                                htmlFor={vendor.id}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                {vendor.name}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
                 ) : (
                   <CardContent className="divide-y divide-border -p-6">
                       {category.items.map((item) => (
