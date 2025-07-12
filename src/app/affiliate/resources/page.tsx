@@ -6,8 +6,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Copy, Check, Download, Send, Twitter, Facebook, Mail, Link as LinkIcon, Star } from 'lucide-react';
+import { Copy, Check, Download, Send, Twitter, Facebook, Mail } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const affiliateLink = "https://unlockscore.ai/intake?affiliate_id=creditup-solutions";
 
@@ -15,9 +16,14 @@ const socialCaptions = [
     "Tired of bad credit? I found this AI tool that writes dispute letters for you. Changed the game for me! #creditrepair #fintech #AI",
     "Boost your credit score the smart way. UnlockScore AI automates the dispute process. Check it out! #financialfreedom #creditscore",
     "Finally, a credit repair tool that actually works. Generated and sent my dispute letters in minutes. Highly recommend UnlockScore AI.",
+    "Don't let errors on your credit report dictate your financial future. This AI platform helped me take control. #creditboost #dispute",
+    "If you're looking for a side hustle, check out the @UnlockScoreAI affiliate program. Helping others fix their credit and earning rewards is a win-win. #affiliatemarketing",
 ];
 
-const emailScript = `Subject: A Tool That Helped Me With My Credit
+const emailScripts = [
+    {
+        title: "Friendly Intro Email",
+        script: `Subject: A Tool That Helped Me With My Credit
 
 Hey [Name],
 
@@ -28,7 +34,26 @@ It made the whole process super simple. If you're looking to clean up your credi
 Here's my link if you want to try it: ${affiliateLink}
 
 Best,
-[Your Name]`;
+[Your Name]`
+    },
+    {
+        title: "Direct SMS Script",
+        script: `Hey! I found this AI tool that makes fixing your credit report super easy. It writes the dispute letters for you. If you're looking to boost your score, you should check it out: ${affiliateLink}`
+    },
+    {
+        title: "Follow-Up Email",
+        script: `Subject: Following up on that credit tool
+
+Hey [Name],
+
+Just wanted to quickly follow up and see if you had a chance to look at UnlockScore AI. A few friends have used it and seen great results on their credit reports.
+
+Let me know if you have any questions about it! Here's the link again: ${affiliateLink}
+
+Cheers,
+[Your Name]`
+    }
+]
 
 const leaderboardData = [
     { rank: 1, name: 'CreditUp Solutions', referrals: 157, earnings: 2355 },
@@ -68,37 +93,58 @@ export default function ResourcesPage() {
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid md:grid-cols-2 gap-8">
                         <div className="space-y-4">
                             <h3 className="font-semibold">Social Media Captions</h3>
-                            {socialCaptions.map((caption, index) => (
-                                <Card key={index} className="bg-muted/50">
-                                    <CardContent className="p-3">
-                                        <p className="text-sm text-muted-foreground mb-2">{caption}</p>
-                                        <div className="flex justify-end gap-2">
-                                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleCopy(caption, `caption-${index}`)}>
-                                                {copied === `caption-${index}` ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-8"><Twitter className="h-4 w-4" /></Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-8"><Facebook className="h-4 w-4" /></Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                            <Carousel className="w-full">
+                                <CarouselContent>
+                                    {socialCaptions.map((caption, index) => (
+                                        <CarouselItem key={index}>
+                                            <Card className="bg-muted/50 h-full">
+                                                <CardContent className="p-4 flex flex-col h-full">
+                                                    <p className="text-sm text-muted-foreground mb-4 flex-grow">{caption}</p>
+                                                    <div className="flex justify-end gap-2 mt-auto">
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleCopy(caption, `caption-${index}`)}>
+                                                            {copied === `caption-${index}` ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                                                        </Button>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8"><Twitter className="h-4 w-4" /></Button>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8"><Facebook className="h-4 w-4" /></Button>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4" />
+                                <CarouselNext className="-right-4" />
+                            </Carousel>
                         </div>
-                        <div className="space-y-4">
+                         <div className="space-y-4">
                             <h3 className="font-semibold">Email & SMS Scripts</h3>
-                            <Card className="bg-muted/50">
-                                <CardContent className="p-3">
-                                    <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans mb-2">{emailScript}</pre>
-                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleCopy(emailScript, 'email')}>
-                                             {copied === 'email' ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                                        </Button>
-                                        <Button size="icon" variant="ghost" className="h-8 w-8"><Mail className="h-4 w-4" /></Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <Carousel className="w-full">
+                                <CarouselContent>
+                                    {emailScripts.map((item, index) => (
+                                        <CarouselItem key={index}>
+                                            <Card className="bg-muted/50 h-full">
+                                                <CardHeader className="pb-2">
+                                                    <CardTitle className="text-base">{item.title}</CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="p-4 flex flex-col h-full">
+                                                    <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans mb-4 flex-grow">{item.script}</pre>
+                                                    <div className="flex justify-end gap-2 mt-auto">
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleCopy(item.script, `email-${index}`)}>
+                                                            {copied === `email-${index}` ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                                                        </Button>
+                                                        <Button size="icon" variant="ghost" className="h-8 w-8"><Mail className="h-4 w-4" /></Button>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4" />
+                                <CarouselNext className="-right-4" />
+                            </Carousel>
                         </div>
                     </div>
 
