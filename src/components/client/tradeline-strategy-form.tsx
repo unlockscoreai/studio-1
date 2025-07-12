@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -22,7 +23,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2, Sparkles, Wand2, CreditCard, Car, ShoppingCart, CheckCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
-import { Input } from "../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   creditAnalysis: z.string().min(20, "Please provide a brief summary of your credit profile."),
@@ -31,16 +32,29 @@ const formSchema = z.object({
   hasPrimaryRevolving: z.enum(["true", "false"], { required_error: "Please select an option." }),
 })
 
+const creditGoals = [
+    "Get funding",
+    "Get a mortgage",
+    "Purchase new car",
+    "Qualify for SBA",
+    "Invest in real estate",
+    "Other"
+];
+
 export function TradelineStrategyForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [strategy, setStrategy] = useState<GenerateTradelineStrategyOutput | null>(null)
   const { toast } = useToast()
-
+  
+  // In a real application, you would fetch the user's existing data here
+  // and use it to set the defaultValues of the form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       creditAnalysis: "My FICO is 680 with 42% utilization. I have no late payments but only 2 years of credit history and no installment loans. I have a few authorized user accounts but no primary credit card with a high limit.",
-      creditGoal: "Qualify for a mortgage in the next 12 months.",
+      creditGoal: "Get funding",
+      hasAutoLoan: "false",
+      hasPrimaryRevolving: "false",
     },
   })
 
@@ -89,7 +103,7 @@ export function TradelineStrategyForm() {
                   />
                 </FormControl>
                 <FormDescription>
-                  Provide a brief summary of your credit situation for the most accurate recommendations.
+                  This may be pre-filled from your credit report analysis. Confirm or adjust it for the most accurate recommendations.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -100,10 +114,19 @@ export function TradelineStrategyForm() {
             name="creditGoal"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Primary Credit Goal (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., Get a business loan, qualify for a mortgage" {...field} />
-                </FormControl>
+                <FormLabel>Primary Credit Goal</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your main goal..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {creditGoals.map(goal => (
+                        <SelectItem key={goal} value={goal}>{goal}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
