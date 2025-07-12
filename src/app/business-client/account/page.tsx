@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CheckCircle, ExternalLink, XCircle, Save } from 'lucide-react';
@@ -122,7 +123,6 @@ const initialChecklistState: Record<string, boolean> = {
   entity: true, ein: true, bankAccount: true, address: true, phone: true, website: true,
   // Bureaus
   duns: true, experian: true, equifax: false,
-  // Tradelines - Tiers themselves are not checkable
   // Financials
   cashflow: true, statements: true, financialDocs: false,
 };
@@ -137,10 +137,10 @@ const initialFoundationState: Record<string, string> = {
 };
 
 const initialVendorState: Record<string, boolean> = {
-    uline: true, grainger: true, quill: true, // Tier 1
-    home_depot: false, // Tier 2
-    wex: true, // Tier 3
-    chase_ink: false, // Tier 4
+    uline: true, grainger: true, quill: true, summa: true, // Tier 1 (4)
+    home_depot: true, lowes: true, amazon: true, // Tier 2 (3)
+    wex: true, fuelman: true, shell_biz: false, // Tier 3 (2)
+    chase_ink: true, capital_one_spark: false, brex: false, // Tier 4 (2)
 };
 
 
@@ -184,6 +184,24 @@ function ChecklistItem({ label, description, link, isCompleted, onToggle }: Chec
   );
 }
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+const ReadinessPieChart = ({ data }: { data: { name: string, value: number }[] }) => {
+    return (
+        <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+                <Pie data={data} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value" nameKey="name" label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}>
+                    {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                </Pie>
+                <Tooltip formatter={(value, name) => [`${value}% Complete`, name]} />
+                <Legend />
+            </PieChart>
+        </ResponsiveContainer>
+    );
+};
+
 export default function MyBusinessPage() {
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>(initialChecklistState);
   const [foundationDetails, setFoundationDetails] = useState(initialFoundationState);
@@ -209,7 +227,6 @@ export default function MyBusinessPage() {
   };
 
   const handleSaveChanges = () => {
-    // In a real app, this would save the `foundationDetails`, `completedItems`, and `selectedVendors` to a database
     console.log('Saving foundation details:', foundationDetails);
     console.log('Saving checklist status:', completedItems);
     console.log('Saving vendor selections:', selectedVendors);
@@ -219,42 +236,75 @@ export default function MyBusinessPage() {
     });
   };
 
-  const totalItems = checklistData.flatMap(cat => cat.category !== 'Tradeline Building' ? cat.items : []).length;
-  const totalCompleted = Object.values(completedItems).filter(Boolean).length;
-  const totalVendors = checklistData.flatMap(c => c.items.flatMap(i => i.vendors || [])).length;
-  const completedVendors = Object.values(selectedVendors).filter(Boolean).length;
-  const overallTotal = totalItems + totalVendors;
-  const overallCompleted = totalCompleted + completedVendors;
+  const readinessData = useMemo(() => {
+    const foundationItems = checklistData.find(c => c.category === 'Business Foundation')?.items.map(i => i.id) || [];
+    const isFoundationComplete = foundationItems.every(id => completedItems[id]);
 
-  const completionPercentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
+    const bureauItems = checklistData.find(c => c.category === 'Business Credit Bureaus')?.items.map(i => i.id) || [];
+    const isBureausComplete = bureauItems.some(id => completedItems[id]);
+
+    const tradelineTiers = checklistData.find(c => c.category === 'Tradeline Building')?.items || [];
+    const isTradelinesComplete = tradelineTiers.every(tier => {
+        const vendorIds = tier.vendors?.map(v => v.id) || [];
+        const completedInTier = vendorIds.filter(vId => selectedVendors[vId]).length;
+        return completedInTier >= 3;
+    });
+
+    const financialItems = checklistData.find(c => c.category === 'Financial Readiness')?.items.map(i => i.id) || [];
+    const isFinancialsComplete = financialItems.every(id => completedItems[id]);
+    
+    const totalTasks = foundationItems.length + bureauItems.length + tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0) + financialItems.length;
+    const completedTasks = Object.values(completedItems).filter(Boolean).length + Object.values(selectedVendors).filter(Boolean).length;
+    const hasSolidProfile = completedTasks >= 28;
+
+    let overallProgress = 0;
+    if (isFoundationComplete) overallProgress += 25;
+    if (isBureausComplete) overallProgress += 25;
+    if (isTradelinesComplete) overallProgress += 25;
+    if (isFinancialsComplete) overallProgress += 25;
+    
+    const pieData = [
+        { name: 'Foundation', value: isFoundationComplete ? 100 : 0 },
+        { name: 'Bureaus', value: isBureausComplete ? 100 : 0 },
+        { name: 'Tradelines', value: isTradelinesComplete ? 100 : 0 },
+        { name: 'Financials', value: isFinancialsComplete ? 100 : 0 },
+    ];
+
+    return {
+        pieData,
+        overallProgress,
+        hasSolidProfile,
+        completedTasks,
+        totalTasks
+    };
+  }, [completedItems, selectedVendors]);
 
   return (
     <div className="space-y-6">
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">My Business Checklist</CardTitle>
+                <CardTitle className="font-headline">My Business Readiness Report</CardTitle>
                 <CardDescription>
-                Track your progress towards building a highly fundable business and improving your Unlock Score™.
+                Track your progress towards building a highly fundable business. Each section represents 25% of your total readiness.
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex items-center gap-4">
-                    <div
-                        className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/10 border-4 border-primary text-primary text-2xl font-bold"
-                    >
-                        {completionPercentage}%
-                    </div>
+                <div className="grid md:grid-cols-2 gap-4 items-center">
                     <div>
-                        <p className="font-semibold">Your Readiness Progress</p>
-                        <p className="text-muted-foreground">{overallCompleted} of {overallTotal} tasks completed</p>
+                        <ReadinessPieChart data={readinessData.pieData} />
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-lg font-semibold">Overall Readiness: {readinessData.overallProgress}%</p>
+                        <p className="text-muted-foreground">{readinessData.completedTasks} of {readinessData.totalTasks} total tasks completed.</p>
+                        {readinessData.hasSolidProfile && (
+                            <p className="text-green-600 font-semibold">Congratulations! You have a solid business profile.</p>
+                        )}
+                         <Button onClick={handleSaveChanges}>
+                            <Save className="mr-2 h-4 w-4" /> Save All Progress
+                        </Button>
                     </div>
                 </div>
             </CardContent>
-            <CardFooter>
-                <Button onClick={handleSaveChanges}>
-                    <Save className="mr-2 h-4 w-4" /> Save All Progress
-                </Button>
-            </CardFooter>
         </Card>
       
         {checklistData.map((category) => (
