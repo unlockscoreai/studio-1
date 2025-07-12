@@ -2,11 +2,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CheckCircle, ExternalLink, XCircle } from 'lucide-react';
+import { CheckCircle, ExternalLink, XCircle, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+
 
 // Data enriched with links from your example
 const checklistData = [
@@ -54,14 +58,21 @@ const checklistData = [
 
 // Initial state for the checklist items. In a real app, this would be fetched from a database.
 const initialChecklistState: Record<string, boolean> = {
-  // Foundation
-  entity: true, ein: true, bankAccount: true, address: true, phone: true, website: false,
   // Bureaus
   duns: true, experian: true, equifax: false,
   // Tradelines
   tier1: true, tier2: false, tier3: false, tier4: false,
   // Financials
   cashflow: true, statements: true, financialDocs: false,
+};
+
+const initialFoundationState: Record<string, string> = {
+    entity: 'Volunteer Express Logistics LLC',
+    ein: '98-7654321',
+    bankAccount: 'Chase Business Complete Banking',
+    address: '800 S Gay St, Knoxville, TN 37929',
+    phone: '(615) 555-1234',
+    website: 'contact@volunteerexpress.com',
 };
 
 
@@ -107,6 +118,8 @@ function ChecklistItem({ label, description, link, isCompleted, onToggle }: Chec
 
 export default function MyBusinessPage() {
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>(initialChecklistState);
+  const [foundationDetails, setFoundationDetails] = useState(initialFoundationState);
+  const { toast } = useToast();
 
   const handleToggle = (id: string) => {
     setCompletedItems((prev) => ({
@@ -115,8 +128,23 @@ export default function MyBusinessPage() {
     }));
   };
 
+  const handleFoundationChange = (id: string, value: string) => {
+    setFoundationDetails(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSaveChanges = () => {
+    // In a real app, this would save the `foundationDetails` to a database
+    console.log('Saving foundation details:', foundationDetails);
+    toast({
+      title: 'Details Saved',
+      description: 'Your business foundation information has been updated.',
+    });
+  };
+
   const totalItems = checklistData.flatMap(cat => cat.items).length;
-  const totalCompleted = Object.values(completedItems).filter(Boolean).length;
+  const foundationItemsCount = checklistData.find(cat => cat.category === 'Business Foundation')?.items.length || 0;
+  // Completed items are the checked items PLUS foundation items that have a value
+  const totalCompleted = Object.values(completedItems).filter(Boolean).length + Object.values(foundationDetails).filter(val => val.trim() !== '').length;
   const completionPercentage = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
 
   return (
@@ -149,20 +177,48 @@ export default function MyBusinessPage() {
                     <CardTitle className="font-headline text-xl">{category.category}</CardTitle>
                     <CardDescription>{category.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="divide-y divide-border -p-6">
-                    {category.items.map((item) => (
-                        <ChecklistItem
-                            key={item.id}
-                            label={item.label}
-                            description={item.description}
-                            link={item.link}
-                            isCompleted={!!completedItems[item.id]}
-                            onToggle={() => handleToggle(item.id)}
-                        />
-                    ))}
-                </CardContent>
+                
+                {category.category === 'Business Foundation' ? (
+                  <>
+                    <CardContent className="space-y-4">
+                        {category.items.map((item) => (
+                          <div key={item.id}>
+                            <Label htmlFor={item.id}>{item.label}</Label>
+                            <Input
+                              id={item.id}
+                              value={foundationDetails[item.id] || ''}
+                              onChange={(e) => handleFoundationChange(item.id, e.target.value)}
+                              placeholder={item.label}
+                              className="mt-1"
+                            />
+                            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                          </div>
+                        ))}
+                    </CardContent>
+                    <CardFooter>
+                       <Button onClick={handleSaveChanges}>
+                          <Save className="mr-2 h-4 w-4" /> Save Foundation Details
+                       </Button>
+                    </CardFooter>
+                  </>
+                ) : (
+                  <CardContent className="divide-y divide-border -p-6">
+                      {category.items.map((item) => (
+                          <ChecklistItem
+                              key={item.id}
+                              label={item.label}
+                              description={item.description}
+                              link={item.link}
+                              isCompleted={!!completedItems[item.id]}
+                              onToggle={() => handleToggle(item.id)}
+                          />
+                      ))}
+                  </CardContent>
+                )}
             </Card>
         ))}
     </div>
   );
 }
+
+    
