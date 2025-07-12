@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { sendLetterForMailing } from './actions';
 import { Switch } from '@/components/ui/switch';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 // Mock data for letters
 const mockLetters = [
@@ -32,7 +33,7 @@ const mockLetters = [
     title: 'Initial Dispute for Experian',
     date: '2024-07-25',
     status: 'Awaiting Approval',
-    content: 'This is the first dispute letter for Experian...',
+    content: 'Dear Experian,\n\nI am writing to dispute the following information in my file...',
   },
   {
     id: 'letter-2',
@@ -51,6 +52,10 @@ const mockLetters = [
 ];
 
 type SubscriptionTier = 'starter' | 'pro' | 'vip';
+type MailingStatus = {
+    state: 'idle' | 'loading' | 'sent';
+    trackingNumber?: string;
+};
 
 function SubscriptionSimulator({
   subscription,
@@ -94,26 +99,30 @@ function SubscriptionSimulator({
 
 export default function LettersPage() {
   const [subscription, setSubscription] = useState<SubscriptionTier>('pro');
-  const [mailingStatus, setMailingStatus] = useState<Record<string, 'idle' | 'loading' | 'sent'>>({});
+  const [mailingStatus, setMailingStatus] = useState<Record<string, MailingStatus>>({});
   const [autoDispute, setAutoDispute] = useState(false);
   const { toast } = useToast();
 
-  const handleMailLetter = async (letterId: string, title: string) => {
-    setMailingStatus(prev => ({...prev, [letterId]: 'loading'}));
+  const handleMailLetter = async (letterId: string, title: string, content: string) => {
+    setMailingStatus(prev => ({...prev, [letterId]: { state: 'loading' }}));
     try {
-        await sendLetterForMailing({letterId, title});
-        toast({
-            title: "Letter Sent!",
-            description: `"${title}" has been sent for certified mailing.`
-        });
-        setMailingStatus(prev => ({...prev, [letterId]: 'sent'}));
+        const result = await sendLetterForMailing({letterId, title, letterContent: content });
+        if (result.success) {
+            toast({
+                title: "Letter Sent!",
+                description: `${title} has been sent for certified mailing. Tracking #: ${result.trackingNumber}`
+            });
+            setMailingStatus(prev => ({...prev, [letterId]: { state: 'sent', trackingNumber: result.trackingNumber }}));
+        } else {
+            throw new Error(result.message);
+        }
     } catch (error) {
         toast({
             variant: "destructive",
             title: "Mailing Failed",
-            description: "Could not send letter for mailing. Please try again."
+            description: error instanceof Error ? error.message : "Could not send letter for mailing. Please try again."
         });
-        setMailingStatus(prev => ({...prev, [letterId]: 'idle'}));
+        setMailingStatus(prev => ({...prev, [letterId]: { state: 'idle' }}));
     }
   }
 
@@ -152,43 +161,56 @@ export default function LettersPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {mockLetters.map((letter) => {
-              const isMailedManually = mailingStatus[letter.id] === 'sent';
+              const currentStatus = mailingStatus[letter.id];
+              const isMailedManually = currentStatus?.state === 'sent';
+              const isLoading = currentStatus?.state === 'loading';
               const isMailedAutomatically = letter.status === 'Awaiting Approval' && autoDispute;
               const isAlreadyMailed = letter.status === 'Mailed';
               const showAsMailed = isMailedManually || isMailedAutomatically || isAlreadyMailed;
 
               return (
-              <Card key={letter.id} className="flex flex-col md:flex-row items-start md:items-center p-4 gap-4">
-                <div className="flex-1">
-                  <p className="font-semibold">{letter.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Generated on {letter.date}
-                  </p>
+              <Card key={letter.id} className="flex flex-col p-4 gap-4">
+                <div className='flex flex-col md:flex-row items-start md:items-center gap-4'>
+                    <div className="flex-1">
+                        <p className="font-semibold">{letter.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                            Generated on {letter.date}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Badge variant={showAsMailed ? 'default' : 'secondary'}>
+                            {showAsMailed ? (isMailedAutomatically ? 'Mailed Automatically' : 'Mailed') : letter.status}
+                        </Badge>
+                        
+                        {!showAsMailed ? (
+                            <Button
+                            size="sm"
+                            onClick={() => handleMailLetter(letter.id, letter.title, letter.content)}
+                            disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Send className="mr-2 h-4 w-4" />
+                                )}
+                            Approve & Mail
+                            </Button>
+                        ) : (
+                            <Button size="sm" variant="outline" disabled>
+                                <MailCheck className="mr-2 h-4 w-4" /> Mailed
+                            </Button>
+                        )}
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Badge variant={showAsMailed ? 'default' : 'secondary'}>
-                        {showAsMailed ? (isMailedAutomatically ? 'Mailed Automatically' : 'Mailed') : letter.status}
-                    </Badge>
-                    
-                    {!showAsMailed ? (
-                        <Button
-                          size="sm"
-                          onClick={() => handleMailLetter(letter.id, letter.title)}
-                          disabled={mailingStatus[letter.id] === 'loading'}
-                        >
-                            {mailingStatus[letter.id] === 'loading' ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <Send className="mr-2 h-4 w-4" />
-                            )}
-                          Approve & Mail
-                        </Button>
-                    ) : (
-                         <Button size="sm" variant="outline" disabled>
-                            <MailCheck className="mr-2 h-4 w-4" /> Mailed
-                        </Button>
-                    )}
-                </div>
+                {isMailedManually && currentStatus.trackingNumber && (
+                    <Alert className="mt-2 text-sm">
+                        <CheckCircle className='h-4 w-4' />
+                        <AlertTitle>Mailing Confirmation</AlertTitle>
+                        <AlertDescription>
+                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span>
+                        </AlertDescription>
+                    </Alert>
+                )}
               </Card>
             )})}
           </CardContent>

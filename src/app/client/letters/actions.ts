@@ -1,29 +1,52 @@
 'use server';
 
 import { z } from 'zod';
+import { sendCertifiedLetter } from '@/services/click2mail';
 
 const mailingSchema = z.object({
     letterId: z.string(),
     title: z.string(),
+    letterContent: z.string(),
 });
 
-// This is a mock/simulated mailing service function.
-// In a real application, this would call a third-party API like Lob or Click2Mail.
+// This action now calls the real Click2Mail service.
 export async function sendLetterForMailing(input: z.infer<typeof mailingSchema>) {
     const validatedInput = mailingSchema.parse(input);
-    const { letterId, title } = validatedInput;
+    const { letterId, title, letterContent } = validatedInput;
 
-    console.log('--- SIMULATING MAILING SERVICE ---');
-    console.log(`Sending letter "${title}" (ID: ${letterId}) for certified mailing.`);
-    console.log('This would involve:');
-    console.log('1. Retrieving letter content and client/bureau addresses from the database.');
-    console.log('2. Making an API call to a service like Lob.com.');
-    console.log('3. Storing the tracking ID returned from the service.');
-    console.log('--- SIMULATION COMPLETE ---');
-    
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // These are mock addresses. In a real application, you'd fetch these from your database
+    // based on the client's data and the bureau being disputed.
+    const fromAddress = {
+        name: 'Sarah Lee',
+        address1: '123 Main St',
+        city: 'Anytown',
+        state: 'CA',
+        postalCode: '12345',
+    };
 
-    // In a real app, you might return the tracking ID or a success status.
-    return { success: true, message: 'Letter sent for mailing.' };
+    const toAddress = {
+        name: 'Experian',
+        address1: 'P.O. Box 4500',
+        city: 'Allen',
+        state: 'TX',
+        postalCode: '75013',
+    };
+
+    try {
+        const result = await sendCertifiedLetter({
+            title: title,
+            letterContent: letterContent,
+            from: fromAddress,
+            to: toAddress,
+        });
+        
+        console.log('--- Click2Mail API Response ---', result);
+        
+        return { success: true, message: `Letter sent for mailing successfully.`, trackingNumber: result.trackingNumber };
+
+    } catch (error) {
+        console.error("Error sending letter via Click2Mail:", error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during mailing.';
+        return { success: false, message: errorMessage };
+    }
 }
