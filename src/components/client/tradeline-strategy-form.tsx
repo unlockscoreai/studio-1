@@ -17,19 +17,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, Sparkles, Wand2, CreditCard, Car, ShoppingCart, CheckCircle } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   creditAnalysis: z.string().min(20, "Please provide a brief summary of your credit profile."),
   creditGoal: z.string().optional(),
-  hasAutoLoan: z.enum(["true", "false"], { required_error: "Please select an option." }),
-  hasPrimaryRevolving: z.enum(["true", "false"], { required_error: "Please select an option." }),
 })
 
 const creditGoals = [
@@ -46,15 +43,11 @@ export function TradelineStrategyForm() {
   const [strategy, setStrategy] = useState<GenerateTradelineStrategyOutput | null>(null)
   const { toast } = useToast()
   
-  // In a real application, you would fetch the user's existing data here
-  // and use it to set the defaultValues of the form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       creditAnalysis: "My FICO is 680 with 42% utilization. I have no late payments but only 2 years of credit history and no installment loans. I have a few authorized user accounts but no primary credit card with a high limit.",
       creditGoal: "Get funding",
-      hasAutoLoan: "false",
-      hasPrimaryRevolving: "false",
     },
   })
 
@@ -65,8 +58,6 @@ export function TradelineStrategyForm() {
       const result = await generateTradelineStrategy({
         creditAnalysis: values.creditAnalysis,
         creditGoal: values.creditGoal,
-        hasAutoLoan: values.hasAutoLoan === "true",
-        hasPrimaryRevolving: values.hasPrimaryRevolving === "true",
       })
       if (result) {
         setStrategy(result)
@@ -103,7 +94,7 @@ export function TradelineStrategyForm() {
                   />
                 </FormControl>
                 <FormDescription>
-                  This may be pre-filled from your credit report analysis. Confirm or adjust it for the most accurate recommendations.
+                  This may be pre-filled from your credit report analysis. The AI will read this to determine which tradelines you need.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -131,52 +122,6 @@ export function TradelineStrategyForm() {
               </FormItem>
             )}
           />
-          <div className="grid md:grid-cols-2 gap-8">
-            <FormField
-              control={form.control}
-              name="hasPrimaryRevolving"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Do you have a primary credit card with a limit over $5,000?</FormLabel>
-                  <FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="true" /></FormControl>
-                        <FormLabel className="font-normal">Yes</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="false" /></FormControl>
-                        <FormLabel className="font-normal">No</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="hasAutoLoan"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Do you have an auto loan (open or closed) on your credit report?</FormLabel>
-                  <FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="true" /></FormControl>
-                        <FormLabel className="font-normal">Yes</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl><RadioGroupItem value="false" /></FormControl>
-                        <FormLabel className="font-normal">No</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           
           <Button type="submit" disabled={isLoading} size="lg">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
