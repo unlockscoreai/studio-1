@@ -16,6 +16,7 @@ import {
   Mail,
   Link2,
   TrendingUp,
+  BookCopy,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -56,6 +57,7 @@ export default function AffiliateLayout({
     if (pathname === '/affiliate/messaging') return 'Messaging';
     if (pathname === '/affiliate/tradeline-links') return 'Tradeline Links';
     if (pathname === '/affiliate/business-growth') return 'Business Growth';
+    if (pathname === '/affiliate/resources') return 'Resources & Training';
     return 'Affiliate Dashboard';
   };
 
@@ -123,6 +125,19 @@ export default function AffiliateLayout({
                   <Link href="/affiliate/business-growth">
                     <TrendingUp />
                     <span>Business Growth</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  href="/affiliate/resources"
+                  isActive={pathname === '/affiliate/resources'}
+                  tooltip={{ children: 'Resources & Training' }}
+                >
+                  <Link href="/affiliate/resources">
+                    <BookCopy />
+                    <span>Resources</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
