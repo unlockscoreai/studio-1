@@ -58,6 +58,8 @@ const checklistData = [
 
 // Initial state for the checklist items. In a real app, this would be fetched from a database.
 const initialChecklistState: Record<string, boolean> = {
+  // Foundation
+  entity: true, ein: true, bankAccount: true, address: true, phone: true, website: true,
   // Bureaus
   duns: true, experian: true, equifax: false,
   // Tradelines
@@ -133,8 +135,9 @@ export default function MyBusinessPage() {
   };
 
   const handleSaveChanges = () => {
-    // In a real app, this would save the `foundationDetails` to a database
+    // In a real app, this would save the `foundationDetails` and `completedItems` to a database
     console.log('Saving foundation details:', foundationDetails);
+    console.log('Saving checklist status:', completedItems);
     toast({
       title: 'Details Saved',
       description: 'Your business foundation information has been updated.',
@@ -142,9 +145,8 @@ export default function MyBusinessPage() {
   };
 
   const totalItems = checklistData.flatMap(cat => cat.items).length;
-  const foundationItemsCount = checklistData.find(cat => cat.category === 'Business Foundation')?.items.length || 0;
-  // Completed items are the checked items PLUS foundation items that have a value
-  const totalCompleted = Object.values(completedItems).filter(Boolean).length + Object.values(foundationDetails).filter(val => val.trim() !== '').length;
+  // Completed items are based on the checkbox state.
+  const totalCompleted = Object.values(completedItems).filter(Boolean).length;
   const completionPercentage = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
 
   return (
@@ -169,6 +171,11 @@ export default function MyBusinessPage() {
                     </div>
                 </div>
             </CardContent>
+            <CardFooter>
+                <Button onClick={handleSaveChanges}>
+                    <Save className="mr-2 h-4 w-4" /> Save All Progress
+                </Button>
+            </CardFooter>
         </Card>
       
         {checklistData.map((category) => (
@@ -180,26 +187,43 @@ export default function MyBusinessPage() {
                 
                 {category.category === 'Business Foundation' ? (
                   <>
-                    <CardContent className="space-y-4">
-                        {category.items.map((item) => (
-                          <div key={item.id}>
-                            <Label htmlFor={item.id}>{item.label}</Label>
-                            <Input
-                              id={item.id}
-                              value={foundationDetails[item.id] || ''}
-                              onChange={(e) => handleFoundationChange(item.id, e.target.value)}
-                              placeholder={item.label}
-                              className="mt-1"
-                            />
-                            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                          </div>
-                        ))}
+                    <CardContent className="divide-y divide-border -p-6">
+                        {category.items.map((item) => {
+                            const Icon = completedItems[item.id] ? CheckCircle : XCircle;
+                            const colorClass = completedItems[item.id] ? 'text-green-600' : 'text-red-600';
+                            return (
+                                <div key={item.id} className="flex items-start gap-4 p-4 transition-colors hover:bg-muted/50">
+                                    <div className="flex-shrink-0 pt-1">
+                                        <Checkbox
+                                            checked={!!completedItems[item.id]}
+                                            onCheckedChange={() => handleToggle(item.id)}
+                                            className="h-6 w-6"
+                                        />
+                                    </div>
+                                    <div className="flex-grow space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <Icon className={cn('h-5 w-5', colorClass)} />
+                                            <Label htmlFor={item.id} className="font-semibold">{item.label}</Label>
+                                        </div>
+                                        <Input
+                                            id={item.id}
+                                            value={foundationDetails[item.id] || ''}
+                                            onChange={(e) => handleFoundationChange(item.id, e.target.value)}
+                                            placeholder={`Enter your ${item.label}...`}
+                                        />
+                                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                                        {item.link && (
+                                            <Button variant="link" asChild className="p-0 h-auto">
+                                                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                                                    Get Started <ExternalLink className="ml-1.5 h-4 w-4" />
+                                                </a>
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </CardContent>
-                    <CardFooter>
-                       <Button onClick={handleSaveChanges}>
-                          <Save className="mr-2 h-4 w-4" /> Save Foundation Details
-                       </Button>
-                    </CardFooter>
                   </>
                 ) : (
                   <CardContent className="divide-y divide-border -p-6">
@@ -220,5 +244,3 @@ export default function MyBusinessPage() {
     </div>
   );
 }
-
-    
