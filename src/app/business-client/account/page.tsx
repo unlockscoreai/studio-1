@@ -42,55 +42,65 @@ const checklistData = [
         { 
             id: 'tier1', 
             label: 'Tier 1: Starter Vendor Accounts', 
-            description: 'Aim for at least 3-5 of these to build your initial Paydex score.', 
+            description: 'Aim for at least 3-5 of these to build your initial Paydex score. Click names to apply.', 
             vendors: [
-                { id: 'uline', name: 'Uline'},
-                { id: 'grainger', name: 'Grainger'},
-                { id: 'quill', name: 'Quill'},
-                { id: 'summa', name: 'Summa Office Supplies'},
-                { id: 'crown', name: 'Crown Office Supplies'},
-                { id: 'creative_analytics', name: 'Creative Analytics'},
-                { id: 'shirtsy', name: 'Shirtsy'},
+                { id: 'uline', name: 'Uline', url: 'https://www.uline.com/' },
+                { id: 'grainger', name: 'Grainger', url: 'https://www.grainger.com/' },
+                { id: 'quill', name: 'Quill', url: 'https://www.quill.com/' },
+                { id: 'summa', name: 'Summa Office Supplies', url: 'https://summaofficesupplies.com/' },
+                { id: 'crown', name: 'Crown Office Supplies', url: 'https://crownofficesupplies.com/' },
+                { id: 'creative_analytics', name: 'Creative Analytics', url: 'https://creativeanalytics.net/' },
+                { id: 'shirtsy', name: 'Shirtsy', url: 'https://www.shirtsy.com/' },
+                { id: 'ceo_creative', name: 'CEO Creative', url: 'https://ceocreative.com/' },
+                { id: 'the_business_tshirt_club', name: 'The Business T-Shirt Club', url: 'https://thebusinesstshirtclub.com/' },
             ]
         },
         { 
             id: 'tier2', 
             label: 'Tier 2: Retail & Store Credit', 
-            description: 'After establishing Tier 1, add 2-3 of these store credit accounts.',
+            description: 'After establishing Tier 1, add 2-3 of these store credit accounts. Click names to apply.',
             vendors: [
-                { id: 'home_depot', name: 'Home Depot Commercial'},
-                { id: 'lowes', name: 'Lowe\'s Commercial'},
-                { id: 'staples', name: 'Staples Business'},
-                { id: 'amazon', name: 'Amazon Business'},
-                { id: 'walmart_biz', name: 'Walmart Business'},
-                { id: 'bestbuy_biz', name: 'Best Buy Business'},
-                { id: 'officedepot_biz', name: 'Office Depot Business'},
+                { id: 'home_depot', name: 'Home Depot Commercial', url: 'https://www.homedepot.com/c/Pro_Xtra' },
+                { id: 'lowes', name: 'Lowe\'s Commercial', url: 'https://www.lowes.com/l/Pro.html' },
+                { id: 'staples', name: 'Staples Business', url: 'https://www.staples.com/sbd/cre/programs/credit_and_financing/' },
+                { id: 'amazon', name: 'Amazon Business', url: 'https://www.amazon.com/business' },
+                { id: 'walmart_biz', name: 'Walmart Business', url: 'https://www.walmart.com/business' },
+                { id: 'bestbuy_biz', name: 'Best Buy Business', url: 'https://www.bestbuy.com/site/business/best-buy-business/pcmcat210900050005.c' },
+                { id: 'officedepot_biz', name: 'Office Depot Business', url: 'https://www.officedepot.com/cm/account/business-account' },
+                { id: 'sams_club_biz', name: 'Sam\'s Club Business', url: 'https://www.samsclub.com/content/business-credit' },
+                { id: 'costco_biz', name: 'Costco Business', url: 'https://www.costco.com/business-card.html' },
             ]
         },
         { 
             id: 'tier3', 
             label: 'Tier 3: Fleet & Gas Cards',
-            description: 'If applicable, add 1-2 fleet or gas cards.',
+            description: 'If applicable, add 1-2 fleet or gas cards. Click names to apply.',
             vendors: [
-                { id: 'wex', name: 'WEX Fleet Cards'},
-                { id: 'fuelman', name: 'Fuelman'},
-                { id: 'shell', name: 'Shell Small Business Card'},
-                { id: 'bp_biz', name: 'BP Business Solutions'},
-                { id: 'sunoco_biz', name: 'Sunoco Universal Fleet Card'},
-                { id: 'chevron_biz', name: 'Chevron & Texaco Business Card'},
+                { id: 'wex', name: 'WEX Fleet Cards', url: 'https://www.wexinc.com/' },
+                { id: 'fuelman', name: 'Fuelman', url: 'https://www.fuelman.com/' },
+                { id: 'shell_biz', name: 'Shell Small Business Card', url: 'https://www.shell.us/business-customers/shell-fleet-cards.html' },
+                { id: 'bp_biz', name: 'BP Business Solutions', url: 'https://www.bp.com/en_us/united-states/home/products-and-services/cards/fleet-cards.html' },
+                { id: 'sunoco_biz', name: 'Sunoco Universal Fleet Card', url: 'https://www.sunocofleetcards.com/' },
+                { id: 'chevron_biz', name: 'Chevron & Texaco Business Card', url: 'https://www.chevrontexacobusinesscard.com/' },
+                { id: 'exxonmobil_biz', name: 'ExxonMobil BusinessPro', url: 'https://www.exxon.com/en/businesspro-fleet-card' },
+                { id: 'marathon_biz', name: 'Marathon Fleet Card', url: 'https://www.marathonbrand.com/Fleet/' },
+                { id: '76_biz', name: '76 Fleet Card', url: 'https://www.76fleet.com/' },
             ]
         },
         { 
             id: 'tier4', 
             label: 'Tier 4: Business Credit Cards',
-            description: 'The final tier. Aim for at least one major business card.',
+            description: 'The final tier. Aim for at least one major business card. Click names to apply.',
             vendors: [
-                { id: 'amex_biz', name: 'Amex Business Platinum/Gold'},
-                { id: 'chase_ink', name: 'Chase Ink Business'},
-                { id: 'capital_one_spark', name: 'Capital One Spark'},
-                { id: 'brex', name: 'Brex Card'},
-                { id: 'us_bank_biz', name: 'U.S. Bank Business Cards'},
-                { id: 'bank_of_america_biz', name: 'Bank of America Business Cards'},
+                { id: 'amex_biz', name: 'Amex Business Platinum/Gold', url: 'https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/' },
+                { id: 'chase_ink', name: 'Chase Ink Business', url: 'https://creditcards.chase.com/business-credit-cards/ink' },
+                { id: 'capital_one_spark', name: 'Capital One Spark', url: 'https://www.capitalone.com/small-business/credit-cards/' },
+                { id: 'brex', name: 'Brex Card', url: 'https://www.brex.com/' },
+                { id: 'us_bank_biz', name: 'U.S. Bank Business Cards', url: 'https://www.usbank.com/business-banking/business-credit-cards.html' },
+                { id: 'bank_of_america_biz', name: 'Bank of America Business Cards', url: 'https://www.bankofamerica.com/smallbusiness/credit-cards/' },
+                { id: 'citi_biz', name: 'CitiBusiness / AAdvantage', url: 'https://www.citi.com/credit-cards/business-credit-cards' },
+                { id: 'wells_fargo_biz', name: 'Wells Fargo Business Cards', url: 'https://www.wellsfargo.com/biz/business-credit/credit-cards/' },
+                { id: 'divvy', name: 'Divvy / Bill.com Card', url: 'https://www.divvy.com/' },
             ]
         },
     ],
@@ -306,12 +316,14 @@ export default function MyBusinessPage() {
                                 checked={!!selectedVendors[vendor.id]}
                                 onCheckedChange={() => handleVendorToggle(vendor.id)}
                               />
-                              <label
-                                htmlFor={vendor.id}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                {vendor.name}
-                              </label>
+                               <a
+                                href={vendor.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm font-medium leading-none underline-offset-4 hover:underline peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                               >
+                                {vendor.name} <ExternalLink className="inline-block h-3 w-3 ml-1" />
+                              </a>
                             </div>
                           ))}
                         </div>
