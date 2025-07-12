@@ -15,6 +15,7 @@ import {
   FileHeart,
   FileText,
   Briefcase,
+  Lightbulb,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -56,6 +57,7 @@ export default function ClientLayout({
     if (pathname.startsWith('/client/onboarding')) return 'Complete Your Onboarding';
     if (pathname.startsWith('/client/credit-analysis')) return 'Credit Analysis';
     if (pathname.startsWith('/client/get-credit-reports')) return 'Get Credit Reports';
+    if (pathname.startsWith('/client/tradeline-strategy')) return 'Tradeline Strategy';
     return 'Client Dashboard';
   };
 
@@ -148,6 +150,19 @@ export default function ClientLayout({
                   <Link href="/client/letters">
                     <Mail />
                     <span>My Letters</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton
+                  href="/client/tradeline-strategy"
+                  asChild
+                  isActive={pathname.startsWith('/client/tradeline-strategy')}
+                  tooltip={{ children: 'Tradeline Strategy' }}
+                >
+                  <Link href="/client/tradeline-strategy">
+                    <Lightbulb />
+                    <span>Tradeline Strategy</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
