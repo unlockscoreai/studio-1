@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Rocket, ShieldCheck, Check, Star, Briefcase, Building, BarChart, Users, DollarSign, Target } from 'lucide-react';
+import { Rocket, ShieldCheck, Check, Star, Briefcase, Building, BarChart, Users, DollarSign, Target, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
