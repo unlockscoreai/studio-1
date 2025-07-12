@@ -1,4 +1,5 @@
 
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ShoppingCart, Star, Building, CalendarDays, DollarSign, Info } from "lucide-react";
@@ -35,6 +36,7 @@ const vendorTiers = [
       { name: "WEX Fleet Cards", url: "https://www.wexinc.com/", type: "Fleet/Fuel", net: "Net-15/30", limit: "Varies", qualifications: "EIN, 6+ months in business", easyApproval: true },
       { name: "Fuelman", url: "https://www.fuelman.com/", type: "Fleet/Fuel", net: "Net-15/30", limit: "Varies", qualifications: "EIN, active business", easyApproval: true },
       { name: "Shell Small Business Card", url: "https://www.shell.us/business-customers/shell-fleet-cards.html", type: "Fleet/Fuel", net: "Revolving", limit: "$500+", qualifications: "EIN, fair personal credit", easyApproval: false },
+      { name: "Brex Fuel Card", url: "https://www.brex.com/", type: "Fleet/Fuel", net: "Net-30", limit: "Varies", qualifications: "Funded company, EIN", easyApproval: false },
     ],
   },
   {

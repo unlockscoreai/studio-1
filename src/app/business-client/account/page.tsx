@@ -43,7 +43,7 @@ const checklistData = [
         { 
             id: 'tier1', 
             label: 'Tier 1: Starter Vendor Accounts', 
-            description: 'Aim for at least 3-5 of these to build your initial Paydex score. Click names to apply.', 
+            description: 'Aim for at least 3-5 of these to build your initial Paydex score. Click a vendor name to apply.', 
             vendors: [
                 { id: 'uline', name: 'Uline', url: 'https://www.uline.com/' },
                 { id: 'grainger', name: 'Grainger', url: 'https://www.grainger.com/' },
@@ -59,7 +59,7 @@ const checklistData = [
         { 
             id: 'tier2', 
             label: 'Tier 2: Retail & Store Credit', 
-            description: 'After establishing Tier 1, add 2-3 of these store credit accounts. Click names to apply.',
+            description: 'After establishing Tier 1, add 2-3 of these store credit accounts. Click a vendor name to apply.',
             vendors: [
                 { id: 'home_depot', name: 'Home Depot Commercial', url: 'https://www.homedepot.com/c/Pro_Xtra' },
                 { id: 'lowes', name: 'Lowe\'s Commercial', url: 'https://www.lowes.com/l/Pro.html' },
@@ -75,7 +75,7 @@ const checklistData = [
         { 
             id: 'tier3', 
             label: 'Tier 3: Fleet & Gas Cards',
-            description: 'If applicable, add 1-2 fleet or gas cards. Click names to apply.',
+            description: 'If applicable, add 1-2 fleet or gas cards. Click a vendor name to apply.',
             vendors: [
                 { id: 'wex', name: 'WEX Fleet Cards', url: 'https://www.wexinc.com/' },
                 { id: 'fuelman', name: 'Fuelman', url: 'https://www.fuelman.com/' },
@@ -86,12 +86,13 @@ const checklistData = [
                 { id: 'exxonmobil_biz', name: 'ExxonMobil BusinessPro', url: 'https://www.exxon.com/en/businesspro-fleet-card' },
                 { id: 'marathon_biz', name: 'Marathon Fleet Card', url: 'https://www.marathonbrand.com/Fleet/' },
                 { id: '76_biz', name: '76 Fleet Card', url: 'https://www.76fleet.com/' },
+                { id: 'brex_fuel', name: 'Brex Fuel Card', url: 'https://www.brex.com/' },
             ]
         },
         { 
             id: 'tier4', 
             label: 'Tier 4: Business Credit Cards',
-            description: 'The final tier. Aim for at least one major business card. Click names to apply.',
+            description: 'The final tier. Aim for at least one major business card. Click a vendor name to apply.',
             vendors: [
                 { id: 'amex_biz', name: 'Amex Business Platinum/Gold', url: 'https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/' },
                 { id: 'chase_ink', name: 'Chase Ink Business', url: 'https://creditcards.chase.com/business-credit-cards/ink' },
@@ -228,15 +229,14 @@ export default function MyBusinessPage() {
     const isBureausComplete = completedBureaus >= 1;
 
     const tradelineTiers = checklistData.find(c => c.category === 'Tradeline Building')?.items || [];
-    let completedTierCount = 0;
+    let isTradelinesComplete = true;
     tradelineTiers.forEach(tier => {
         const vendorIds = tier.vendors?.map(v => v.id) || [];
         const completedInTier = vendorIds.filter(vId => selectedVendors[vId]).length;
-        if (completedInTier >= 3) {
-            completedTierCount++;
+        if (completedInTier < 3) {
+            isTradelinesComplete = false;
         }
     });
-    const isTradelinesComplete = completedTierCount >= 4;
 
     const financialItems = checklistData.find(c => c.category === 'Financial Readiness')?.items.map(i => i.id) || [];
     const completedFinancials = financialItems.filter(id => completedItems[id]).length;
@@ -248,8 +248,14 @@ export default function MyBusinessPage() {
     if (isTradelinesComplete) overallProgress += 25;
     if (isFinancialsComplete) overallProgress += 25;
     
-    const totalTasks = foundationItems.length + bureauItems.length + tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0) + financialItems.length;
+    const allFoundationItems = checklistData.find(c => c.category === 'Business Foundation')?.items || [];
+    const allBureauItems = checklistData.find(c => c.category === 'Business Credit Bureaus')?.items || [];
+    const allFinancialItems = checklistData.find(c => c.category === 'Financial Readiness')?.items || [];
+    const allTradelineVendors = tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0);
+
+    const totalTasks = allFoundationItems.length + allBureauItems.length + allFinancialItems.length + allTradelineVendors;
     const completedTasks = Object.values(completedItems).filter(Boolean).length + Object.values(selectedVendors).filter(Boolean).length;
+    
     const hasSolidProfile = completedTasks >= 28;
 
     return {
