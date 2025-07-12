@@ -1,7 +1,8 @@
+
 'use client';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { DollarSign, CreditCard, ShoppingCart, CheckCircle, AlertTriangle } from "lucide-react";
+import { DollarSign, CreditCard, ShoppingCart, Users, Building, Info } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -13,7 +14,16 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
 
+// Mock data from other pages to calculate commissions
+const personalClientsCount = 4; // From client-management mock data
+const businessClientsCount = 3; // From client-management mock data
+
+const COMMISSION_RATES = {
+    personal: 15, // $15 per personal client
+    business: 50, // $50 per business client
+};
 
 const creditPackages = [
     { name: 'Starter Pack', credits: 10, price: 50, pricePer: 5.00 },
@@ -30,6 +40,10 @@ const transactionHistory = [
 export default function BillingPage() {
     const [mailCredits, setMailCredits] = useState(48);
     const { toast } = useToast();
+
+    const personalCommission = personalClientsCount * COMMISSION_RATES.personal;
+    const businessCommission = businessClientsCount * COMMISSION_RATES.business;
+    const totalPayout = personalCommission + businessCommission;
 
     const handlePurchase = (credits: number, price: number) => {
         // In a real app, this would trigger a payment flow (e.g., Stripe)
@@ -79,11 +93,13 @@ export default function BillingPage() {
                 <CardHeader>
                 <CardTitle className="font-headline">Payout History</CardTitle>
                 <CardDescription>
-                    This is a placeholder for your commission payout history.
+                    This is a placeholder for your commission payout history. Payouts are typically processed on the 1st of each month.
                 </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Payout history and settings will be displayed here.</p>
+                     <div className="p-4 bg-muted rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground">Feature Coming Soon</p>
+                    </div>
                 </CardContent>
             </Card>
           </div>
@@ -92,28 +108,48 @@ export default function BillingPage() {
               <Card>
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2">
-                        <CreditCard className="h-6 w-6" />
-                        Billing Overview
+                        <DollarSign className="h-6 w-6" />
+                        Commission Summary
                     </CardTitle>
+                    <CardDescription>
+                        Estimated payout for the current period.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div>
-                        <p className="text-sm text-muted-foreground">Mail Credit Balance</p>
-                        <p className="text-4xl font-bold">{mailCredits}</p>
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-2"><Users className="w-4 h-4" /> Personal Referrals</span>
+                            <span>{personalClientsCount} &times; ${COMMISSION_RATES.personal}</span>
+                            <span className="font-medium">${personalCommission.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground flex items-center gap-2"><Building className="w-4 h-4" /> Business Referrals</span>
+                            <span>{businessClientsCount} &times; ${COMMISSION_RATES.business}</span>
+                            <span className="font-medium">${businessCommission.toFixed(2)}</span>
+                        </div>
                     </div>
+                    <Separator />
                      <div>
-                        <p className="text-sm text-muted-foreground">Next Payout</p>
-                        <p className="text-2xl font-bold">$1,240.00</p>
+                        <p className="text-sm text-muted-foreground">Next Payout Estimate</p>
+                        <p className="text-3xl font-bold">${totalPayout.toFixed(2)}</p>
                         <p className="text-xs text-muted-foreground">On August 1, 2024</p>
                     </div>
-                     <Button className="w-full">Manage Payment Method</Button>
+                     <Button className="w-full">Manage Payout Method</Button>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                    <CardTitle>Credit Transaction History</CardTitle>
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <CreditCard className="h-5 w-5" />
+                        Credit Balance
+                    </CardTitle>
                 </CardHeader>
                  <CardContent>
+                    <div>
+                        <p className="text-sm text-muted-foreground">Mail Credit Balance</p>
+                        <p className="text-4xl font-bold">{mailCredits}</p>
+                    </div>
+                    <Separator className="my-4" />
                     <Table>
                         <TableHeader>
                         <TableRow>
