@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Target, Check, Briefcase, DollarSign, TrendingUp } from "lucide-react";
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import Link from "next/link";
 
 const growthData = {
   score: 78, // out of 100
@@ -21,9 +22,9 @@ const growthData = {
     { month: 'Jun', score: 78 },
   ],
   nextMilestones: [
-    { icon: Briefcase, text: "Apply for 2+ Tier 2 store credit accounts to diversify your profile." },
-    { icon: DollarSign, text: "Prepare financial statements (P&L, Balance Sheet) for upcoming loan applications." },
-    { icon: Check, text: "Complete the final items on your Business Foundation checklist." },
+    { icon: Briefcase, text: "Apply for 2+ Tier 2 store credit accounts to diversify your profile.", href: "/business-client/vendor-accounts" },
+    { icon: DollarSign, text: "Prepare financial statements (P&L, Balance Sheet) for upcoming loan applications.", href: "/business-client/account" },
+    { icon: Check, text: "Complete the final items on your Business Foundation checklist.", href: "/business-client/account" },
   ]
 };
 
@@ -135,12 +136,14 @@ export default function BusinessGrowthPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {growthData.nextMilestones.map((milestone, index) => (
-                        <div key={index} className="flex items-start gap-4 p-4 rounded-lg bg-muted/50">
-                             <div className="flex-shrink-0 pt-1">
-                                <milestone.icon className="h-6 w-6 text-primary" />
+                        <Link href={milestone.href} key={index} className="block">
+                            <div className="flex items-start gap-4 p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                                <div className="flex-shrink-0 pt-1">
+                                    <milestone.icon className="h-6 w-6 text-primary" />
+                                </div>
+                                <p className="text-muted-foreground">{milestone.text}</p>
                             </div>
-                            <p className="text-muted-foreground">{milestone.text}</p>
-                        </div>
+                        </Link>
                     ))}
                 </CardContent>
             </Card>
