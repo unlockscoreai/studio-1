@@ -42,7 +42,7 @@ export async function sendLetterForMailing(input: z.infer<typeof mailingSchema>)
         
         console.log('--- Click2Mail API Response ---', result);
         
-        return { success: true, message: `Letter sent for mailing successfully.`, trackingNumber: result.trackingNumber };
+        return { success: true, ...result };
 
     } catch (error) {
         console.error("Error sending letter via Click2Mail:", error);

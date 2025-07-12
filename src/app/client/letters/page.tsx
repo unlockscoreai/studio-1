@@ -34,6 +34,7 @@ const mockLetters = [
     date: '2024-07-25',
     status: 'Awaiting Approval',
     content: 'Dear Experian,\n\nI am writing to dispute the following information in my file...',
+    cost: 5.43,
   },
   {
     id: 'letter-2',
@@ -41,6 +42,7 @@ const mockLetters = [
     date: '2024-07-22',
     status: 'Mailed',
     content: 'This is a follow-up letter for Equifax...',
+    cost: 5.43,
   },
   {
     id: 'letter-3',
@@ -48,6 +50,7 @@ const mockLetters = [
     date: '2024-07-18',
     status: 'Mailed',
     content: 'This is a Method of Verification letter for TransUnion...',
+    cost: 5.43,
   },
 ];
 
@@ -55,6 +58,7 @@ type SubscriptionTier = 'starter' | 'pro' | 'vip';
 type MailingStatus = {
     state: 'idle' | 'loading' | 'sent';
     trackingNumber?: string;
+    cost?: number;
 };
 
 function SubscriptionSimulator({
@@ -103,16 +107,16 @@ export default function LettersPage() {
   const [autoDispute, setAutoDispute] = useState(false);
   const { toast } = useToast();
 
-  const handleMailLetter = async (letterId: string, title: string, content: string) => {
+  const handleMailLetter = async (letterId: string, title: string, content: string, cost: number) => {
     setMailingStatus(prev => ({...prev, [letterId]: { state: 'loading' }}));
     try {
         const result = await sendLetterForMailing({letterId, title, letterContent: content });
-        if (result.success) {
+        if (result.success && result.trackingNumber) {
             toast({
                 title: "Letter Sent!",
-                description: `${title} has been sent for certified mailing. Tracking #: ${result.trackingNumber}`
+                description: `${title} has been sent for certified mailing. Cost: $${result.cost}`
             });
-            setMailingStatus(prev => ({...prev, [letterId]: { state: 'sent', trackingNumber: result.trackingNumber }}));
+            setMailingStatus(prev => ({...prev, [letterId]: { state: 'sent', trackingNumber: result.trackingNumber, cost: result.cost }}));
         } else {
             throw new Error(result.message);
         }
@@ -185,7 +189,7 @@ export default function LettersPage() {
                         {!showAsMailed ? (
                             <Button
                             size="sm"
-                            onClick={() => handleMailLetter(letter.id, letter.title, letter.content)}
+                            onClick={() => handleMailLetter(letter.id, letter.title, letter.content, letter.cost)}
                             disabled={isLoading}
                             >
                                 {isLoading ? (
@@ -193,7 +197,7 @@ export default function LettersPage() {
                                 ) : (
                                     <Send className="mr-2 h-4 w-4" />
                                 )}
-                            Approve & Mail
+                            Approve & Mail for ${letter.cost.toFixed(2)}
                             </Button>
                         ) : (
                             <Button size="sm" variant="outline" disabled>
@@ -207,7 +211,7 @@ export default function LettersPage() {
                         <CheckCircle className='h-4 w-4' />
                         <AlertTitle>Mailing Confirmation</AlertTitle>
                         <AlertDescription>
-                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span>
+                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span> - Cost: <span className='font-mono'>${currentStatus.cost?.toFixed(2)}</span>
                         </AlertDescription>
                     </Alert>
                 )}
