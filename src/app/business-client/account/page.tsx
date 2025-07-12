@@ -3,8 +3,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CheckCircle, ExternalLink, XCircle, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -185,35 +184,6 @@ function ChecklistItem({ label, description, link, isCompleted, onToggle }: Chec
   );
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
-const ReadinessPieChart = ({ data }: { data: { name: string, value: number }[] }) => {
-    return (
-        <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-                <Pie 
-                    data={data} 
-                    cx="50%" 
-                    cy="50%" 
-                    labelLine={false} 
-                    outerRadius={80} 
-                    fill="#8884d8" 
-                    dataKey="value" 
-                    nameKey="name" 
-                    label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}
-                    fontSize={12}
-                >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Tooltip formatter={(value, name) => [`${value}%`, `Section Weight`]} />
-                <Legend />
-            </PieChart>
-        </ResponsiveContainer>
-    );
-};
-
 export default function MyBusinessPage() {
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>(initialChecklistState);
   const [foundationDetails, setFoundationDetails] = useState(initialFoundationState);
@@ -258,15 +228,15 @@ export default function MyBusinessPage() {
     const isBureausComplete = completedBureaus >= 1;
 
     const tradelineTiers = checklistData.find(c => c.category === 'Tradeline Building')?.items || [];
-    let completedTiers = 0;
+    let completedTierCount = 0;
     tradelineTiers.forEach(tier => {
         const vendorIds = tier.vendors?.map(v => v.id) || [];
         const completedInTier = vendorIds.filter(vId => selectedVendors[vId]).length;
         if (completedInTier >= 3) {
-            completedTiers++;
+            completedTierCount++;
         }
     });
-    const isTradelinesComplete = completedTiers >= 4;
+    const isTradelinesComplete = completedTierCount >= 4;
 
     const financialItems = checklistData.find(c => c.category === 'Financial Readiness')?.items.map(i => i.id) || [];
     const completedFinancials = financialItems.filter(id => completedItems[id]).length;
@@ -278,24 +248,11 @@ export default function MyBusinessPage() {
     if (isTradelinesComplete) overallProgress += 25;
     if (isFinancialsComplete) overallProgress += 25;
     
-    const pieData = [
-        { name: 'Foundation', value: isFoundationComplete ? 25 : 0 },
-        { name: 'Bureaus', value: isBureausComplete ? 25 : 0 },
-        { name: 'Tradelines', value: isTradelinesComplete ? 25 : 0 },
-        { name: 'Financials', value: isFinancialsComplete ? 25 : 0 },
-    ].filter(d => d.value > 0);
-
-    // If no sections are complete, show a placeholder so the chart isn't empty
-    if(pieData.length === 0){
-        pieData.push({name: "Incomplete", value: 100});
-    }
-
     const totalTasks = foundationItems.length + bureauItems.length + tradelineTiers.reduce((acc, tier) => acc + (tier.vendors?.length || 0), 0) + financialItems.length;
     const completedTasks = Object.values(completedItems).filter(Boolean).length + Object.values(selectedVendors).filter(Boolean).length;
     const hasSolidProfile = completedTasks >= 28;
 
     return {
-        pieData,
         overallProgress,
         hasSolidProfile,
         completedTasks,
@@ -309,21 +266,28 @@ export default function MyBusinessPage() {
             <CardHeader>
                 <CardTitle className="font-headline">My Business Readiness Report</CardTitle>
                 <CardDescription>
-                Track your progress towards building a highly fundable business. Each section represents 25% of your total readiness.
+                Track your progress towards building a highly fundable business. Each completed section contributes 25% to your total readiness score.
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid md:grid-cols-2 gap-4 items-center">
-                    <div>
-                        <ReadinessPieChart data={readinessData.pieData} />
+                <div className="grid md:grid-cols-2 gap-6 items-center">
+                     <div className="flex flex-col items-center justify-center p-6">
+                        <div
+                            className="relative w-48 h-48 flex items-center justify-center rounded-full"
+                            style={{ background: `conic-gradient(hsl(var(--primary)) ${readinessData.overallProgress * 3.6}deg, hsl(var(--muted)) 0deg)` }}
+                        >
+                            <div className="absolute w-40 h-40 bg-background rounded-full flex items-center justify-center">
+                                <span className="text-5xl font-bold text-primary">{readinessData.overallProgress}%</span>
+                            </div>
+                        </div>
+                         <p className="font-semibold text-xl mt-4">Overall Readiness</p>
                     </div>
-                    <div className="space-y-2">
-                        <p className="text-lg font-semibold">Overall Readiness: {readinessData.overallProgress}%</p>
+                    <div className="space-y-4">
                         <p className="text-muted-foreground">{readinessData.completedTasks} of {readinessData.totalTasks} total tasks completed.</p>
                         {readinessData.hasSolidProfile && (
                             <p className="text-green-600 font-semibold">Congratulations! You have a solid business profile.</p>
                         )}
-                         <Button onClick={handleSaveChanges}>
+                         <Button onClick={handleSaveChanges} size="lg">
                             <Save className="mr-2 h-4 w-4" /> Save All Progress
                         </Button>
                     </div>
@@ -423,4 +387,3 @@ export default function MyBusinessPage() {
     </div>
   );
 }
-
