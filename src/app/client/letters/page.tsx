@@ -36,7 +36,6 @@ const mockLetters = [
     date: '2024-07-25',
     status: 'Awaiting Approval',
     content: 'Dear Experian,\n\nI am writing to dispute the following information in my file...',
-    cost: 5.43,
   },
   {
     id: 'letter-2',
@@ -44,7 +43,6 @@ const mockLetters = [
     date: '2024-07-22',
     status: 'Mailed',
     content: 'This is a follow-up letter for Equifax...',
-    cost: 5.43,
   },
   {
     id: 'letter-3',
@@ -52,7 +50,6 @@ const mockLetters = [
     date: '2024-07-18',
     status: 'Mailed',
     content: 'This is a Method of Verification letter for TransUnion...',
-    cost: 5.43,
   },
 ];
 
@@ -112,7 +109,7 @@ export default function LettersPage() {
   const [autoDispute, setAutoDispute] = useState(false);
   const { toast } = useToast();
 
-  const handleMailLetter = async (letterId: string, title: string, content: string, cost: number) => {
+  const handleMailLetter = async (letterId: string, title: string, content: string) => {
     setMailingStatus(prev => ({...prev, [letterId]: { state: 'loading' }}));
     try {
         const result = await sendLetterForMailing({letterId, title, letterContent: content });
@@ -201,7 +198,7 @@ export default function LettersPage() {
                         {!showAsMailed ? (
                             <Button
                             size="sm"
-                            onClick={() => handleMailLetter(letter.id, letter.title, letter.content, letter.cost)}
+                            onClick={() => handleMailLetter(letter.id, letter.title, letter.content)}
                             disabled={isLoading || !hasCredits}
                             >
                                 {isLoading ? (
@@ -223,7 +220,7 @@ export default function LettersPage() {
                         <CheckCircle className='h-4 w-4' />
                         <AlertTitle>Mailing Confirmation</AlertTitle>
                         <AlertDescription>
-                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span> - Cost: <span className='font-mono'>1 Credit</span>
+                            Tracking Number: <span className='font-mono'>{currentStatus.trackingNumber}</span> - Cost: <span className='font-mono'>${currentStatus.cost?.toFixed(2) ?? 'N/A'}</span>
                         </AlertDescription>
                     </Alert>
                 )}
