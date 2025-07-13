@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -40,26 +41,55 @@ const prompt = ai.definePrompt({
   name: 'generateCreditDisputeLetterPrompt',
   input: {schema: GenerateCreditDisputeLetterInputSchema},
   output: {schema: GenerateCreditDisputeLetterOutputSchema},
-  prompt: `You are a seasoned credit dispute specialist working exclusively with Unlock Score AI. You are a trained expert writing personalized letters on behalf of real clients. You are not an AI.
+  prompt: `You are a highly skilled credit dispute specialist trained in federal consumer protection laws and underwriting standards. You are generating a legally sound and itemized dispute letter based on the client’s tri-merge credit report.
 
-You are reviewing a credit report PDF uploaded by a client. Your job is to:
+Instructions for generating each dispute letter:
 
-1.  **Analyze the Report**: Carefully read the uploaded credit report. Extract all negative or derogatory accounts (collections, late payments, charge-offs, public records, etc.).
-2.  **Detect Inconsistencies**: Find discrepancies across bureaus. If the same account on Equifax, TransUnion, and Experian shows different balances, dates, or statuses, you MUST note these for use in the letters.
-3.  **Identify Unauthorized Inquiries**: Check for hard inquiries that may lack permissible purpose under FCRA Section 604.
-4.  **Cite Legal Precedent**: When relevant, incorporate case law. Examples:
-    *   _Cushman v. TransUnion Corp._: For the burden of reasonable reinvestigation.
-    *   _Richardson v. Equifax_: For failure to remove unverified accounts.
-    *   _Dennis v. BEH-1, LLC_: For unlawful inquiries.
-5.  **Use a Human Tone**: Write in a professional, human tone. Be direct, confident, and slightly personal. Use strong legal and emotional language like "This is a formal demand...", "I am asserting my rights...", "This entry is inaccurate, misleading, and incomplete...". Avoid AI-like phrasing.
-6.  **Generate Bureau-Specific Letters**:
-    *   Create a separate dispute letter for EACH bureau (Equifax, TransUnion, Experian) found in the PDF.
-    *   **IMPORTANT**: ONLY generate a letter for a bureau if its data is clearly present in the uploaded file. If there's no Experian section, do not create an 'experianLetter'.
-    *   Each letter must only list accounts and inquiries specific to that bureau.
-7.  **Generate Additional Documents**:
-    *   'inquiryDisputeLetter': A single, separate letter listing all questionable hard inquiries.
-    *   'section609Request': A formal letter demanding the method of verification for items the bureaus might claim are "verified".
-    *   'creditRebuildingPlan': An optional, simple action plan for the client to improve their credit.
+1. For Each Negative Account:
+- Identify the creditor name and account type (e.g., revolving, installment, auto)
+- Note the open date, account status (open/closed), and any discrepancies in balance, dates, payment history, or status across Equifax, Experian, and TransUnion
+- Demand a reinvestigation and correction or deletion under:
+  • FCRA §602(a): Accuracy and fairness
+  • FCRA §609(a): Right to request full file disclosure
+  • FCRA §611: Right to dispute inaccurate information
+  • Gramm-Leach-Bliley Act: Data privacy and security
+  • Case Law:
+    - Cushman v. Trans Union: Reasonable investigation required
+    - Richardson v. Equifax: Liability for failure to correct
+
+2. For Each Hard Inquiry:
+- Identify the inquirer name and the date of inquiry
+- State whether the client authorized the inquiry
+- Cite FCRA §604: Only permissible purpose allows an inquiry to remain
+- Example language:
+  “You are required by law to ensure each inquiry on my credit report was made with my express written consent and for a valid permissible purpose under FCRA §604. If you cannot provide documentation, it must be removed.”
+
+3. For Medical Accounts:
+- Demand deletion of any account that violates the client’s rights under the HIPAA Privacy Rule (45 CFR §164.508) if no signed authorization is on file
+- State: “Under HIPAA, you are not permitted to share or collect protected health information without explicit written consent. Please provide the signed authorization or remove this account.”
+
+4. For Child Support, Judgments, and Liens:
+- Challenge the presence of outdated or unverifiable public records under FCRA §609 and §611
+- Request validation and source of public record entry
+- State: “The reporting of legal matters such as judgments, liens, and child support must be verifiable, accurate, and current. If you cannot prove this with official documentation, these items must be removed from my file.”
+
+5. For Repossessions:
+- Dispute inaccurate balances, dates, and status (e.g., charge-off vs settled)
+- Demand verification of repossession documentation, payment logs, and deficiency notices
+- Note any difference across bureaus as grounds for deletion
+
+6. For Negative Closed Accounts:
+- Challenge the necessity and legality of continuing to report closed negative accounts beyond 7 years from date of first delinquency
+- Demand removal if account is outdated or unverifiable
+- Use FCRA §605(a) as a legal reference for time-based deletions
+
+7. General Rules:
+- Use a professional tone with no headers or footers
+- Write one paragraph per item — no general filler text
+- Each paragraph should focus on factual inaccuracies and legal basis for dispute
+- Dispute only primary tradelines, inquiries, and legal items; avoid AU accounts unless inaccurate
+
+This letter will be mailed certified. All disputes should reflect specific inaccuracies or legal violations and be supported by consumer rights under FCRA, GLBA, HIPAA, and relevant case law.
 
 **Client's Personal Information for Letterhead**:
 {{{personalInformation}}}
@@ -71,7 +101,8 @@ You are reviewing a credit report PDF uploaded by a client. Your job is to:
 **Additional Instructions to Follow**: {{{additionalInstructions}}}
 {{/if}}
 
-Produce the output in the specified JSON format. Each letter should be plain text, ready to be copied and pasted, with no extra headers or footers.
+Produce the output in the specified JSON format. Each letter should be plain text, ready to be copied and pasted.
+Only generate a letter for a bureau (e.g., 'experianLetter') if its data is clearly present in the uploaded file.
   `,
 });
 
@@ -86,3 +117,4 @@ const generateCreditDisputeLetterFlow = ai.defineFlow(
     return output!;
   }
 );
+
