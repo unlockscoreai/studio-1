@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useRef, Suspense } from "react"
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -100,14 +101,19 @@ function PublicIntakeFormComponent() {
 
   if (isSuccess) {
     return (
-        <Alert variant="default" className="border-green-500 text-green-700">
-            <CheckCircle className="h-4 w-4 !text-green-500" />
-            <AlertTitle>Thank You for Your Submission!</AlertTitle>
-            <AlertDescription>
-                Your information has been received. Please check your email for instructions to log into our secure client portal and retrieve your free credit analysis.
-            </AlertDescription>
+      <div className="space-y-4 text-center">
+        <Alert variant="default" className="border-green-500 text-green-700 text-left">
+          <CheckCircle className="h-4 w-4 !text-green-500" />
+          <AlertTitle>Thank You for Your Submission!</AlertTitle>
+          <AlertDescription>
+            Your info is in our secured portal. Please check your email for a welcome message with instructions on how to log in and retrieve your analysis.
+          </AlertDescription>
         </Alert>
-    )
+        <Button asChild>
+          <Link href="/#pricing">See Our Plans</Link>
+        </Button>
+      </div>
+    );
   }
 
 
