@@ -20,12 +20,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, Copy, Check } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
 const formSchema = z.object({
-  personalInformation: z.string().min(10, "Please provide more details."),
-  disputeReason: z.string().min(10, "Please provide a clear reason for the dispute."),
+  personalInformation: z.string().min(10, "Please provide your full name and address."),
   additionalInstructions: z.string().optional(),
-  creditReport: z.any().refine((file) => file?.length == 1, "Credit report is required."),
+  creditReport: z.any().refine((files) => files?.length === 1, "Credit report is required."),
 })
 
 async function fileToDataUri(file: File): Promise<string> {
@@ -37,17 +37,43 @@ async function fileToDataUri(file: File): Promise<string> {
     });
 }
 
+function LetterDisplay({ title, content }: { title: string, content: string | undefined }) {
+    const [hasCopied, setHasCopied] = useState(false)
+    const { toast } = useToast()
+
+    if (!content) return null;
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(content)
+        setHasCopied(true)
+        toast({ title: "Copied to clipboard!" });
+        setTimeout(() => setHasCopied(false), 2000)
+    }
+
+    return (
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="font-headline">{title}</CardTitle>
+                <Button variant="ghost" size="icon" onClick={handleCopy}>
+                    {hasCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                </Button>
+            </CardHeader>
+            <CardContent>
+                <Textarea readOnly value={content} className="h-96 bg-secondary" />
+            </CardContent>
+        </Card>
+    )
+}
+
 export function GenerateLetterForm() {
   const [isLoading, setIsLoading] = useState(false)
-  const [generatedLetter, setGeneratedLetter] = useState("")
-  const [hasCopied, setHasCopied] = useState(false)
+  const [generatedLetters, setGeneratedLetters] = useState<GenerateCreditDisputeLetterOutput | null>(null)
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       personalInformation: "",
-      disputeReason: "",
       additionalInstructions: "",
     },
   })
@@ -55,38 +81,33 @@ export function GenerateLetterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    setGeneratedLetter("")
+    setGeneratedLetters(null)
     try {
         const creditReportFile = values.creditReport[0];
-        const creditReportData = await fileToDataUri(creditReportFile);
+        const creditReportDataUri = await fileToDataUri(creditReportFile);
         
-        const result: GenerateCreditDisputeLetterOutput = await generateCreditDisputeLetter({
+        const result = await generateCreditDisputeLetter({
             personalInformation: values.personalInformation,
-            disputeReason: values.disputeReason,
-            creditReportData: creditReportData,
+            creditReportDataUri: creditReportDataUri,
             additionalInstructions: values.additionalInstructions,
         })
-        if (result.letter) {
-            setGeneratedLetter(result.letter)
+        
+        if (Object.values(result).some(letter => letter)) {
+            setGeneratedLetters(result)
         } else {
-            throw new Error("Failed to generate letter.")
+            throw new Error("Failed to generate any letters from the provided report. Please check the file and try again.")
         }
     } catch (error) {
       console.error(error)
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred."
       toast({
         variant: "destructive",
         title: "An error occurred",
-        description: "Failed to generate the dispute letter. Please try again.",
+        description: errorMessage,
       })
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generatedLetter)
-    setHasCopied(true)
-    setTimeout(() => setHasCopied(false), 2000)
   }
 
   return (
@@ -101,23 +122,7 @@ export function GenerateLetterForm() {
                 <FormLabel>Personal Information</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter your full name, address, and relevant account numbers..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="disputeReason"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Reason for Dispute</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Clearly explain why you are disputing the item on your credit report..."
+                    placeholder="Enter your full name, address, DOB, and last 4 of SSN..."
                     {...field}
                   />
                 </FormControl>
@@ -133,7 +138,7 @@ export function GenerateLetterForm() {
                 <FormLabel>Additional Instructions (Optional)</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="e.g., 'Mention the FCRA Section 609.' or 'Keep the tone very firm.'"
+                    placeholder="e.g., 'Cite Cushman v. TransUnion Corp.' or 'Keep the tone very firm.'"
                     {...field}
                   />
                 </FormControl>
@@ -148,32 +153,45 @@ export function GenerateLetterForm() {
                 <FormItem>
                     <FormLabel>Upload Credit Report</FormLabel>
                     <FormControl>
-                        <Input type="file" {...fileRef} />
+                        <Input type="file" {...fileRef} accept=".pdf, .html, .txt"/>
                     </FormControl>
-                    <FormMessage />
+                     <FormMessage />
                 </FormItem>
             )}
             />
 
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Generate Letter
+            Generate Letters
           </Button>
         </form>
       </Form>
 
-      {generatedLetter && (
-        <Card className="mt-8">
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-headline">Your Generated Letter</CardTitle>
-                <Button variant="ghost" size="icon" onClick={handleCopy}>
-                    {hasCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                </Button>
-            </CardHeader>
-            <CardContent>
-                <Textarea readOnly value={generatedLetter} className="h-96 bg-secondary" />
-            </CardContent>
-        </Card>
+      {generatedLetters && (
+        <Tabs defaultValue="equifax" className="w-full mt-8">
+            <TabsList className="grid w-full grid-cols-5">
+                {generatedLetters.equifaxLetter && <TabsTrigger value="equifax">Equifax</TabsTrigger>}
+                {generatedLetters.experianLetter && <TabsTrigger value="experian">Experian</TabsTrigger>}
+                {generatedLetters.transunionLetter && <TabsTrigger value="transunion">TransUnion</TabsTrigger>}
+                {generatedLetters.inquiryDisputeLetter && <TabsTrigger value="inquiries">Inquiries</TabsTrigger>}
+                {generatedLetters.section609Request && <TabsTrigger value="section609">Section 609</TabsTrigger>}
+            </TabsList>
+            <TabsContent value="equifax">
+                <LetterDisplay title="Dispute Letter for Equifax" content={generatedLetters.equifaxLetter} />
+            </TabsContent>
+            <TabsContent value="experian">
+                <LetterDisplay title="Dispute Letter for Experian" content={generatedLetters.experianLetter} />
+            </TabsContent>
+            <TabsContent value="transunion">
+                 <LetterDisplay title="Dispute Letter for TransUnion" content={generatedLetters.transunionLetter} />
+            </TabsContent>
+            <TabsContent value="inquiries">
+                 <LetterDisplay title="Hard Inquiry Dispute Letter" content={generatedLetters.inquiryDisputeLetter} />
+            </TabsContent>
+            <TabsContent value="section609">
+                 <LetterDisplay title="Section 609 Request Letter" content={generatedLetters.section609Request} />
+            </TabsContent>
+        </Tabs>
       )}
     </>
   )

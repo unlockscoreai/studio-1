@@ -112,12 +112,12 @@ function PublicIntakeFormComponent() {
 
   return (
     <div className="space-y-6">
-      {!affiliateId || affiliateId === "none" && (
-        <Alert variant="destructive">
+      {affiliateId && affiliateId !== "none" && (
+        <Alert>
           <Terminal className="h-4 w-4" />
-          <AlertTitle>Missing Affiliate ID</AlertTitle>
+          <AlertTitle>Welcome!</AlertTitle>
           <AlertDescription>
-            This form is for referred clients only. Please use the link provided by your affiliate.
+            You were referred by: <span className="font-semibold">{affiliateId}</span>
           </AlertDescription>
         </Alert>
       )}
@@ -199,9 +199,9 @@ function PublicIntakeFormComponent() {
             )}
             />
 
-          <Button type="submit" disabled={isLoading || affiliateId === 'none'} className="w-full">
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit & Get Started
+            Submit & Get My Free Analysis
           </Button>
         </form>
       </Form>

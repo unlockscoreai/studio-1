@@ -54,32 +54,30 @@ const onboardClientFlow = ai.defineFlow(
   async (input) => {
     // In a real app, you would save the client data to a database here.
     
-    // 1. Generate the dispute letter
-    const personalInformation = `Name: ${input.clientName}\nEmail: ${input.clientEmail}\nPhone: ${input.clientPhone}`;
-    const letterPromise = generateCreditDisputeLetter({
-        creditReportData: input.creditReportDataUri,
-        personalInformation: personalInformation,
-        disputeReason: input.disputeReason,
-    });
-
-    // 2. Analyze the credit profile
-    const analysisPromise = analyzeCreditProfile({
+    // 1. Analyze the credit profile first
+    const analysisResult = await analyzeCreditProfile({
         creditReportDataUri: input.creditReportDataUri,
     });
+    
+    // 2. Generate the dispute letter
+    const personalInformation = `Name: ${input.clientName}\nEmail: ${input.clientEmail}\nPhone: ${input.clientPhone}`;
+    // For the new generateCreditDisputeLetter which takes more inputs:
+    const letterResult = await generateCreditDisputeLetter({
+        creditReportDataUri: input.creditReportDataUri,
+        personalInformation: personalInformation,
+    });
+    
+    const firstLetter = letterResult.equifaxLetter || letterResult.experianLetter || letterResult.transunionLetter;
 
-    const [letterResult, analysisResult] = await Promise.all([letterPromise, analysisPromise]);
-
-
-    if (!letterResult.letter) {
+    if (!firstLetter) {
         return {
             success: false,
-            message: "Failed to generate the dispute letter. Please check the inputs and try again."
+            message: "Failed to generate a dispute letter from the provided report. Please check the file and try again."
         }
     }
 
-    // In a real app, you would save the generated letter to the database, associated with the client.
     // The letter now awaits client approval in the portal before being mailed.
-    console.log(`Generated letter for ${input.clientName}. It is now awaiting approval in the client portal.\n`, letterResult.letter);
+    console.log(`Generated letter for ${input.clientName}. It is now awaiting approval in the client portal.\n`, firstLetter);
     console.log(`Credit analysis for ${input.clientName}:\n`, analysisResult);
 
 
@@ -115,7 +113,7 @@ const onboardClientFlow = ai.defineFlow(
     return {
       success: true,
       message: `Client ${input.clientName} onboarded successfully. Their first dispute letter has been generated and their credit profile has been analyzed.`,
-      generatedLetter: letterResult.letter,
+      generatedLetter: firstLetter,
       analysis: analysisResult,
     };
   }

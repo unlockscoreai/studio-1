@@ -179,11 +179,11 @@ export default function Home() {
               Fix Your Credit with the Power of AI
             </h1>
             <p className="max-w-2xl mx-auto mt-6 text-lg text-foreground/80">
-              UnlockScore AI generates personalized, effective dispute letters to help you clean up your credit report and boost your score. Fast, easy, and secure.
+              Get a free AI-powered analysis of your credit report and a personalized plan to boost your score. Fast, easy, and secure.
             </p>
             <div className="mt-8">
               <Button size="lg" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
-                <Link href="/sign-up">Start Your Dispute for Free</Link>
+                <Link href="/intake">Get My Free Credit Analysis</Link>
               </Button>
             </div>
           </div>
