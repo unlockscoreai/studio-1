@@ -123,6 +123,12 @@ export default function Home() {
     },
   ];
 
+  const googleReviews = [
+    { name: 'David M.', stars: 5, review: 'This platform is a game-changer. The AI wrote letters that got 3 negative items deleted in the first round. Incredible!' },
+    { name: 'Linda K.', stars: 5, review: 'As a mortgage broker, I refer all my clients here first. The business AI helps them get funding-ready so much faster.' },
+    { name: 'James W.', stars: 5, review: 'The automation is top-notch. I set it up and they handled the mailing and follow-ups. Worth every penny.' },
+  ];
+
   const pricingTiers = [
     {
       name: 'Starter',
@@ -236,8 +242,43 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <section id="reviews" className="py-20 bg-secondary">
+          <div className="container">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Real Results, Real Reviews</h2>
+              <p className="max-w-2xl mx-auto mt-4 text-foreground/70">
+                We're proud of our 5-star rating on Google. Here's what our users are saying.
+              </p>
+            </div>
+            <div className="grid gap-8 mt-12 md:grid-cols-3">
+              {googleReviews.map((review, index) => (
+                <Card key={index}>
+                  <CardHeader>
+                      <div className="flex items-center gap-1">
+                          {[...Array(review.stars)].map((_, i) => (
+                              <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                          ))}
+                      </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-foreground/90 mb-4">"{review.review}"</p>
+                  </CardContent>
+                  <CardFooter>
+                      <p className="font-semibold text-sm">{review.name}</p>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+             <div className="mt-12 text-center">
+                <Button asChild size="lg">
+                    <a href="#" target="_blank" rel="noopener noreferrer">See All Reviews on Google</a>
+                </Button>
+            </div>
+          </div>
+        </section>
         
-        <section id="pricing" className="py-20 bg-secondary">
+        <section id="pricing" className="py-20">
           <div className="container">
             <div className="text-center">
               <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Plans for Every Need</h2>
