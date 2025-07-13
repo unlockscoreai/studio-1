@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -27,19 +27,23 @@ import { useToast } from '@/hooks/use-toast';
 import { sendLetterForMailing } from './actions';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { generatePdf } from '@/lib/pdf-generator';
+import { FormattedLetter, type Bureau } from '@/components/client/formatted-letter';
 
 // Mock data for letters
-const mockLetters = [
+const mockLetters: { id: string; title: string; date: string; status: string; content: string; bureau: Bureau }[] = [
   {
     id: 'letter-1',
     title: 'Initial Dispute for Experian',
+    bureau: 'Experian',
     date: '2024-07-25',
     status: 'Awaiting Approval',
-    content: 'Dear Experian,\n\nI am writing to dispute the following information in my file...',
+    content: 'Dear Experian,\n\nI am writing to dispute the following information in my file...\n\n1. IC System – Medical Collection\nThis account reports a balance of $486 with an open date of 08/21/2020. You are reporting this as a medical collection. However, no signed HIPAA authorization exists allowing the collection agency or credit bureaus to legally access or report my protected health information. Under HIPAA (45 CFR §164.508), disclosure without proper consent is a violation. Please remove this account immediately unless legal documentation is provided.\n\n2. Navy Federal Credit Union – Charged Off\nThis account was opened on 09/26/2019 and shows a charged-off status with a balance of $1,862. Upon reviewing my credit report, I have observed discrepancies in reporting across bureaus regarding the balance and payment status. Under FCRA §602 and §611, you are required to ensure the accuracy and consistency of data furnished. Please conduct a full reinvestigation and remove or correct any unverifiable or inconsistent information.\n\nSincerely,\nSarah Lee',
   },
   {
     id: 'letter-2',
     title: 'Follow-up for Equifax',
+    bureau: 'Equifax',
     date: '2024-07-22',
     status: 'Mailed',
     content: 'This is a follow-up letter for Equifax...',
@@ -47,6 +51,7 @@ const mockLetters = [
   {
     id: 'letter-3',
     title: 'MOV Request for TransUnion',
+    bureau: 'TransUnion',
     date: '2024-07-18',
     status: 'Mailed',
     content: 'This is a Method of Verification letter for TransUnion...',
@@ -61,6 +66,7 @@ type MailingStatus = {
 };
 // In a real app, this would be fetched based on the client's associated affiliate.
 const mockAffiliateCreditBalance = 48;
+const mockSenderInfo = "Sarah Lee\n123 Main St\nAnytown, CA 12345";
 
 
 function SubscriptionSimulator({
@@ -108,6 +114,8 @@ export default function LettersPage() {
   const [mailingStatus, setMailingStatus] = useState<Record<string, MailingStatus>>({});
   const [autoDispute, setAutoDispute] = useState(false);
   const { toast } = useToast();
+  const letterRef = useRef<HTMLDivElement>(null);
+  const [letterToPrint, setLetterToPrint] = useState<{ content: string; bureau: Bureau; } | null>(null);
 
   const handleMailLetter = async (letterId: string, title: string, content: string) => {
     setMailingStatus(prev => ({...prev, [letterId]: { state: 'loading' }}));
@@ -132,12 +140,39 @@ export default function LettersPage() {
     }
   }
 
+  const handleDownloadPdf = (content: string, bureau: Bureau) => {
+    setLetterToPrint({ content, bureau });
+    
+    setTimeout(() => {
+        if (letterRef.current) {
+            generatePdf(letterRef.current, `${bureau}_dispute_letter.pdf`);
+            setLetterToPrint(null);
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Could not generate PDF. Please try again.',
+            });
+        }
+    }, 100);
+  };
+
 
   const isSubscribed = subscription === 'pro' || subscription === 'vip';
   const hasCredits = mockAffiliateCreditBalance > 0;
 
   return (
     <div className="space-y-6">
+        {letterToPrint && (
+            <div className="hidden">
+                 <FormattedLetter 
+                    ref={letterRef}
+                    senderInfo={mockSenderInfo}
+                    bureau={letterToPrint.bureau}
+                    body={letterToPrint.content}
+                />
+            </div>
+        )}
       <SubscriptionSimulator
         subscription={subscription}
         setSubscription={setSubscription}
@@ -190,11 +225,20 @@ export default function LettersPage() {
                             Generated on {letter.date}
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={showAsMailed ? 'default' : 'secondary'}>
                             {showAsMailed ? (isMailedAutomatically ? 'Mailed Automatically' : 'Mailed') : letter.status}
                         </Badge>
                         
+                         <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDownloadPdf(letter.content, letter.bureau)}
+                        >
+                            <Download className="mr-2 h-4 w-4" />
+                            Download
+                        </Button>
+
                         {!showAsMailed ? (
                             <Button
                             size="sm"
