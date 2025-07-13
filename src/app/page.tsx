@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Rocket, ShieldCheck, Bot, LineChart, Check, Banknote, Star, Briefcase, Building } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 function LandingHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +78,7 @@ function LandingFooter() {
 
 
 export default function Home() {
-  const [discount, setDiscount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   const features = [
     {
@@ -161,12 +162,6 @@ export default function Home() {
       href: '/sign-up',
     },
   ];
-  
-  const applyDiscount = (priceString: string) => {
-    const numericPrice = parseFloat(priceString.replace('$', ''));
-    const discountedPrice = numericPrice * (1 - discount);
-    return discountedPrice.toFixed(2);
-  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -179,7 +174,7 @@ export default function Home() {
               Fix Your Credit with the Power of AI
             </h1>
             <p className="max-w-2xl mx-auto mt-6 text-lg text-foreground/80">
-              Get a free AI-powered analysis of your credit report and a personalized plan to boost your score. Fast, easy, and secure.
+              UnlockScore AI generates personalized, effective dispute letters to help you clean up your credit report and boost your score. Fast, easy, and secure.
             </p>
             <div className="mt-8">
               <Button size="lg" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
@@ -286,16 +281,6 @@ export default function Home() {
                 Whether you're repairing your own credit or building a business, we have a plan for you.
               </p>
             </div>
-            
-            <div className="my-8 flex justify-center items-center gap-2 flex-wrap">
-                <p className="text-sm font-medium">Apply Coupon:</p>
-                <Button variant={discount === 0.2 ? 'default' : 'outline'} onClick={() => setDiscount(0.2)}>20% OFF</Button>
-                <Button variant={discount === 0.5 ? 'default' : 'outline'} onClick={() => setDiscount(0.5)}>50% OFF</Button>
-                <Button variant={discount === 1.0 ? 'default' : 'outline'} onClick={() => setDiscount(1.0)}>100% OFF</Button>
-                {discount > 0 && (
-                    <Button variant="ghost" onClick={() => setDiscount(0)}>Clear</Button>
-                )}
-            </div>
 
             <div className="grid max-w-4xl gap-8 mx-auto mt-12 md:grid-cols-2">
                 {pricingTiers.map((tier) => (
@@ -307,8 +292,7 @@ export default function Home() {
                         </CardHeader>
                         <CardContent className="flex-1">
                             <div className="mb-6 flex items-baseline gap-2">
-                                <span className="text-4xl font-bold">${applyDiscount(tier.price)}</span>
-                                {discount > 0 && <span className="text-xl font-medium text-muted-foreground line-through">{tier.price}</span>}
+                                <span className="text-4xl font-bold">{tier.price}</span>
                                 <span className="text-muted-foreground">{tier.period}</span>
                             </div>
                             <ul className="space-y-4">
@@ -336,6 +320,30 @@ export default function Home() {
             </div>
           </div>
         </section>
+        
+        <section className="py-20 bg-secondary">
+          <div className="container">
+            <Card className="overflow-hidden">
+                <div className="grid md:grid-cols-2">
+                    <div className="p-8 md:p-12 flex flex-col justify-center">
+                         <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Build Your Business Credit</h2>
+                          <p className="mt-4 text-foreground/70 mb-6">
+                            Ready to secure funding? Our Business AI analyzes your company's fundability and gives you a step-by-step plan to get ready for lenders.
+                          </p>
+                          <div className="flex gap-4">
+                            <Button size="lg" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
+                                <Link href="/business-intake">Get My Business Scan</Link>
+                            </Button>
+                          </div>
+                    </div>
+                     <div className="hidden md:block">
+                        <Image src="https://placehold.co/600x400.png" alt="Business Dashboard" width={600} height={400} className="object-cover h-full w-full" data-ai-hint="dashboard analytics" />
+                    </div>
+                </div>
+            </Card>
+          </div>
+        </section>
+
       </main>
 
       <LandingFooter />
