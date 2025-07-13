@@ -1,135 +1,139 @@
 
 'use server';
 
-// This is a placeholder for a real Click2Mail API client.
-// The 'click2mail-node' package was not found in the npm registry.
-// A real implementation would require finding a valid API client or using fetch() directly.
-const Click2MailClient = class {
-    constructor(user: string, pass: string) {
-        if (!user || !pass) {
-            console.warn("Click2Mail credentials are not set. Mailing service will fail.");
-        }
-        // Mock methods would go here
-    }
-    
-    // Mock implementation
-    documents = {
-        async create(params: any) {
-            console.log("Mock C2M Document Create:", params);
-            return { id: `doc_${Date.now()}` };
-        }
-    }
+import { z } from 'zod';
 
-    // Mock implementation
-    addressLists = {
-         async create(params: any) {
-            console.log("Mock C2M Address List Create:", params);
-            return { id: `addr_${Date.now()}` };
-        }
-    }
+const AddressSchema = z.object({
+    name: z.string(),
+    address1: z.string(),
+    address2: z.string().optional(),
+    city: z.string(),
+    state: z.string(),
+    postalCode: z.string(),
+});
 
-    // Mock implementation
-    jobs = {
-        async create(params: any) {
-             console.log("Mock C2M Job Create:", params);
-             return { id: `job_${Date.now()}`, status: 'success', price: "5.43" };
-        }
-    }
-}
+const SendLetterParamsSchema = z.object({
+    title: z.string(),
+    letterContent: z.string(),
+    from: AddressSchema,
+    to: AddressSchema,
+});
 
+const SendLetterResponseSchema = z.object({
+    success: z.boolean(),
+    orderId: z.string().optional(),
+    trackingNumber: z.string().optional(),
+    status: z.string(),
+    cost: z.number().optional(),
+    message: z.string().optional(),
+});
 
-interface Address {
-    name: string;
-    address1: string;
-    address2?: string;
-    city: string;
-    state: string;
-    postalCode: string;
-}
+type SendLetterParams = z.infer<typeof SendLetterParamsSchema>;
+type SendLetterResponse = z.infer<typeof SendLetterResponseSchema>;
 
-interface SendLetterParams {
-    title: string;
-    letterContent: string;
-    from: Address;
-    to: Address;
-}
-
-interface SendLetterResponse {
-    success: boolean;
-    orderId: string;
-    trackingNumber: string;
-    status: string;
-    cost: number;
-}
-
-// Ensure you have these in your .env.local file
+const CLICK2MAIL_API_URL = 'https://api.click2mail.com/v3';
 const click2mailUser = process.env.CLICK2MAIL_USER;
-const click2mailPass = process.env.CLICK2MAIL_PASS;
-
-const c2m = new (Click2MailClient as any)(click2mailUser!, click2mailPass!);
+// The API key is used as the password for Basic Auth
+const click2mailApiKey = process.env.CLICK2MAIL_API_KEY;
 
 /**
- * Sends a certified letter via the Click2Mail API.
+ * Sends a certified letter via the Click2Mail REST API.
  * @param params - The parameters for sending the letter.
- * @returns A promise that resolves with the response from the Click2-Mail API.
+ * @returns A promise that resolves with the response from the Click2Mail API.
  */
 export async function sendCertifiedLetter(params: SendLetterParams): Promise<SendLetterResponse> {
-    if (!click2mailUser || !click2mailPass) {
-        // Return a mocked successful response for UI development purposes
-        console.warn("Click2Mail service is not configured. Returning mocked success response.");
+    if (!click2mailUser || !click2mailApiKey) {
+        console.warn("Click2Mail credentials are not set in .env. Falling back to mock response.");
         return {
             success: true,
             orderId: `mock_ord_${Date.now()}`,
             trackingNumber: `9407111899560000000000`, 
             status: 'Submitted (Mock)',
             cost: 5.43,
+            message: 'This is a mock response. Please set your Click2Mail credentials in the .env file.'
         };
     }
-    
-    // 1. Create a document to be mailed
-    const documentResponse = await c2m.documents.create({
-        name: params.title,
-        source: params.letterContent,
-        class: "Letter 8.5 x 11",
-    });
 
-    if (!documentResponse.id) {
-        throw new Error(`Failed to create document in Click2Mail. Reason: ${documentResponse.description}`);
-    }
+    const authHeader = `Basic ${Buffer.from(`${click2mailUser}:${click2mailApiKey}`).toString('base64')}`;
 
-    // 2. Create an address list
-    const addressListResponse = await c2m.addressLists.create({
-        name: `${params.to.name} - Address`,
-        addresses: [params.to],
-    });
-
-    if (!addressListResponse.id) {
-        throw new Error(`Failed to create address list in Click2Mail. Reason: ${addressListResponse.description}`);
-    }
-
-    // 3. Create a job to send the letter
-    const jobData = {
-        document_id: documentResponse.id,
-        address_list_id: addressListResponse.id,
-        method: "First-Class Mail",
-        mail_type: "Certified with Return Receipt Electronic",
-        reply_address_line_1: params.from.address1,
-        reply_address_city: params.from.city,
-        reply_address_state: params.from.state,
-        reply_address_postal_code: params.from.postalCode,
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': authHeader,
     };
 
-    const jobResponse = await c2m.jobs.create(jobData);
+    try {
+        // 1. Create a document to be mailed
+        const docResponse = await fetch(`${CLICK2MAIL_API_URL}/documents`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                document_name: params.title,
+                document_class: "Letter 8.5 x 11",
+                document_format: "TEXT",
+                document_content: params.letterContent
+            })
+        });
 
-    if (jobResponse.status !== 'success') {
-        throw new Error(`Failed to create job in Click2Mail. Reason: ${jobResponse.description}`);
+        const docResult = await docResponse.json();
+        if (!docResponse.ok) {
+            throw new Error(`Click2Mail Document Error: ${docResult.description}`);
+        }
+        const documentId = docResult.id;
+
+        // 2. Create an address list
+        const addressListResponse = await fetch(`${CLICK2MAIL_API_URL}/address-lists`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                address_list_name: `${params.to.name} - Address`,
+                addresses: [{
+                    address_name: params.to.name,
+                    address_street_1: params.to.address1,
+                    address_street_2: params.to.address2,
+                    address_city: params.to.city,
+                    address_state: params.to.state,
+                    address_postal_code: params.to.postalCode
+                }]
+            })
+        });
+
+        const addressListResult = await addressListResponse.json();
+         if (!addressListResponse.ok) {
+            throw new Error(`Click2Mail Address List Error: ${addressListResult.description}`);
+        }
+        const addressListId = addressListResult.id;
+
+        // 3. Create a job to send the letter
+        const jobResponse = await fetch(`${CLICK2MAIL_API_URL}/jobs`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                document_id: documentId,
+                address_list_id: addressListId,
+                job_production_speed: '2', // 2 = Next Day
+                mail_class: "First-Class Mail",
+                mail_type: "Certified w/ Return Receipt Electronic"
+            })
+        });
+
+        const jobResult = await jobResponse.json();
+        if (!jobResponse.ok || jobResult.status !== 'success') {
+            throw new Error(`Click2Mail Job Error: ${jobResult.description}`);
+        }
+
+        return {
+            success: true,
+            orderId: jobResult.id,
+            // Note: C2M API v3 doesn't return the tracking number directly on job creation.
+            // A real app would need a webhook or polling to get this later.
+            trackingNumber: 'Pending from Click2Mail', 
+            status: 'Submitted to Click2Mail',
+            cost: parseFloat(jobResult.price),
+        };
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during mailing.';
+        console.error("Error sending letter via Click2Mail:", errorMessage);
+        return { success: false, message: errorMessage, status: 'Failed' };
     }
-    
-    return {
-        success: true,
-        orderId: jobResponse.id,
-        trackingNumber: `9407111899561234567890`, 
-        status: 'Submitted',
-        cost: parseFloat(jobResponse.price),
-    };
 }
