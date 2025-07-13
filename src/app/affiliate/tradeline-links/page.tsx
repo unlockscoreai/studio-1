@@ -1,5 +1,8 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { TradelineLinksForm } from "@/components/affiliate/tradeline-links-form";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { TradelineLinksTable } from "@/components/affiliate/tradeline-links-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { creditBoosterVendors, businessVendorTiers } from "@/lib/vendor-data";
 
 export default function TradelineLinksPage() {
   return (
@@ -12,7 +15,36 @@ export default function TradelineLinksPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <TradelineLinksForm />
+            <Tabs defaultValue="boosters" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="boosters">Credit Boosters</TabsTrigger>
+                    <TabsTrigger value="business">Business Tradelines</TabsTrigger>
+                </TabsList>
+                <TabsContent value="boosters" className="mt-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Credit Booster Services</CardTitle>
+                            <CardDescription>Popular services that help clients build credit through rent reporting, credit-builder loans, etc.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                             <TradelineLinksTable vendors={creditBoosterVendors} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="business" className="mt-4 space-y-6">
+                    {businessVendorTiers.map((tier) => (
+                        <Card key={tier.tier}>
+                            <CardHeader>
+                                <CardTitle>{tier.tier}</CardTitle>
+                                <CardDescription>{tier.description}</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <TradelineLinksTable vendors={tier.vendors} />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </TabsContent>
+            </Tabs>
         </CardContent>
       </Card>
     </div>
