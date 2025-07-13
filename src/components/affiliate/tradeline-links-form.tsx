@@ -10,6 +10,18 @@ import { ExternalLink, Save } from 'lucide-react';
 
 const tradelineData = [
   {
+    tier: 'Credit Booster Services',
+    description: 'Popular third-party services that help clients build credit history through methods like rent reporting and credit-builder loans.',
+    vendors: [
+      { id: 'ava', name: 'Ava' },
+      { id: 'kikoff', name: 'Kikoff' },
+      { id: 'self', name: 'Self' },
+      { id: 'boom', name: 'Boom' },
+      { id: 'extra', name: 'Extra' },
+      { id: 'grain', name: 'Grain' },
+    ],
+  },
+  {
     tier: 'Tier 1 Vendor Accounts',
     description: 'Starter vendors that report to business credit bureaus, ideal for establishing an initial credit profile.',
     vendors: [
@@ -66,7 +78,7 @@ export function TradelineLinksForm() {
 
   return (
     <div className="space-y-6">
-      <Accordion type="multiple" defaultValue={[tradelineData[0].tier]} className="w-full">
+      <Accordion type="multiple" defaultValue={[tradelineData[0].tier, tradelineData[1].tier]} className="w-full">
         {tradelineData.map((category) => (
           <AccordionItem value={category.tier} key={category.tier}>
             <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">
