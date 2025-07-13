@@ -6,9 +6,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Copy, Check, Download, Send, Twitter, Facebook, Mail } from 'lucide-react';
+import { Copy, Check, Download, Send, Twitter, Facebook, Mail, Info, FileText } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 
 const affiliateLink = "https://unlockscore.ai/intake?affiliate_id=creditup-solutions";
 
@@ -18,6 +20,8 @@ const socialCaptions = [
     "Finally, a credit repair tool that actually works. Generated and sent my dispute letters in minutes. Highly recommend UnlockScore AI.",
     "Don't let errors on your credit report dictate your financial future. This AI platform helped me take control. #creditboost #dispute",
     "If you're looking for a side hustle, check out the @UnlockScoreAI affiliate program. Helping others fix their credit and earning rewards is a win-win. #affiliatemarketing",
+    "Just helped another client get a negative item removed with UnlockScore AI. This platform is powerful. #creditrepair #results",
+    "The secret to a better credit score isn't a secret anymore. It's AI. Check out UnlockScore. #innovation #finance",
 ];
 
 const emailScripts = [
@@ -52,6 +56,19 @@ Let me know if you have any questions about it! Here's the link again: ${affilia
 
 Cheers,
 [Your Name]`
+    },
+    {
+        title: "Business Owner Outreach",
+        script: `Subject: Building business credit just got easier
+
+Hey [Name],
+
+Saw you're running [Business Name] and wanted to share a tool that's helping businesses like yours get funding-ready. It's called UnlockScore AI. It analyzes your business's public profile and gives you a step-by-step plan to build your business credit.
+
+It’s pretty impressive. You can get a free analysis here: [Your Business Referral Link]
+
+Best,
+[Your Name]`
     }
 ]
 
@@ -76,6 +93,58 @@ export default function ResourcesPage() {
 
     return (
         <div className="space-y-8">
+             <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <FileText className="w-6 h-6 text-primary" />
+                        Platform Overview
+                    </CardTitle>
+                    <CardDescription>Use this information to understand and explain the value of UnlockScore AI to your clients.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div>
+                        <h3 className="font-semibold text-lg">What is Unlock Score AI?</h3>
+                        <p className="text-muted-foreground">Unlock Score AI is an all-in-one, AI-powered platform designed to help individuals repair their personal credit and assist businesses in building their credit profile to become funding-ready.</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 className="font-semibold">The Problem</h4>
+                            <p className="text-muted-foreground">The traditional credit dispute process is slow, confusing, and often requires hiring expensive lawyers or credit repair companies with no guarantee of results.</p>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold">Our Solution</h4>
+                            <p className="text-muted-foreground">Our AI automates the most complex parts of credit repair, providing a fast, simple, and effective path to a better credit score and improved business fundability.</p>
+                        </div>
+                    </div>
+                    
+                    <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="personal-credit">
+                            <AccordionTrigger className="text-lg font-semibold">How Personal Credit Repair Works</AccordionTrigger>
+                            <AccordionContent className="pt-2">
+                                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                                    <li><strong>Client Uploads Report:</strong> The client signs up and uploads their 3-bureau credit report from a service like IdentityIQ or myFICO.</li>
+                                    <li><strong>AI Analyzes & Generates Letters:</strong> Our AI analyzes the report, identifies negative items, and generates highly effective, personalized dispute letters for each bureau.</li>
+                                    <li><strong>Client Mails Letters:</strong> On the Starter plan, the client mails the letters themselves. On Pro & VIP plans, we mail them via Certified Mail automatically.</li>
+                                    <li><strong>AI Analyzes Responses (Round 2):</strong> When the bureaus respond, the client uploads the response letters. Our AI analyzes the outcome and generates the next strategic follow-up letter.</li>
+                                </ol>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="business-credit">
+                            <AccordionTrigger className="text-lg font-semibold">How Business Credit Building Works</AccordionTrigger>
+                            <AccordionContent className="pt-2">
+                                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                                     <li><strong>Business Owner Provides Details:</strong> The business owner fills out a simple intake form with their business name, state, and other basic info.</li>
+                                    <li><strong>AI Runs "Unlock Score" Scan:</strong> Our AI performs a comprehensive public data scan (SoS, web presence, etc.) to generate the business's "Unlock Score™"—a 0-1000 metric of funding readiness.</li>
+                                    <li><strong>Action Plan Delivered:</strong> The AI provides a detailed report identifying risk factors and a step-by-step action plan to improve their Unlock Score.</li>
+                                    <li><strong>Client Builds Credit:</strong> Using our platform, the client can open vendor accounts (tradelines), track their progress, and ultimately apply for funding with a much higher chance of success.</li>
+                                </ol>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </CardContent>
+            </Card>
+
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline">Referral Tools</CardTitle>
@@ -96,7 +165,7 @@ export default function ResourcesPage() {
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="space-y-4">
                             <h3 className="font-semibold">Social Media Captions</h3>
-                            <Carousel className="w-full">
+                            <Carousel className="w-full" opts={{ loop: true }}>
                                 <CarouselContent>
                                     {socialCaptions.map((caption, index) => (
                                         <CarouselItem key={index}>
@@ -115,13 +184,13 @@ export default function ResourcesPage() {
                                         </CarouselItem>
                                     ))}
                                 </CarouselContent>
-                                <CarouselPrevious className="-left-4" />
-                                <CarouselNext className="-right-4" />
+                                <CarouselPrevious className="hidden sm:flex" />
+                                <CarouselNext className="hidden sm:flex" />
                             </Carousel>
                         </div>
                          <div className="space-y-4">
                             <h3 className="font-semibold">Email & SMS Scripts</h3>
-                            <Carousel className="w-full">
+                            <Carousel className="w-full" opts={{ loop: true }}>
                                 <CarouselContent>
                                     {emailScripts.map((item, index) => (
                                         <CarouselItem key={index}>
@@ -142,8 +211,8 @@ export default function ResourcesPage() {
                                         </CarouselItem>
                                     ))}
                                 </CarouselContent>
-                                <CarouselPrevious className="-left-4" />
-                                <CarouselNext className="-right-4" />
+                                <CarouselPrevious className="hidden sm:flex" />
+                                <CarouselNext className="hidden sm:flex" />
                             </Carousel>
                         </div>
                     </div>
