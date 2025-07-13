@@ -47,6 +47,8 @@ const prompt = ai.definePrompt({
 
 First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence and Secretary of State (SoS) status.
 
+If the tool returns 'isFound: false', this is a major red flag. The Unlock Score and Social Score should be very low (under 100), and the summary must state that the business is not found in public records. The Action Plan should prioritize officially registering the business.
+
 Simulate a web search using the provided business name, phone number, and email to assess their general online footprint.
 
 The user has provided the following additional information:
@@ -74,7 +76,7 @@ Now, generate the complete Unlock Score™ report in the specified JSON format:
     - 650–799: "Fundable"
     - 800–949: "Highly Fundable"
     - 950–1000: "Unlock VIP"
-4.  **Business Summary**: Create a structured summary. Use the data from the 'getBusinessDetailsFromState' tool to fill in 'entityType', 'status', 'registeredAgent', 'mailingAddress', and 'lastHistoryUpdate'.
+4.  **Business Summary**: Create a structured summary. Use the data from the 'getBusinessDetailsFromState' tool to fill in 'entityType', 'status', 'registeredAgent', 'mailingAddress', and 'lastHistoryUpdate'. If the business is not found, these fields can be empty.
     -   'businessName': The name of the business.
     -   'entityType': The legal entity type from the tool.
     -   'yearsInBusiness': The years in business provided by the user.
@@ -83,9 +85,9 @@ Now, generate the complete Unlock Score™ report in the specified JSON format:
     -   'registeredAgent': The registered agent from the tool.
     -   'mailingAddress': The mailing address from the tool.
     -   'lastHistoryUpdate': The last history update date from the tool.
-    -   'summaryText': Write a professional summary paragraph about the business's status and online presence.
+    -   'summaryText': Write a professional summary paragraph about the business's status and online presence. If not found, explain this.
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
-6.  **Risk Factors**: Identify and list all red flags. Examples: "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
+6.  **Risk Factors**: Identify and list all red flags. Examples: "Business not found in state registry," "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
 7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their Unlock Score™. These should directly address the identified risk factors.
 8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their fundability profile, and create an actionable plan to raise their Unlock Score. Example: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 
