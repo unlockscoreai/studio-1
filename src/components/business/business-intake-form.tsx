@@ -233,17 +233,16 @@ export function BusinessIntakeForm() {
                 ) : (
                   <Input
                     placeholder="Enter full business address"
-                    value={field.value?.label || ''}
+                    value={typeof field.value === 'string' ? field.value : field.value?.label || ''}
                     onChange={(e) => field.onChange({ label: e.target.value, value: e.target.value })}
                     onBlur={field.onBlur}
                     name={field.name}
                     ref={field.ref}
-                    disabled={!isClient}
                   />
                 )}
               </FormControl>
               <FormDescription>
-                {hasApiKey ? "As you type, Google will suggest addresses." : "To enable address autocompletion, please add a Google Maps API key."}
+                {hasApiKey ? "As you type, Google will suggest addresses." : "Autocomplete disabled. To enable, add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your environment."}
               </FormDescription>
               <FormMessage />
             </FormItem>
