@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef, Suspense } from "react"
@@ -103,7 +104,7 @@ function PublicIntakeFormComponent() {
             <CheckCircle className="h-4 w-4 !text-green-500" />
             <AlertTitle>Thank You for Your Submission!</AlertTitle>
             <AlertDescription>
-                Your information has been received. Please check your email for a welcome message with instructions to log in to your client portal and complete the onboarding process.
+                Your information has been received. Please check your email for instructions to log into our secure client portal and retrieve your free credit analysis.
             </AlertDescription>
         </Alert>
     )
