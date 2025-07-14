@@ -328,7 +328,7 @@ export default function Home() {
                     <div className="p-8 md:p-12 flex flex-col justify-center">
                          <h2 className="text-3xl font-bold sm:text-4xl font-headline text-primary">Build Your Business Credit</h2>
                           <p className="mt-4 text-foreground/70 mb-6">
-                            Ready to secure funding? Our Business AI analyzes your company's fundability and gives you a step-by-step plan to get ready for lenders.
+                            Ready to secure funding? Our Business AI analyzes your company's Unlock Score and gives you a step-by-step plan to get ready for lenders.
                           </p>
                           <div className="flex gap-4">
                             <Button size="lg" asChild style={{ backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }}>
@@ -337,7 +337,7 @@ export default function Home() {
                           </div>
                     </div>
                      <div className="hidden md:block">
-                        <Image src="https://placehold.co/600x400.png" alt="Business Dashboard" width={600} height={400} className="object-cover h-full w-full" data-ai-hint="dashboard analytics" />
+                        <Image src="https://placehold.co/600x400.png" alt="AI scanning a business building" width={600} height={400} className="object-cover h-full w-full" data-ai-hint="AI scan" />
                     </div>
                 </div>
             </Card>
