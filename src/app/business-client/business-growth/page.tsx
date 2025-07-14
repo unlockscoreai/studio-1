@@ -50,7 +50,7 @@ export default function BusinessGrowthPage() {
                             <span className="text-4xl font-bold text-primary">{growthData.score}</span>
                         </div>
                     </div>
-                     <p className="text-muted-foreground mt-4 text-center">Your path to fundability is looking strong!</p>
+                     <p className="text-muted-foreground mt-4 text-center">Your path to a higher Unlock Score is looking strong!</p>
                 </Card>
 
                 <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">

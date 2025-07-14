@@ -44,9 +44,9 @@ export default function CreditChecklistPage() {
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Fundable Credit Profile Checklist</CardTitle>
+                    <CardTitle className="font-headline">Unlock Score Readiness Checklist</CardTitle>
                     <CardDescription>
-                        Use this checklist as a guide to building a strong credit profile for funding.
+                        Use this checklist as a guide to building a strong credit profile for a high Unlock Score.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8">

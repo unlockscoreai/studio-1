@@ -67,14 +67,14 @@ export default function BookConsultationPage() {
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Book Your Strategy Consultation</CardTitle>
         <CardDescription>
-          Invest in a 30-minute, one-on-one session with a business funding expert for just $99.
+          Invest in a 30-minute, one-on-one session with a business credit expert for just $99.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
           <h3 className="font-semibold text-lg mb-2">What you'll get:</h3>
           <ul className="list-disc list-inside text-muted-foreground space-y-1">
-            <li>A deep dive into your business structure and fundability.</li>
+            <li>A deep dive into your business structure and Unlock Score.</li>
             <li>Identification of the missing pieces in your credit profile.</li>
             <li>A personalized, actionable plan to get you funding-ready.</li>
             <li>Answers to your most pressing questions about business credit.</li>

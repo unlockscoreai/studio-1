@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Analyzes a credit report against a fundable credit profile checklist.
+ * @fileOverview Analyzes a credit report against a checklist for a high Unlock Score.
  *
  * - analyzeCreditProfile - A function that analyzes a credit report.
  * - AnalyzeCreditProfileInput - The input type for the analyzeCreditProfile function.
@@ -35,7 +35,7 @@ export async function analyzeCreditProfile(input: AnalyzeCreditProfileInput): Pr
 }
 
 const checklist = `
-Fundable Credit Profile Checklist:
+Credit Profile Checklist for a High Unlock Score:
 
 A. Personal Credit (FICO)
 - 700+ FICO score
@@ -70,7 +70,7 @@ const prompt = ai.definePrompt({
   output: {schema: AnalyzeCreditProfileOutputSchema},
   prompt: `You are a professional credit analyst. Your task is to analyze the provided credit report, generate a summary and action plan, and identify potentially disputable items with a success probability.
 
-Here is the checklist for a strong, fundable credit profile:
+Here is the checklist for a strong credit profile that can achieve a high Unlock Score:
 ${checklist}
 
 Now, analyze the following credit report:

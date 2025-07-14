@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 const checklistData = [
   {
     category: 'Business Foundation',
-    description: 'The basic building blocks for a credible and fundable business.',
+    description: 'The basic building blocks for a credible business with a high Unlock Score.',
     items: [
       { id: 'entity', label: 'Business Name & Entity', description: 'Your business is officially registered with the Secretary of State (e.g., LLC, C-Corp).', link: 'https://www.nolo.com/legal-encyclopedia/starting-your-business-state.html' },
       { id: 'ein', label: 'Employer Identification Number (EIN)', description: 'You have a federal tax ID number for your business from the IRS.', link: 'https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online' },
@@ -272,7 +272,7 @@ export default function MyBusinessPage() {
             <CardHeader>
                 <CardTitle className="font-headline">My Business Readiness Report</CardTitle>
                 <CardDescription>
-                Track your progress towards building a highly fundable business. Each completed section contributes 25% to your total readiness score.
+                Track your progress towards building a high Unlock Score. Each completed section contributes 25% to your total readiness score.
                 </CardDescription>
             </CardHeader>
             <CardContent>

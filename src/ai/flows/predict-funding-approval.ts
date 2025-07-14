@@ -16,7 +16,7 @@ const PredictFundingApprovalInputSchema = z.object({
   monthlyRevenue: z.number().min(0).describe("The average monthly revenue of the business."),
   industry: z.string().describe("The industry the business operates in (e.g., 'Logistics', 'Retail', 'Software')."),
   personalCreditScore: z.number().min(300).max(850).describe("The business owner's personal FICO score."),
-  businessCreditScore: z.number().min(0).max(100).describe("The business's fundability or Paydex score (0-100 scale)."),
+  businessCreditScore: z.number().min(0).max(100).describe("The business's Unlock Score (0-100 scale)."),
 });
 export type PredictFundingApprovalInput = z.infer<typeof PredictFundingApprovalInputSchema>;
 
@@ -51,7 +51,7 @@ Business Profile:
 - Average Monthly Revenue: \${{monthlyRevenue}}
 - Industry: {{industry}}
 - Owner's Personal FICO Score: {{personalCreditScore}}
-- Business Fundability Score: {{businessCreditScore}}/100
+- Business Unlock Score: {{businessCreditScore}}/100
 
 Instructions:
 1.  **Analyze the Profile**: Based on the data provided, assess the business's strengths and weaknesses from a lender's perspective.

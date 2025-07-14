@@ -44,7 +44,7 @@ export default function BusinessDashboardPage() {
             <CardHeader>
                 <CardTitle className="font-headline">Welcome to your Business Dashboard</CardTitle>
                 <CardDescription>
-                This is your central hub for managing and improving your business's funding readiness, measured by your Unlock Score™.
+                This is your central hub for managing and improving your business's Unlock Score™.
                 </CardDescription>
             </CardHeader>
             <CardContent>

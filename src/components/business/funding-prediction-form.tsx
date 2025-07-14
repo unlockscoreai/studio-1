@@ -145,7 +145,7 @@ export function FundingPredictionForm() {
                     name="businessCreditScore"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Business Score (0-100)</FormLabel>
+                            <FormLabel>Unlock Score (0-100)</FormLabel>
                             <FormControl><Input type="number" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
