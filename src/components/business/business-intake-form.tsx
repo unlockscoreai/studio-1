@@ -40,7 +40,7 @@ const states = [
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name is required."),
   state: z.string({ required_error: "Please select a state."}),
-  ownerEmail: z.string().email("Please enter a valid email address for where to send the report."),
+  businessEmail: z.string().email("Please enter a valid email address for where to send the report."),
   businessAddress: z.object({ label: z.string(), value: z.any() }).optional(),
   ein: z.string().optional(),
   duns: z.string().optional(),
@@ -83,7 +83,7 @@ export function BusinessIntakeForm() {
     defaultValues: {
       businessName: "Volunteer Express Logistics LLC",
       state: "TN",
-      ownerEmail: "contact@volunteerexpress.com",
+      businessEmail: "contact@volunteerexpress.com",
       businessAddress: undefined,
       ein: "98-7654321",
       duns: "123456789",
@@ -108,7 +108,7 @@ export function BusinessIntakeForm() {
       const result = await onboardBusinessClient({
           businessName: values.businessName,
           state: values.state,
-          businessEmail: values.ownerEmail,
+          businessEmail: values.businessEmail,
           businessAddress: values.businessAddress?.label,
           ein: values.ein,
           duns: values.duns,
@@ -122,7 +122,7 @@ export function BusinessIntakeForm() {
 
       if (result.success && result.analysis) {
           setAnalysis(result.analysis);
-          // In a real app, you would also now save the lead's email (values.ownerEmail)
+          // In a real app, you would also now save the lead's email (values.businessEmail)
           // and associate it with the generated report.
       } else {
           throw new Error(result.message || "Analysis failed to return a result.")
@@ -256,10 +256,10 @@ export function BusinessIntakeForm() {
         <div className="grid md:grid-cols-2 gap-6">
             <FormField
                 control={form.control}
-                name="ownerEmail"
+                name="businessEmail"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Your Email Address</FormLabel>
+                    <FormLabel>Business Email Address</FormLabel>
                     <FormControl><Input type="email" placeholder="you@company.com" {...field} /></FormControl>
                     <FormMessage />
                 </FormItem>
