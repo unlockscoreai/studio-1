@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { onboardClient } from "@/ai/flows/onboard-client"
+import { onboardClient, type OnboardClientOutput } from "@/ai/flows/onboard-client"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,7 +21,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Loader2, Terminal, CheckCircle } from "lucide-react"
+import { Loader2, Terminal, CheckCircle, ShieldAlert } from "lucide-react"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import { Progress } from "../ui/progress"
 
 const formSchema = z.object({
   clientName: z.string().min(2, "Your name is required."),
@@ -46,6 +49,7 @@ function PublicIntakeFormComponent() {
   
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<OnboardClientOutput['analysis'] | null>(null);
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,6 +67,7 @@ function PublicIntakeFormComponent() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     setIsSuccess(false)
+    setAnalysisResult(null);
 
     try {
         const creditReportFile = values.creditReport[0];
@@ -79,6 +84,9 @@ function PublicIntakeFormComponent() {
 
         if (result.success) {
             setIsSuccess(true);
+            if (result.analysis) {
+                setAnalysisResult(result.analysis);
+            }
             form.reset();
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
@@ -101,17 +109,61 @@ function PublicIntakeFormComponent() {
 
   if (isSuccess) {
     return (
-      <div className="space-y-4 text-center">
-        <Alert variant="default" className="border-green-500 text-green-700 text-left">
-          <CheckCircle className="h-4 w-4 !text-green-500" />
-          <AlertTitle>Thank You for Your Submission!</AlertTitle>
-          <AlertDescription>
-            Your info is in our secured portal. Please check your email for a welcome message with instructions on how to log in and retrieve your analysis.
-          </AlertDescription>
-        </Alert>
-        <Button asChild>
-          <Link href="/#pricing">See Our Plans</Link>
-        </Button>
+      <div className="space-y-6">
+        <div className="space-y-4 text-center">
+            <Alert variant="default" className="border-green-500 text-green-700 text-left">
+            <CheckCircle className="h-4 w-4 !text-green-500" />
+            <AlertTitle>Analysis Complete!</AlertTitle>
+            <AlertDescription>
+                Your info is in our secured portal. Please check your email for a welcome message with instructions on how to log in and retrieve your full analysis and first dispute letter.
+            </AlertDescription>
+            </Alert>
+        </div>
+
+        {analysisResult && (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <ShieldAlert className="h-6 w-6 text-primary" />
+                         Disputable Items Found
+                    </CardTitle>
+                    <CardDescription>
+                        Our AI has identified the following items on your report that are likely inaccurate or unverifiable. We can generate dispute letters to challenge them.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Disputable Item</TableHead>
+                                <TableHead>Reason</TableHead>
+                                <TableHead>Success Chance</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {analysisResult.disputableItems?.map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="font-medium">{item.item}</TableCell>
+                                    <TableCell>{item.reason}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <Progress value={item.successProbability} className="w-20" />
+                                            <span className="text-muted-foreground font-medium">{item.successProbability}%</span>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
+
+        <div className="text-center">
+            <Button asChild size="lg">
+                <Link href="/sign-up">Sign Up to Start Disputing</Link>
+            </Button>
+        </div>
       </div>
     );
   }
