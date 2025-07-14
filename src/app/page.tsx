@@ -149,7 +149,6 @@ export default function Home() {
       name: 'Pro',
       price: '$199',
       period: '/month',
-      mostPopular: true,
       description: 'For individuals who want a fully automated credit repair experience.',
       features: [
         'Everything in Starter, plus:',
@@ -159,6 +158,22 @@ export default function Home() {
         'CFPB Complaint Guide',
       ],
       cta: 'Choose Pro Plan',
+      href: '/sign-up',
+    },
+    {
+      name: 'Business VIP',
+      price: '$599',
+      period: '/month',
+      mostPopular: true,
+      description: 'The all-in-one solution for personal credit repair and business credit building.',
+      features: [
+        'All Pro Plan Features, plus:',
+        'Full Business AI Portal',
+        'Business Unlock Score™ & Analysis',
+        '"Done For You" Vendor Applications',
+        'Funding Prediction Engine',
+      ],
+      cta: 'Choose VIP Plan',
       href: '/sign-up',
     },
   ];
@@ -282,7 +297,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid max-w-4xl gap-8 mx-auto mt-12 md:grid-cols-2">
+            <div className="grid max-w-7xl gap-8 mx-auto mt-12 lg:grid-cols-3">
                 {pricingTiers.map((tier) => (
                     <Card key={tier.name} className={cn("flex flex-col", tier.mostPopular && "border-primary ring-2 ring-primary")}>
                         <CardHeader className="relative">
@@ -315,7 +330,7 @@ export default function Home() {
              <div className="text-center mt-12">
                 <p className="text-lg text-foreground/80">Are you an affiliate or looking for a white-label solution?</p>
                 <Button variant="link" asChild className="text-lg">
-                    <Link href="/partners">View Partner & VIP Pricing</Link>
+                    <Link href="/partners">View Partner & White-Label Info</Link>
                 </Button>
             </div>
           </div>
