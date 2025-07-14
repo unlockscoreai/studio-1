@@ -43,6 +43,7 @@ const formSchema = z.object({
   ownerEmail: z.string().email("Please enter a valid email address for where to send the report."),
   businessAddress: z.object({ label: z.string(), value: z.any() }).optional(),
   ein: z.string().optional(),
+  duns: z.string().optional(),
   businessPhone: z.string().optional(),
   yearsInBusiness: z.string().optional(),
   monthlyRevenue: z.string().optional(),
@@ -85,6 +86,7 @@ export function BusinessIntakeForm() {
       ownerEmail: "contact@volunteerexpress.com",
       businessAddress: undefined,
       ein: "98-7654321",
+      duns: "123456789",
       businessPhone: "(615) 555-1234",
       yearsInBusiness: "3",
       monthlyRevenue: "75000",
@@ -109,6 +111,7 @@ export function BusinessIntakeForm() {
           businessEmail: values.ownerEmail,
           businessAddress: values.businessAddress?.label,
           ein: values.ein,
+          duns: values.duns,
           businessPhone: values.businessPhone,
           yearsInBusiness: values.yearsInBusiness,
           monthlyRevenue: values.monthlyRevenue,
@@ -275,6 +278,30 @@ export function BusinessIntakeForm() {
             />
         </div>
         <div className="grid md:grid-cols-2 gap-6">
+             <FormField
+                control={form.control}
+                name="ein"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>EIN (Optional)</FormLabel>
+                    <FormControl><Input placeholder="12-3456789" {...field} /></FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+             <FormField
+                control={form.control}
+                name="duns"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>DUNS Number (Optional)</FormLabel>
+                    <FormControl><Input placeholder="123456789" {...field} /></FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
             <FormField
                 control={form.control}
                 name="yearsInBusiness"
@@ -298,17 +325,7 @@ export function BusinessIntakeForm() {
                 )}
             />
         </div>
-        <FormField
-            control={form.control}
-            name="ein"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>EIN (Optional)</FormLabel>
-                <FormControl><Input placeholder="12-3456789" {...field} /></FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-        />
+       
         <FormField
             control={form.control}
             name="creditReport"

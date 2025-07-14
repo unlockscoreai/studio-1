@@ -37,6 +37,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
     // 2. A Google Search/Places API for reviews.
     // 3. A web scraper or social media search tool.
     // 4. A WHOIS/domain lookup service.
+    // 5. A Dun & Bradstreet API to check for DUNS number status.
 
     // Specific mock for a real Tennessee business
     if (input.businessName.toLowerCase() === "volunteer express logistics llc" && input.state.toUpperCase() === "TN") {

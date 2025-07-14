@@ -18,6 +18,7 @@ const AnalyzeBusinessCreditReportInputSchema = z.object({
   state: z.string().length(2).describe("The 2-letter postal code for the state where the business is registered."),
   businessAddress: z.string().optional().describe('The full physical address of the business.'),
   ein: z.string().optional().describe('The Employer Identification Number.'),
+  duns: z.string().optional().describe('The Dun & Bradstreet D-U-N-S number.'),
   yearsInBusiness: z.string().optional().describe('How many years the business has been in operation.'),
   monthlyRevenue: z.string().optional().describe('The average monthly revenue of the business.'),
   businessPhone: z.string().optional().describe('The phone number of the business.'),
@@ -53,6 +54,7 @@ Simulate a web search using the provided business name, phone number, and email 
 
 The user has provided the following additional information:
 {{#if ein}}EIN: {{ein}}{{/if}}
+{{#if duns}}DUNS Number: {{duns}}{{/if}}
 {{#if yearsInBusiness}}Years in Business: {{yearsInBusiness}}{{/if}}
 {{#if monthlyRevenue}}Monthly Revenue: {{monthlyRevenue}}{{/if}}
 {{#if businessPhone}}Business Phone: {{businessPhone}}{{/if}}
@@ -68,7 +70,7 @@ No credit report was provided. Base your analysis on the public data from the to
 {{/if}}
 
 Now, generate the complete Unlock Score™ report in the specified JSON format:
-1.  **Unlock Score**: Create a score from 0-1000. A high score (800+) means the business is highly prepared for funding. Base this on all available data (SoS status, web presence, user-provided info, and credit report data if available).
+1.  **Unlock Score**: Create a score from 0-1000. A high score (800+) means the business is highly prepared. Base this on all available data (SoS status, web presence, DUNS status from the tool, user-provided info, and credit report data if available).
 2.  **Social Score**: Based on the business's website, Google reviews, and social media presence from the tool, generate a score from 0-100. A high score (80+) means a strong, trustworthy online presence.
 3.  **Unlock Tier**: Assign a tier label based on the Unlock Score:
     - 0–399: "High Risk"
@@ -85,10 +87,10 @@ Now, generate the complete Unlock Score™ report in the specified JSON format:
     -   'registeredAgent': The registered agent from the tool.
     -   'mailingAddress': The mailing address from the tool.
     -   'lastHistoryUpdate': The last history update date from the tool.
-    -   'summaryText': Write a professional summary paragraph about the business's current funding readiness, its status, and online presence. If not found, explain this.
+    -   'summaryText': Write a professional summary paragraph about the business's current state, its status, and online presence. If not found, explain this. Mention the DUNS status from the tool.
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
-6.  **Risk Factors**: Identify and list all red flags. Examples: "Business not found in state registry," "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported."
-7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their Unlock Score™. These should directly address the identified risk factors.
+6.  **Risk Factors**: Identify and list all red flags. Examples: "Business not found in state registry," "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported", "DUNS number not found".
+7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their Unlock Score™. These should directly address the identified risk factors. If the DUNS status is 'not_found', one action item MUST be to register for a D-U-N-S number.
 8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their profile, and create an actionable plan to raise their Unlock Score. Example: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score and accelerate your growth, book a 3-minute, $99 consultation with one of our expert business coaches today."
 
 The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform.
