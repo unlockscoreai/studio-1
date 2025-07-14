@@ -28,7 +28,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
         googleReviews: z.number().describe("The number of Google reviews found for the business."),
         socialLinks: z.array(z.string()).describe("A list of URLs for social media profiles found (e.g., Facebook, LinkedIn)."),
         dunsStatus: z.enum(["found", "not_found"]).describe("The status of the Dun & Bradstreet D-U-N-S number."),
-        hasDomainEmail: z.boolean().describe("Whether the business appears to use a professional domain-based email address (not @gmail.com, etc.)."),
+        hasDomainEmail: z.boolean().describe("Whether the business appears to use a professional domain-based email (not @gmail.com, etc.)."),
         uccLienCount: z.number().describe("The number of UCC liens found filed against the business."),
     }),
   },
@@ -81,7 +81,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
             websiteFound: false,
             googleReviews: 0,
             socialLinks: [`facebook.com/${input.businessName.replace(/\s+/g, '').toLowerCase()}`],
-            dunsStatus: "not_found",
+dunsStatus: "not_found",
             hasDomainEmail: false,
             uccLienCount: 1,
         };

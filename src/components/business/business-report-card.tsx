@@ -59,7 +59,7 @@ export function BusinessReportCard({ analysis }: BusinessReportCardProps) {
         <Card className="w-full border-t-4 border-primary" ref={reportRef}>
             <CardHeader className="text-center pb-4">
                 <CardTitle className="font-headline text-2xl">Unlock Score™ Report for {businessSummary.businessName}</CardTitle>
-                <CardDescription>An AI-powered analysis of your business's credit and readiness for funding.</CardDescription>
+                <CardDescription>An AI-powered analysis of your business's credit and readiness for a higher Unlock Score.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 
