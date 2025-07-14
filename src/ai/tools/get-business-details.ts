@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview A tool for fetching official business details from the Secretary of State.
+ * @fileOverview A tool for fetching official business details from the Secretary of State and other public records.
  */
 
 import { ai } from '@/ai/genkit';
@@ -10,7 +10,7 @@ import { z } from 'genkit';
 export const getBusinessDetailsFromState = ai.defineTool(
   {
     name: 'getBusinessDetailsFromState',
-    description: "Gets official business registration data and public online presence information for a business.",
+    description: "Gets official business registration data and public online presence information for a business. It simulates a search of Secretary of State (SoS) records, a UCC lien search, and a general web search to assess the company's website, contact info, and reputation.",
     inputSchema: z.object({
       businessName: z.string().describe('The legal name of the business to look up.'),
       state: z.string().length(2).describe('The 2-letter postal code abbreviation for the state (e.g., "CA", "TX").'),
@@ -28,17 +28,19 @@ export const getBusinessDetailsFromState = ai.defineTool(
         googleReviews: z.number().describe("The number of Google reviews found for the business."),
         socialLinks: z.array(z.string()).describe("A list of URLs for social media profiles found (e.g., Facebook, LinkedIn)."),
         dunsStatus: z.enum(["found", "not_found"]).describe("The status of the Dun & Bradstreet D-U-N-S number."),
-        hasDomainEmail: z.boolean().describe("Whether the business appears to use a professional domain-based email address."),
+        hasDomainEmail: z.boolean().describe("Whether the business appears to use a professional domain-based email address (not @gmail.com, etc.)."),
+        uccLienCount: z.number().describe("The number of UCC liens found filed against the business."),
     }),
   },
   async (input) => {
     console.log(`--- SIMULATING SoS & PUBLIC DATA API CALL for ${input.businessName}, ${input.state} ---`);
     // In a real application, this would integrate with multiple APIs:
     // 1. A Secretary of State API (per state) or a data aggregator.
-    // 2. A Google Search/Places API for reviews.
-    // 3. A web scraper or social media search tool.
-    // 4. A WHOIS/domain lookup service.
-    // 5. A Dun & Bradstreet API to check for DUNS number status.
+    // 2. A UCC lien search service.
+    // 3. A Google Search/Places API for reviews.
+    // 4. A web scraper or social media search tool.
+    // 5. A WHOIS/domain lookup service.
+    // 6. A Dun & Bradstreet API to check for DUNS number status.
 
     // Specific mock for a real Tennessee business
     if (input.businessName.toLowerCase() === "volunteer express logistics llc" && input.state.toUpperCase() === "TN") {
@@ -58,6 +60,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
             ],
             dunsStatus: "found",
             hasDomainEmail: true,
+            uccLienCount: 2, // Logistics companies often have equipment liens
         };
     }
 
@@ -80,6 +83,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
             socialLinks: [`facebook.com/${input.businessName.replace(/\s+/g, '').toLowerCase()}`],
             dunsStatus: "not_found",
             hasDomainEmail: false,
+            uccLienCount: 1,
         };
     }
 
@@ -100,6 +104,7 @@ export const getBusinessDetailsFromState = ai.defineTool(
         ],
         dunsStatus: "found",
         hasDomainEmail: true,
+        uccLienCount: 0,
     };
   }
 );

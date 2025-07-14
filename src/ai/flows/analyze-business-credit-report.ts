@@ -46,13 +46,13 @@ const prompt = ai.definePrompt({
   tools: [getBusinessDetailsFromState],
   prompt: `You are an expert business funding coach for Unlock Score AI. Your task is to create a professional audit report on how ready a business is for funding, using our proprietary "Unlock Score" metric.
 
-First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence and Secretary of State (SoS) status.
+First, you MUST use the getBusinessDetailsFromState tool to look up the public information for "{{businessName}}" in {{state}}. This data is the primary source for the online presence, Secretary of State (SoS) status, and UCC lien search.
 
 If the tool returns 'isFound: false', this is a major red flag. The Unlock Score and Social Score should be very low (under 100), and the summary must state that the business is not found in public records. The Action Plan should prioritize officially registering the business.
 
-Simulate a web search using the provided business name, phone number, and email to assess their general online footprint.
+Simulate a web search using the provided business name, phone number, and address to assess their general online footprint. The tool's output for 'websiteFound', 'googleReviews', and 'hasDomainEmail' should be the basis for the Social Score.
 
-The user has provided the following additional information:
+The user has provided the following additional information, which should be used to enrich the analysis:
 {{#if ein}}EIN: {{ein}}{{/if}}
 {{#if duns}}DUNS Number: {{duns}}{{/if}}
 {{#if yearsInBusiness}}Years in Business: {{yearsInBusiness}}{{/if}}
@@ -66,11 +66,11 @@ Next, check if a credit report was uploaded.
 A credit report has been provided. Analyze it to extract key financial data: Paydex score, Experian score, Equifax score, UCC filings, late payments, and public records.
 Report: {{media url=businessCreditReportDataUri}}
 {{else}}
-No credit report was provided. Base your analysis on the public data from the tool and any manual details provided.
+No credit report was provided. Base your analysis on the public data from the tool and any manual details provided. The presence of UCC liens should come from the tool's 'uccLienCount' field.
 {{/if}}
 
 Now, generate the complete Unlock Score™ report in the specified JSON format:
-1.  **Unlock Score**: Create a score from 0-1000. A high score (800+) means the business is highly prepared. Base this on all available data (SoS status, web presence, DUNS status from the tool, user-provided info, and credit report data if available).
+1.  **Unlock Score**: Create a score from 0-1000. A high score (800+) means the business is highly prepared. Base this on all available data (SoS status, web presence, DUNS status, and UCC lien count from the tool, user-provided info, and credit report data if available). A high 'uccLienCount' is a significant risk factor and should lower the score.
 2.  **Social Score**: Based on the business's website, Google reviews, and social media presence from the tool, generate a score from 0-100. A high score (80+) means a strong, trustworthy online presence.
 3.  **Unlock Tier**: Assign a tier label based on the Unlock Score:
     - 0–399: "High Risk"
@@ -87,11 +87,11 @@ Now, generate the complete Unlock Score™ report in the specified JSON format:
     -   'registeredAgent': The registered agent from the tool.
     -   'mailingAddress': The mailing address from the tool.
     -   'lastHistoryUpdate': The last history update date from the tool.
-    -   'summaryText': Write a professional summary paragraph about the business's current state, its status, and online presence. If not found, explain this. Mention the DUNS status from the tool.
+    -   'summaryText': Write a professional summary paragraph about the business's current state, its status, and online presence. If not found, explain this. Mention the DUNS status and UCC lien count from the tool.
 5.  **Credit Score Breakdown**: If a report was uploaded, fill in the Paydex, Experian, and Equifax scores. If a score is not available, its field should be null.
-6.  **Risk Factors**: Identify and list all red flags. Examples: "Business not found in state registry," "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported", "DUNS number not found".
+6.  **Risk Factors**: Identify and list all red flags. Examples: "Business not found in state registry," "Website not found," "SoS status is Inactive," "No Google reviews," "UCC filings present," "Late payments reported", "DUNS number not found". If 'uccLienCount' from the tool is greater than 0, you MUST include "UCC liens found" in this list.
 7.  **Action Plan**: Provide 3-5 concrete, actionable steps the business owner should take to improve their Unlock Score™. These should directly address the identified risk factors. If the DUNS status is 'not_found', one action item MUST be to register for a D-U-N-S number.
-8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their profile, and create an actionable plan to raise their Unlock Score. Example: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score and accelerate your growth, book a 3-minute, $99 consultation with one of our expert business coaches today."
+8.  **Coach Call to Action**: Add a friendly and encouraging message inviting the user to book a paid 30-minute, $99 consultation with a business coach. The consultation will cover business structure, identify missing pieces in their profile, and create an actionable plan to raise their Unlock Score. Example: "Your business has a strong foundation! To create a custom plan to raise your Unlock Score and accelerate your growth, book a 30-minute, $99 consultation with one of our expert business coaches today."
 
 The report should be encouraging but direct, motivating the business owner to take action using the Unlock Score AI platform.
 `,
