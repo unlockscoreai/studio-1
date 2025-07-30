@@ -1,17 +1,18 @@
 {
   "name": "nextn",
   "version": "0.1.0",
-  "private": true,
+  "private": true, 
   "scripts": {
-    "dev": "npm-run-all --parallel genkit:watch next:dev",
-    "next:dev": "next dev -p 9002",
-    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
-    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit"
-  },
+  "next:dev": "next dev -p 9002 -H 0.0.0.0",
+  "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+  "dev": "npm-run-all --parallel genkit:watch next:dev -- --port 9002 --hostname 0.0.0.0",
+
+  "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "typecheck": "tsc --noEmit"
+},
   "dependencies": {
     "@genkit-ai/googleai": "^1.13.0",
     "@genkit-ai/next": "^1.13.0",
