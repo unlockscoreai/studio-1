@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -23,6 +22,7 @@ import { Loader2, Sparkles, Wand2, CreditCard, Car, ShoppingCart, CheckCircle } 
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { loadStripe } from '@stripe/stripe-js';
 
 const formSchema = z.object({
   creditAnalysis: z.string().min(20, "Please provide a brief summary of your credit profile."),
@@ -37,6 +37,9 @@ const creditGoals = [
     "Invest in real estate",
     "Other"
 ];
+
+// Load Stripe outside of the component to avoid recreating it on every render
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export function TradelineStrategyForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -76,13 +79,52 @@ export function TradelineStrategyForm() {
     }
   }
 
-  const handlePurchase = (tradelineType: string) => {
-    // In a real app, this would trigger the Stripe checkout flow.
-    // For this prototype, we'll just show a confirmation toast.
-    toast({
-        title: "Redirecting to Checkout...",
-        description: `You are being redirected to a secure Stripe page to complete your purchase for the ${tradelineType}.`
-    });
+  const handlePurchase = async (tradelineType: string) => {
+    setIsLoading(true); // Start loading
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tradelineType }),
+      });
+
+      const session = await response.json();
+
+      if (session.error) {
+        throw new Error(session.error);
+      }
+
+      // Redirect to Stripe Checkout
+      const stripe = await stripePromise;
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+
+        if (error) {
+          console.error('Stripe redirect error:', error);
+          toast({
+            variant: "destructive",
+            title: "Checkout Error",
+            description: error.message,
+          });
+        }
+      } else {
+         throw new Error("Stripe failed to load.");
+      }
+
+    } catch (error: any) {
+      console.error('Purchase error:', error);
+      toast({
+        variant: "destructive",
+        title: "An error occurred during checkout",
+        description: error.message || "Please try again.",
+      });
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
   }
 
   return (
@@ -167,7 +209,7 @@ export function TradelineStrategyForm() {
                         <p><strong>Limit:</strong> ${strategy.revolvingTradeline.limit.toLocaleString()}</p>
                         <p><strong>Age:</strong> {strategy.revolvingTradeline.ageInMonths} months</p>
                         <p className="font-bold text-lg mt-2">Cost: ${strategy.revolvingTradeline.cost.toLocaleString()}</p>
-                        <Button className="w-full mt-4" onClick={() => handlePurchase("Revolving Tradeline")}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
+                        <Button className="w-full mt-4" onClick={() => handlePurchase("Revolving Tradeline")} disabled={isLoading}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
                       </CardContent>
                     </Card>
                   ) : (
@@ -187,7 +229,7 @@ export function TradelineStrategyForm() {
                         <p><strong>Amount:</strong> ${strategy.autoTradeline.limit.toLocaleString()}</p>
                         <p><strong>Age:</strong> {strategy.autoTradeline.ageInMonths} months</p>
                         <p className="font-bold text-lg mt-2">Cost: ${strategy.autoTradeline.cost.toLocaleString()}</p>
-                        <Button className="w-full mt-4" onClick={() => handlePurchase("Auto Tradeline")}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
+                        <Button className="w-full mt-4" onClick={() => handlePurchase("Auto Tradeline")} disabled={isLoading}><ShoppingCart className="mr-2 h-4 w-4" /> Purchase Tradeline</Button>
                       </CardContent>
                     </Card>
                   ) : (
