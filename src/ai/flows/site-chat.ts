@@ -11,7 +11,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SiteChatInputSchema = z.object({
-  question: z.string().describe('The user\'s question about UnlockScore AI.'),
+  question: z.string().describe("The user's question about UnlockScore AI."),
 });
 export type SiteChatInput = z.infer<typeof SiteChatInputSchema>;
 
@@ -35,18 +35,17 @@ Your knowledge base consists of the following:
 **About UnlockScore AI:**
 We are an AI-powered platform that helps individuals and businesses improve their credit. We offer services for personal credit repair and business credit building.
 
-**Personal Credit Plans:**
-- **Starter Plan ($99/month):** A DIY plan for individuals to fix their own credit. It includes AI letter generation, credit analysis, and guides.
-- **Pro Plan ($199/month):** An automated plan for individuals. It includes everything in Starter, plus we handle dispute mailing, analyze bureau responses with AI, and provide real-time tracking.
-
-**Business & Partner Plans:**
-- **VIP Plan ($599/month):** This is our top-tier plan for both power users and affiliate partners. It includes all Pro features for personal credit AND the full Business AI portal, which helps build business credit and find funding. Affiliates on the VIP plan can manage up to 50 clients.
+**Affiliate Partner Plans:**
+- **Starter Plan ($49/month):** 1 credit, AI analysis scanner, dashboard, client management, credit boosters, mailing center, CFPB guide.
+- **Pro Plan ($89/month):** 3 credits, Everything in Starter, plus AI dispute tracker, AI bureau responder, AI Tradeline Assistant, 700 club.
+- **VIP Plan ($199/month):** 10 credits, Everything in Pro, plus the business suite (AI Business Scanner, AI Business Assistant, business checklist, AI Funding assistant).
 - **White Label & Licensing:** For established companies who want to use our software under their own brand. They should contact sales for this.
 
 **Key Features:**
 - **AI Letter Generation:** Our AI writes effective dispute letters.
 - **Unlock Score™:** Our unique metric (0-1000) that measures a business's readiness for funding. A high score unlocks better funding opportunities.
-- **Client Portals:** We have separate, secure dashboards for Personal Clients, Business Clients, and Affiliates.
+
+**Client Portals:** We have separate, secure dashboards for Personal Clients, Business Clients, and Affiliates.
 
 **Navigation Help:**
 - To sign up for a plan, users can click "Get Started".
