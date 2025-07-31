@@ -3,36 +3,38 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, DollarSign, BarChart, Link as LinkIcon, Copy, Check, Building } from "lucide-react";
+import { Users, DollarSign, BarChart, Link as LinkIcon, Building } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ClientPipeline } from "@/components/affiliate/ClientPipeline";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AffiliateDashboardPage() {
-  const [copiedLink, setCopiedLink] = useState<'personal' | 'business' | null>(null);
+  // Removed clipboard state
+  // const [copiedLink, setCopiedLink] = useState<'personal' | 'business' | null>(null);
   const { toast } = useToast();
   // In a real app, the affiliate ID would be dynamic based on the logged-in user.
   const affiliateId = "creditup-solutions";
   const personalReferralLink = `https://unlockscore.ai/intake?affiliate_id=${affiliateId}`;
   const businessReferralLink = `https://unlockscore.ai/business-intake?affiliate_id=${affiliateId}`;
 
-  const handleCopy = (type: 'personal' | 'business') => {
-    const linkToCopy = type === 'personal' ? personalReferralLink : businessReferralLink;
-    if (typeof navigator.clipboard?.writeText !== 'function') {
-      toast({
-        variant: "destructive",
-        title: "Copy failed",
-        description: "Your browser does not support copying to clipboard.",
-      });
-      return;
-    }
-    navigator.clipboard.writeText(linkToCopy);
-    setCopiedLink(type);
-    toast({
-      title: "Copied to clipboard!",
-    });
-    setTimeout(() => setCopiedLink(null), 2000);
-  };
+  // Removed handleCopy function
+  // const handleCopy = (type: 'personal' | 'business') => {
+  //   const linkToCopy = type === 'personal' ? personalReferralLink : businessReferralLink;
+  //   if (typeof navigator.clipboard?.writeText !== 'function') {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Copy failed",
+  //       description: "Your browser does not support copying to clipboard.",
+  //     });
+  //     return;
+  //   }
+  //   navigator.clipboard.writeText(linkToCopy);
+  //   setCopiedLink(type);
+  //   toast({
+  //     title: "Copied to clipboard!",
+  //   });
+  //   setTimeout(() => setCopiedLink(null), 2000);
+  // };
 
   return (
     <div className="grid gap-6">
@@ -87,10 +89,13 @@ export default function AffiliateDashboardPage() {
             </CardHeader>
             <CardContent className="flex gap-2">
                 <Input readOnly value={personalReferralLink} />
+                {/* Removed copy button */}
+                {/*
                 <Button onClick={() => handleCopy('personal')}>
                     {copiedLink === 'personal' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     <span className="ml-2 hidden sm:inline">{copiedLink === 'personal' ? 'Copied' : 'Copy Link'}</span>
                 </Button>
+                */}
             </CardContent>
           </Card>
           <Card>
@@ -100,10 +105,13 @@ export default function AffiliateDashboardPage() {
             </CardHeader>
             <CardContent className="flex gap-2">
                 <Input readOnly value={businessReferralLink} />
+                 {/* Removed copy button */}
+                {/*
                 <Button onClick={() => handleCopy('business')}>
                     {copiedLink === 'business' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     <span className="ml-2 hidden sm:inline">{copiedLink === 'business' ? 'Copied' : 'Copy Link'}</span>
                 </Button>
+                */}
             </CardContent>
           </Card>
       </div>

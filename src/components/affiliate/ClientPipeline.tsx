@@ -6,47 +6,68 @@ import { Users, Building } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
-// Personal Client Pipeline Data
+// Define the new stages for personal clients
 const personalPipelineData = {
-    onboarding: [
-        { id: 1, name: 'Jane Doe', email: 'jane.d@example.com' },
-        { id: 4, name: 'Samantha Bee', email: 'samantha.b@example.com' },
+    analysisComplete: [
+        { id: 101, name: 'Alice Johnson', email: 'alice.j@example.com' },
     ],
-    inReview: [
-        { id: 2, name: 'John Smith', email: 'john.s@example.com' },
+    portalAccessed: [
+        { id: 102, name: 'Bob Williams', email: 'bob.w@example.com' },
     ],
-    completed: [
-        { id: 3, name: 'Peter Jones', email: 'peter.j@example.com' },
-    ]
+    planPurchased: [
+        { id: 103, name: 'Charlie Brown', email: 'charlie.b@example.com' },
+    ],
+    onboardingComplete: [
+        { id: 104, name: 'Diana Miller', email: 'diana.m@example.com' },
+    ],
+    lettersGenerated: [
+        { id: 105, name: 'Ethan Davis', email: 'ethan.d@example.com' },
+    ],
+    mailDelivered: [
+        { id: 106, name: 'Fiona Garcia', email: 'fiona.g@example.com' },
+    ],
 };
 
+// Define the columns based on the new stages for personal clients
 const personalPipelineColumns = [
-    { title: 'Onboarding', status: 'onboarding', data: personalPipelineData.onboarding, variant: 'secondary' as const },
-    { title: 'In Review', status: 'inReview', data: personalPipelineData.inReview, variant: 'secondary' as const },
-    { title: 'Completed', status: 'completed', data: personalPipelineData.completed, variant: 'default' as const },
+    { title: 'Analysis Complete', status: 'analysisComplete', data: personalPipelineData.analysisComplete, variant: 'secondary' as const },
+    { title: 'Portal Accessed', status: 'portalAccessed', data: personalPipelineData.portalAccessed, variant: 'secondary' as const },
+    { title: 'Plan Purchased', status: 'planPurchased', data: personalPipelineData.planPurchased, variant: 'secondary' as const },
+    { title: 'Onboarding Complete', status: 'onboardingComplete', data: personalPipelineData.onboardingComplete, variant: 'secondary' as const },
+    { title: 'Letters Generated', status: 'lettersGenerated', data: personalPipelineData.lettersGenerated, variant: 'secondary' as const },
+    { title: 'Mail Delivered', status: 'mailDelivered', data: personalPipelineData.mailDelivered, variant: 'default' as const },
 ];
 
-// Business Client Pipeline Data
+// Define the new stages for business clients (based on blueprint)
 const businessPipelineData = {
-    scanComplete: [
-        { id: 1, name: 'Innovate Tech Corp', email: 'contact@innovate.com' },
+    businessIntakeComplete: [
+        { id: 201, name: 'Alpha Solutions', email: 'info@alpha.com' },
     ],
-    dashboardAccessed: [
-        { id: 2, name: 'Main Street Cafe', email: 'owner@mainstreet.com' },
+    unlockScoreScanComplete: [
+        { id: 202, name: 'Beta Enterprises', email: 'contact@beta.net' },
     ],
-    scheduledAppointment: [
-        { id: 3, name: 'Volunteer Express Logistics LLC', email: 'contact@volunteerexpress.com' },
+    actionPlanDelivered: [
+        { id: 203, name: 'Gamma Holdings', email: 'support@gamma.org' },
     ],
-    readyForFunding: [
-        { id: 4, name: 'Global Solutions Inc', email: 'finance@globalsolutions.com' },
-    ]
+    vendorAccountsOpened: [
+        { id: 204, name: 'Delta Logistics', email: 'ops@delta.biz' },
+    ],
+     fundingApplied: [
+        { id: 205, name: 'Epsilon Ventures', email: 'investors@epsilon.co' },
+    ],
+     fundingApproved: [
+        { id: 206, name: 'Zeta Innovations', email: 'ceo@zeta.inc' },
+    ],
 };
 
+// Define the columns based on the new stages for business clients
 const businessPipelineColumns = [
-    { title: 'Scan Complete', status: 'scanComplete', data: businessPipelineData.scanComplete, variant: 'secondary' as const },
-    { title: 'Dashboard Accessed', status: 'dashboardAccessed', data: businessPipelineData.dashboardAccessed, variant: 'secondary' as const },
-    { title: 'Scheduled Appointment', status: 'scheduledAppointment', data: businessPipelineData.scheduledAppointment, variant: 'outline' as const },
-    { title: 'Ready for Funding', status: 'readyForFunding', data: businessPipelineData.readyForFunding, variant: 'default' as const },
+    { title: 'Business Intake Complete', status: 'businessIntakeComplete', data: businessPipelineData.businessIntakeComplete, variant: 'secondary' as const },
+    { title: 'Unlock Score Scan Complete', status: 'unlockScoreScanComplete', data: businessPipelineData.unlockScoreScanComplete, variant: 'secondary' as const },
+    { title: 'Action Plan Delivered', status: 'actionPlanDelivered', data: businessPipelineData.actionPlanDelivered, variant: 'secondary' as const },
+    { title: 'Vendor Accounts Opened', status: 'vendorAccountsOpened', data: businessPipelineData.vendorAccountsOpened, variant: 'secondary' as const },
+    { title: 'Funding Applied', status: 'fundingApplied', data: businessPipelineData.fundingApplied, variant: 'secondary' as const },
+    { title: 'Funding Approved', status: 'fundingApproved', data: businessPipelineData.fundingApproved, variant: 'default' as const },
 ];
 
 
