@@ -1,7 +1,7 @@
 // src/app/api/activate-client/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db as adminDb } from '@/lib/firebaseAdmin'; // Alias to avoid conflict with client db
+import { adminDb } from '@/lib/firebaseAdmin'; // Alias to avoid conflict with client db
 import { getAuth } from 'firebase-admin/auth';
 
 export async function POST(req: NextRequest) {

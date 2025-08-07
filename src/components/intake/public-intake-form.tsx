@@ -83,17 +83,11 @@ function PublicIntakeFormComponent() {
         if (existingClient) {
  clientId = existingClient.id;
  // Assuming you have an updateClient function to add 'personalScan' if not present
-            // Assuming you have an updateClient function to add 'personalScan' if not present
- // This part is not yet implemented in firestore.ts, will need to add it later
- // if (!existingClient.unlockedTools?.includes('personalScan')) {
- // await updateClient(clientId, { unlockedTools: [...(existingClient.unlockedTools || []), 'personalScan'] });
-            // This part is not yet implemented in firestore.ts, will need to add it later
-            // if (!existingClient.unlockedTools?.includes('personalScan')) {
-            //     await updateClient(clientId, { unlockedTools: [...(existingClient.unlockedTools || []), 'personalScan'] });
-            // }
+// This part is not yet implemented in firestore.ts, will need to add it later
+// if (!existingClient.data.unlockedTools?.includes('personalScan')) {
+// await updateClient(clientId, { unlockedTools: [...(existingClient.data.unlockedTools || []), 'personalScan'] });
+// }
         } else {
-            const newClient = await createClient(values.clientEmail, values.clientName, 'personal');
- clientId = newClient.id;
  const activationToken = uuidv4();
  const activationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
             // Assuming createClient now accepts these fields or you have an update function

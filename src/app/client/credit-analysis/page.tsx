@@ -1,6 +1,5 @@
 'use client';
 
-import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -25,9 +24,9 @@ import {
   UploadCloud,
   ExternalLink,
   Info,
-} from 'lucide-react';
-import { AnalyzeCreditReportOutput } from '@/ai/flows/credit-report-analysis';
-import { adminMockAnalysis } from '@/services/firestore';
+} from "lucide-react";
+import { AnalyzeCreditReportOutput } from "@/ai/flows/analyze-credit-profile"; // Corrected import path
+// import { adminMockAnalysis } from '@/services/firestore'; // Removed mock analysis import
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -148,7 +147,8 @@ export default function CreditAnalysisPage() {
   useEffect(() => {
     const isDemo = sessionStorage.getItem('isDemo') === 'true';
     if (isDemo) {
-        setAnalysis(adminMockAnalysis);
+        // If using mock data, ensure it matches the AnalyzeCreditReportOutput type
+        // setAnalysis(adminMockAnalysis); 
         setIsLoading(false);
         return;
     }
@@ -262,7 +262,7 @@ export default function CreditAnalysisPage() {
                                   <TableCell><Badge variant={item.type === 'Collection' ? 'destructive' : 'secondary'}>{item.type}</Badge></TableCell>
                                   <TableCell>{item.dateReported}</TableCell>
                                   <TableCell>
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-2" typeof="number"> {/* Added typeof for clarity */}
                                           <Progress value={item.disputeSuccessChance} className="w-24" />
                                           <span className="text-muted-foreground font-medium">{item.disputeSuccessChance}%</span>
                                       </div>

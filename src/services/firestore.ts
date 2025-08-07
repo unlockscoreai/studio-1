@@ -1,7 +1,7 @@
-import { collection, addDoc, Timestamp, query, where, getDocs, doc, getDoc } from "firebase/firestore";
-import { db } from "/home/user/studio-1/lib/firebase"; // Assuming you have exported db from firebase.ts
+import { collection, addDoc, Timestamp, query, where, getDocs, doc, getDoc, orderBy, limit } from "firebase/firestore";
+import { db } from "@/lib/firebase"; // Assuming you have exported db from firebase.ts
 
-interface ClientData {
+export interface ClientData {
   email: string;
   fullName: string;
   clientType: 'personal' | 'business';
@@ -9,11 +9,14 @@ interface ClientData {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+interface NewClientData extends ClientData {
+  assignedAffiliateId?: string; // Optional, will be set during creation by affiliate
+  role: 'client' | 'affiliate'; // Added role field
+}
 
-async function createClient(email: string, fullName: string, scanType: 'personal' | 'business'): Promise<string> {
+export async function createClient(email: string, fullName: string, scanType: 'personal' | 'business', affiliateId?: string): Promise<string> {
   try {
-    const clientsCollection = collection(db, "clients");
-    const newClientData: ClientData = {
+    const newClientData: NewClientData = {
       email,
       fullName,
       clientType: scanType,
@@ -21,8 +24,12 @@ async function createClient(email: string, fullName: string, scanType: 'personal
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     };
+    
+    if (affiliateId) {
+        newClientData.assignedAffiliateId = affiliateId;
+        newClientData.role = 'client'; // Default new clients to 'client' role
+    }
 
-    const docRef = await addDoc(clientsCollection, newClientData);
     return docRef.id;
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -37,7 +44,7 @@ interface AnalysisData {
   generatedAt: Timestamp;
 }
 
-async function saveAnalysis(clientId: string, scanType: 'personal' | 'business', analysisData: object): Promise<string> {
+export async function saveAnalysis(clientId: string, scanType: 'personal' | 'business', analysisData: object): Promise<string> {
   try {
     const analysesCollection = collection(db, "analyses");
     const newAnalysisData: AnalysisData = {
@@ -55,7 +62,7 @@ async function saveAnalysis(clientId: string, scanType: 'personal' | 'business',
   }
 }
 
-async function findClientByEmail(email: string): Promise<{ id: string; data: ClientData } | null> {
+export async function findClientByEmail(email: string): Promise<{ id: string; data: ClientData } | null> {
   try {
     const clientsCollection = collection(db, "clients");
     const q = query(clientsCollection, where("email", "==", email));
@@ -73,7 +80,7 @@ async function findClientByEmail(email: string): Promise<{ id: string; data: Cli
   }
 }
 
-async function findClientById(clientId: string): Promise<{ id: string; data: ClientData } | null> {
+export async function findClientById(clientId: string): Promise<{ id: string; data: ClientData } | null> {
   try {
     const clientDocRef = doc(db, "clients", clientId);
     const clientSnapshot = await getDoc(clientDocRef);
@@ -86,5 +93,29 @@ async function findClientById(clientId: string): Promise<{ id: string; data: Cli
   } catch (e) {
     console.error("Error finding client by ID: ", e);
     throw new Error("Failed to find client by ID.");
+  }
+}
+
+export async function getLatestAnalysisForClient(clientId: string, scanType: 'personal' | 'business'): Promise<{ id: string; data: AnalysisData } | null> {
+  try {
+    const analysesCollection = collection(db, "analyses");
+    const q = query(
+      analysesCollection,
+      where("clientId", "==", clientId),
+      where("scanType", "==", scanType),
+      orderBy("generatedAt", "desc"),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      return { id: doc.id, data: doc.data() as AnalysisData };
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.error(`Error getting latest ${scanType} analysis for client ${clientId}: `, e);
+    throw new Error(`Failed to get latest ${scanType} analysis.`);
   }
 }

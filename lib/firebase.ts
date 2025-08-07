@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+export const auth = getAuth();
 const db = getFirestore(app, "scoremaster");
 export { db };
 export default app;

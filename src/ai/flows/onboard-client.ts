@@ -13,6 +13,8 @@ import { generateCreditDisputeLetter } from './generate-credit-dispute-letter';
 import { analyzeCreditProfile, type AnalyzeCreditProfileOutput } from './analyze-credit-profile';
 import { addToGoHighLevelWorkflow } from '@/services/gohighlevel';
 
+import { sendActivationEmail } from "@/lib/email"; // Import email sending function
+
 // Assuming you have functions for interacting with Firestore and DocuPost
 // import { getUserData, updateUserCredits } from '@/services/firestore';
 // import { sendLetterViaDocuPost } from '@/services/docupost';
@@ -96,6 +98,19 @@ const onboardClientFlow = ai.defineFlow(
   },
   async (input) => {
     // In a real app, you would save the client data to a database here.
+
+    // *** Placeholder for client creation and token generation logic ***
+    // This logic was previously in public-intake-form.tsx but should be moved here
+    // const activationToken = uuidv4(); // Need to import uuid
+    // const activationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    // const newClient = await createClient({
+    //  email: input.clientEmail,
+    //  fullName: input.clientName,
+    //  scanType: 'personal',
+    //  activationToken: activationToken,
+    //  activationTokenExpiresAt: activationTokenExpiresAt,
+    // });
+    // *** End Placeholder ***
     
     // 1. Analyze the credit profile first
     const analysisResult = await analyzeCreditProfile({
@@ -139,6 +154,13 @@ Phone: ${input.clientPhone}`;
     // 4. Deduct credits from the user's balance in Firestore upon successful mailing.
     // 5. Handle cases for insufficient credits or DocuPost API failures.
     // 6. Potentially log mailing events in a Firestore collection.
+
+    // *** Placeholder for sending activation email after client creation ***
+    // Assuming 'newClient' and 'activationToken' are available here
+    // if (newClient?.id && activationToken) {
+    //   await sendActivationEmail({ to: input.clientEmail, token: activationToken, clientId: newClient.id });
+    // }
+    // *** End Placeholder ***
 
     // *** End of New Logic ***
 

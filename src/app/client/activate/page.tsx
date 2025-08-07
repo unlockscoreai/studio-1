@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ interface ClientData {
 
 export default function ActivateClientPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams.get('token');
 
   const [password, setPassword] = useState('');
@@ -104,7 +106,7 @@ export default function ActivateClientPage() {
 
             } catch (err: any) {
               console.error('Error during activation API call:', err);
-              setPasswordError('An unexpected error occurred. Please try again.');
+ setPasswordError('An unexpected error occurred. Please try again.');
                });
             } finally {
               setIsCreatingUser(false);
