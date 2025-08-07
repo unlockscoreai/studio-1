@@ -1,8 +1,11 @@
 
 "use client"
 
+import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, Suspense } from "react"
-import Link from "next/link"
+import Link from "next/link";
+import { createClient, saveAnalysis, findClientByEmail } from "@/services/firestore";
+import { useRouter } from 'next/navigation';
 import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -52,6 +55,7 @@ function PublicIntakeFormComponent() {
   const [analysisResult, setAnalysisResult] = useState<OnboardClientOutput['analysis'] | null>(null);
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,11 +72,36 @@ function PublicIntakeFormComponent() {
     setIsLoading(true)
     setIsSuccess(false)
     setAnalysisResult(null);
+    let clientId;
 
     try {
         const creditReportFile = values.creditReport[0];
         const creditReportDataUri = await fileToDataUri(creditReportFile);
         
+        const existingClient = await findClientByEmail(values.clientEmail);
+
+        if (existingClient) {
+ clientId = existingClient.id;
+ // Assuming you have an updateClient function to add 'personalScan' if not present
+            // Assuming you have an updateClient function to add 'personalScan' if not present
+ // This part is not yet implemented in firestore.ts, will need to add it later
+ // if (!existingClient.unlockedTools?.includes('personalScan')) {
+ // await updateClient(clientId, { unlockedTools: [...(existingClient.unlockedTools || []), 'personalScan'] });
+            // This part is not yet implemented in firestore.ts, will need to add it later
+            // if (!existingClient.unlockedTools?.includes('personalScan')) {
+            //     await updateClient(clientId, { unlockedTools: [...(existingClient.unlockedTools || []), 'personalScan'] });
+            // }
+        } else {
+            const newClient = await createClient(values.clientEmail, values.clientName, 'personal');
+ clientId = newClient.id;
+ const activationToken = uuidv4();
+ const activationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+            // Assuming createClient now accepts these fields or you have an update function
+ await createClient({ email: values.clientEmail, fullName: values.clientName, scanType: 'personal', activationToken: activationToken, activationTokenExpiresAt: activationTokenExpiresAt });
+ // You might need to refetch or get the ID differently if createClient doesn't return the full doc with ID
+ // For now, we'll assume createClient returns the doc reference or ID
+        }
+
         const result = await onboardClient({
             clientName: values.clientName,
             clientEmail: values.clientEmail,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -182,10 +182,9 @@ export default function CreditAnalysisPage() {
   }
 
   const actionItems = analysis.planOfAction
-    .split('
-')
-    .filter(line => line.trim().startsWith('- ') || line.trim().startsWith('####'))
-    .map(line => line.replace(/- /g, '').replace(/#### /g, ''));
+    .split(/\n/)
+    .filter((line: string) => line.trim().startsWith('- ') || line.trim().startsWith('####'))
+    .map((line: string) => line.replace(/- /g, '').replace(/#### /g, ''));
 
 
   return (
@@ -257,7 +256,7 @@ export default function CreditAnalysisPage() {
                           </TableRow>
                       </TableHeader>
                       <TableBody>
-                          {analysis.disputableItems.map((item, index) => (
+                          {analysis.disputableItems.map((item: { creditorName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; type: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; dateReported: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; disputeSuccessChance: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; }, index: Key | null | undefined) => (
                               <TableRow key={index}>
                                   <TableCell className="font-medium">{item.creditorName}</TableCell>
                                   <TableCell><Badge variant={item.type === 'Collection' ? 'destructive' : 'secondary'}>{item.type}</Badge></TableCell>
@@ -291,7 +290,7 @@ export default function CreditAnalysisPage() {
         <CardContent className="space-y-6">
            <div>
             <div className="space-y-4">
-              {actionItems.slice(1).map((item, index) => (
+              {actionItems.slice(1).map((item: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined, index: Key | null | undefined) => (
                  <div key={index} className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-1 shrink-0" />
                   <p className="text-muted-foreground">{item}</p>
