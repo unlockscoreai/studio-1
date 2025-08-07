@@ -40,15 +40,9 @@ export default function SignInPage() {
             <Input id="password" type="password" required />
           </div>
           <div className="grid gap-2">
-            <Button type="submit" className="w-full" asChild>
-              <Link href="/client/dashboard">Sign In as Client</Link>
-            </Button>
-            <Button type="submit" variant="outline" className="w-full" asChild>
-              <Link href="/affiliate/dashboard">Sign In as Affiliate</Link>
-            </Button>
-            <Button type="submit" variant="outline" className="w-full" asChild>
-              <Link href="/business-client/dashboard">Sign In as Business</Link>
-            </Button>
+ <Button type="submit" className="w-full" asChild>
+ <Link href="/dashboard">Sign In or Sign Up</Link>
+ </Button>
           </div>
         </div>
         <div className="mt-4 text-center text-sm">

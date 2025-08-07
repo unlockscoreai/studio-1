@@ -20,13 +20,14 @@ import {
   FileUp,
   Landmark,
   UserCheck,
-  ShieldQuestion,
+  ShieldQuestion, 
   UploadCloud,
   ExternalLink,
   Info,
 } from "lucide-react";
-import { AnalyzeCreditReportOutput } from "@/ai/flows/analyze-credit-profile"; // Corrected import path
-// import { adminMockAnalysis } from '@/services/firestore'; // Removed mock analysis import
+import { AnalyzeCreditProfileOutput, DisputableItem } from "@/ai/flows/analyze-credit-profile"; // Import DisputableItem
+import { useState, useEffect, ReactNode } from 'react';
+import { ReactElement, JSXElementConstructor, ReactPortal, AwaitedReactNode, Key } from 'react'; // Added missing React types
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -141,7 +142,7 @@ const NoAnalysisFound = () => {
 
 
 export default function CreditAnalysisPage() {
-  const [analysis, setAnalysis] = useState<AnalyzeCreditReportOutput | null>(null);
+  const [analysis, setAnalysis] = useState<AnalyzeCreditProfileOutput | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -255,8 +256,8 @@ export default function CreditAnalysisPage() {
                               <TableHead>Success Chance</TableHead>
                           </TableRow>
                       </TableHeader>
-                      <TableBody>
-                          {analysis.disputableItems.map((item: { creditorName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; type: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; dateReported: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; disputeSuccessChance: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<AwaitedReactNode> | null | undefined; }, index: Key | null | undefined) => (
+                      <TableBody> 
+                          {analysis.disputableItems.map((item: DisputableItem, index) => (
                               <TableRow key={index}>
                                   <TableCell className="font-medium">{item.creditorName}</TableCell>
                                   <TableCell><Badge variant={item.type === 'Collection' ? 'destructive' : 'secondary'}>{item.type}</Badge></TableCell>
@@ -264,8 +265,8 @@ export default function CreditAnalysisPage() {
                                   <TableCell>
                                       <div className="flex items-center gap-2" typeof="number"> {/* Added typeof for clarity */}
                                           <Progress value={item.disputeSuccessChance} className="w-24" />
-                                          <span className="text-muted-foreground font-medium">{item.disputeSuccessChance}%</span>
-                                      </div>
+                                          <span className="text-muted-foreground font-medium">{item.disputeSuccessChance != null ? `${item.disputeSuccessChance}%` : 'N/A'}</span> {/* Handle null/undefined */}
+                                      </div> 
                                   </TableCell>
                               </TableRow>
                           ))}
